@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg2">
+
+    <ImageButton
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="30dp"
+        android:background="@null"
+        android:contentDescription="@string/app_name"
+        android:scaleType="centerInside"
+        android:src="@drawable/globe">
+    </ImageButton>
+
+    <RelativeLayout
+        android:id="@+id/login_info"
+        android:layout_width="303dp"
+        android:layout_height="200dp"
+        android:layout_centerInParent="true">
+
+        <TextView
+            android:id="@+id/txt_usrname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="User Name"
+            android:textAlignment="textStart"
+            android:textColor="@color/black">
+
+        </TextView>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_usrname"
+            android:autofillHints="name"
+            android:hint="Enter your name"
+            android:inputType="text"
+            android:textColor="@color/black">
+
+        </EditText>
+
+        <TextView
+            android:id="@+id/txt_pw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_usrname"
+            android:layout_marginTop="70dp"
+            android:text="Password"
+            android:textAlignment="textStart"
+            android:textColor="@color/black">
+
+        </TextView>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_pw"
+            android:autofillHints="password"
+            android:hint="Enter your password"
+            android:inputType="textPassword"
+            android:textColor="@color/black">
+
+        </EditText>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/resetpw_and_google"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_info"
+        android:orientation="vertical"
+        android:background="@null">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="Forgot Password"
+            android:textAlignment="center"
+            android:background="@null"
+            >
+        </TextView>
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:src="@drawable/google"
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:contentDescription="@string/app_name">
+        </ImageButton>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txt_signup_ask"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Don't have an account? Sign Up"
+        android:layout_marginBottom="50dp"
+        android:layout_alignParentBottom="true">
+
+    </TextView>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txt_signup_ask"
+        android:backgroundTint="#50e669"
+        android:layout_marginHorizontal="50dp"
+        android:text="Sign In">
+
+    </Button>
+
+</RelativeLayout>
