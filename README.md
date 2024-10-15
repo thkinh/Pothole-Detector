@@ -1,5 +1,10 @@
 # Road Pothole Detection Using Smartphone Sensor Data
 
+Reference: Pothole Detection on Application
+
+    https://github.com/shreyash0k/PotholeDetection?tab=readme-ov-file
+    https://github.com/AdityaPune/Pothole-Detection
+
 
 ## Member group - NC.UIT 2022 - NT118.P11
 
@@ -21,7 +26,7 @@
 
 |    file       | name |
 | :-------- | :------- |
-|
+
 ## Screen and Features of Application
 
 Welcome Screen 
