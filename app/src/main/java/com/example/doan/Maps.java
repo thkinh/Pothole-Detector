@@ -3,39 +3,41 @@ package com.example.doan;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.os.LocaleListCompat;
 
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MapColorScheme;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 // Implement OnMapReadyCallback.
 public class Maps extends AppCompatActivity implements OnMapReadyCallback {
 
     GoogleMap map;
-    Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
+    FirebaseDatabase database;
+    DatabaseReference currentReference;
+    DatabaseReference potholeReference;
 
     private final int FINE_PERMISSION_CODE = 1;
 
@@ -44,10 +46,14 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_maps);
 
-        // Initialize Firebase Realtime Database
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        getLastLocation();
+        currentReference = FirebaseDatabase.getInstance().getReference("Current Location");
+        potholeReference = FirebaseDatabase.getInstance().getReference("Pothole Location");
+        database= FirebaseDatabase.getInstance();
 
+//         Initialize Firebase Realtime Database
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        getLastLocation();
     }
 
     private void getLastLocation(){
@@ -60,11 +66,12 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             public void onSuccess(Location location) {
                 if(location != null){
-                    currentLocation = location;
+                    WriteCurrentLocation(location);
+                    WritePotholeLocation(location);
                     // Get a handle to the fragment and register the callback.
+
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                             .findFragmentById(R.id.map);
-
                     mapFragment.getMapAsync(Maps.this);
                 }
             }
@@ -76,19 +83,8 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         // and move the map's camera to the same location.
         map = googleMap;
-        LatLng sydney = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        map.addMarker(new MarkerOptions()
-                .position(sydney)
-                .title("Location"));
-        map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 14));
-
-        // Write location coordinates to Firebase
-        String latitude = Double.toString(currentLocation.getLatitude());
-        String longitude = Double.toString(currentLocation.getLongitude());
-
-
-
+        LoadNewPotholesFromFirebase();
+        LoadCurrentLocationFromFirebase();
     }
 
     @Override
@@ -101,5 +97,84 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
                 Toast.makeText(this,"Location Permission to denied ",Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+
+    private void WriteCurrentLocation(Location location){
+        HashMap<String,Double> quoteHashmap= new HashMap<>();
+        quoteHashmap.put("Latitude",(location.getLatitude()));
+        quoteHashmap.put("Longitude",location.getLongitude());
+        DatabaseReference quoteRef = database.getReference("Current Location");
+
+        quoteRef.child("Current").setValue(quoteHashmap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(Maps.this, "Added",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void WritePotholeLocation(Location location){
+        HashMap<String,Double> quoteHashmap= new HashMap<>();
+        quoteHashmap.put("Latitude",(location.getLatitude()));
+        quoteHashmap.put("Longitude",location.getLongitude());
+        DatabaseReference quoteRef = database.getReference("Pothole Location");
+        quoteRef.child("1").setValue(quoteHashmap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(Maps.this, "Added",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void LoadNewPotholesFromFirebase() {
+        potholeReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String region = snapshot.child("Region").getValue(String.class);
+                    Double lat = snapshot.child("Latitude").getValue(Double.class);
+                    Double lng = snapshot.child("Longitude").getValue(Double.class);
+
+                    LatLng potholeLocation = new LatLng(lat, lng);
+                    map.addMarker(new MarkerOptions().position(potholeLocation).title("Pothole"));
+
+                    LatLng potholeLocation1= new LatLng(0, 0);
+                    map.addMarker(new MarkerOptions().position(potholeLocation1).title("Pothole 1"));
+
+                    map.moveCamera(CameraUpdateFactory.newLatLng(potholeLocation));
+//                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(potholeLocation, 8));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.w("TAG", "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+
+    private void LoadCurrentLocationFromFirebase() {
+        currentReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Double lat = snapshot.child("Latitude").getValue(Double.class);
+                    Double lng = snapshot.child("Longitude").getValue(Double.class);
+
+                    LatLng potholeLocation = new LatLng(lat, lng);
+                    map.addMarker(new MarkerOptions().position(potholeLocation).title("Current"));
+
+                    map.moveCamera(CameraUpdateFactory.newLatLng(potholeLocation));
+//                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(potholeLocation, 14));
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.w("TAG", "Failed to read value.", error.toException());
+            }
+        });
     }
 }
