@@ -33,11 +33,8 @@ import java.util.HashMap;
 // Implement OnMapReadyCallback.
 public class Maps extends AppCompatActivity implements OnMapReadyCallback {
 
-    GoogleMap map;
+    LogicFirebase firebase;
     FusedLocationProviderClient fusedLocationProviderClient;
-    FirebaseDatabase database;
-    DatabaseReference currentReference;
-    DatabaseReference potholeReference;
 
     private final int FINE_PERMISSION_CODE = 1;
 
@@ -45,11 +42,7 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_maps);
-
-        currentReference = FirebaseDatabase.getInstance().getReference("Current Location");
-        potholeReference = FirebaseDatabase.getInstance().getReference("Pothole Location");
-        database= FirebaseDatabase.getInstance();
-
+        firebase = new LogicFirebase();
 //         Initialize Firebase Realtime Database
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -66,8 +59,8 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             public void onSuccess(Location location) {
                 if(location != null){
-                    WriteCurrentLocation(location);
-                    WritePotholeLocation(location);
+                    firebase.WriteCurrentLocation(location);
+                    firebase.WritePotholeLocation(location);
                     // Get a handle to the fragment and register the callback.
 
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -82,9 +75,8 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // and move the map's camera to the same location.
-        map = googleMap;
-        LoadNewPotholesFromFirebase();
-        LoadCurrentLocationFromFirebase();
+        firebase.LoadCurrentLocationFromFirebase(googleMap);
+        firebase.LoadNewPotholesFromFirebase(googleMap);
     }
 
     @Override
@@ -97,84 +89,5 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
                 Toast.makeText(this,"Location Permission to denied ",Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-
-    private void WriteCurrentLocation(Location location){
-        HashMap<String,Double> quoteHashmap= new HashMap<>();
-        quoteHashmap.put("Latitude",(location.getLatitude()));
-        quoteHashmap.put("Longitude",location.getLongitude());
-        DatabaseReference quoteRef = database.getReference("Current Location");
-
-        quoteRef.child("Current").setValue(quoteHashmap).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(Maps.this, "Added",Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-    private void WritePotholeLocation(Location location){
-        HashMap<String,Double> quoteHashmap= new HashMap<>();
-        quoteHashmap.put("Latitude",(location.getLatitude()));
-        quoteHashmap.put("Longitude",location.getLongitude());
-        DatabaseReference quoteRef = database.getReference("Pothole Location");
-        quoteRef.child("1").setValue(quoteHashmap).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(Maps.this, "Added",Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void LoadNewPotholesFromFirebase() {
-        potholeReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String region = snapshot.child("Region").getValue(String.class);
-                    Double lat = snapshot.child("Latitude").getValue(Double.class);
-                    Double lng = snapshot.child("Longitude").getValue(Double.class);
-
-                    LatLng potholeLocation = new LatLng(lat, lng);
-                    map.addMarker(new MarkerOptions().position(potholeLocation).title("Pothole"));
-
-                    LatLng potholeLocation1= new LatLng(0, 0);
-                    map.addMarker(new MarkerOptions().position(potholeLocation1).title("Pothole 1"));
-
-                    map.moveCamera(CameraUpdateFactory.newLatLng(potholeLocation));
-//                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(potholeLocation, 8));
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.w("TAG", "Failed to read value.", error.toException());
-            }
-        });
-    }
-
-
-    private void LoadCurrentLocationFromFirebase() {
-        currentReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Double lat = snapshot.child("Latitude").getValue(Double.class);
-                    Double lng = snapshot.child("Longitude").getValue(Double.class);
-
-                    LatLng potholeLocation = new LatLng(lat, lng);
-                    map.addMarker(new MarkerOptions().position(potholeLocation).title("Current"));
-
-                    map.moveCamera(CameraUpdateFactory.newLatLng(potholeLocation));
-//                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(potholeLocation, 14));
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.w("TAG", "Failed to read value.", error.toException());
-            }
-        });
     }
 }
