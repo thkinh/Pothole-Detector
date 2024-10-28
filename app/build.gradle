@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace 'com.example.doan'
+    namespace "com.example.doan"
     compileSdk 34
 
     defaultConfig {
@@ -27,9 +27,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
+    packagingOptions {
+        // Exclude duplicate files
+        exclude 'META-INF/NOTICE.md'
+        exclude 'META-INF/LICENSE.md'
+    }
+
 }
 
 dependencies {
@@ -44,6 +50,8 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+
+    implementation 'com.sun.mail:jakarta.mail:2.0.1'
 
     // Maps SDK for Android
     implementation("com.google.android.gms:play-services-maps:19.0.0")
