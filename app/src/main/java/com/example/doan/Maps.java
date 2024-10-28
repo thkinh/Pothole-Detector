@@ -13,8 +13,10 @@ import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,14 +28,14 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
 
     LogicFirebase firebase;
     FusedLocationProviderClient fusedLocationProviderClient;
-
+    Location currentLocation;
     private final int FINE_PERMISSION_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_maps);
-        firebase = new LogicFirebase();
+        firebase = new LogicFirebase(Maps.this);
 //         Initialize Firebase Realtime Database
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -50,8 +52,8 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             public void onSuccess(Location location) {
                 if(location != null){
-                    firebase.WriteCurrentLocation(location);
-                    firebase.WritePotholeLocation(location);
+                    currentLocation = location;
+
                     // Get a handle to the fragment and register the callback.
 
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -66,8 +68,14 @@ public class Maps extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // and move the map's camera to the same location.
-        firebase.LoadCurrentLocationFromFirebase(googleMap);
-        firebase.LoadNewPotholesFromFirebase(googleMap);
+        LatLng latLng = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions()
+                .position(latLng)
+                .title("Current");
+        googleMap.addMarker(markerOptions);
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,30));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        firebase.LoadPotholesFromFirebase(googleMap);
     }
 
     @Override

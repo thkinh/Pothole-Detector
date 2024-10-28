@@ -48,7 +48,6 @@
         </activity>
 
 
-
         <activity
             android:name=".Maps"
             android:exported="true">

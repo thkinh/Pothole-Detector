@@ -15,6 +15,29 @@ public class FirestoreClass {
             this.email = e;
             this.password = pass;
         }
-
     }
+
+    public static class Pothole{
+        Double Latitude;
+        Double Longitude;
+        String Region;
+
+        public Pothole(Double latitude, Double longitude, String region) {
+            Latitude = latitude;
+            Longitude = longitude;
+            Region = region;
+        }
+        public String getRegion() {
+            return Region;
+        }
+
+        public Double getLongitude() {
+            return Longitude;
+        }
+
+        public Double getLatitude() {
+            return Latitude;
+        }
+    }
+
 }
