@@ -21,7 +21,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-
+import com.google.android.gms.maps.model.LatLng;
 
 // Implement OnMapReadyCallback.
 public class Maps extends AppCompatActivity implements OnMapReadyCallback {
