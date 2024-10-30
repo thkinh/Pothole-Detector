@@ -1,47 +1,31 @@
 package com.example.doan;
 
-import static android.content.ContentValues.TAG;
+
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.Objects;
 
 public class LogicFirebase {
 
@@ -65,26 +49,27 @@ public class LogicFirebase {
 
 
     public void LoadPotholesFromFirebase(GoogleMap map) {
-
         database.collection("Pothole")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
-                        for(QueryDocumentSnapshot item : querySnapshot)
-                        {
-                            LatLng location = new LatLng(item.getDouble("latitude"), item.getDouble("longitude"));
-                            MarkerOptions markerOptions = new MarkerOptions();
-                            markerOptions.position(location).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                            map.addMarker(markerOptions)
-                                    .setTitle("Pothole");
-                        }
+                .addSnapshotListener((querySnapshot, error) -> {
+                    assert querySnapshot != null;
+                    for(QueryDocumentSnapshot item : querySnapshot) {
+                        LatLng location = new LatLng(item.getDouble("latitude"),
+                                item.getDouble("longitude"));
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(location).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                        Objects.requireNonNull(map.addMarker(markerOptions))
+                                .setTitle("Pothole");
+
                     }
                 });
     }
 
     private BitmapDescriptor bitmapDescriptor (Context context, int vectorResId){
         Drawable vectorDrawable = ContextCompat.getDrawable(context,vectorResId);
-        vectorDrawable.setBounds(0,0,vectorDrawable.getIntrinsicWidth(),vectorDrawable.getIntrinsicHeight());
+        assert vectorDrawable != null;
+        vectorDrawable.setBounds(0, 0,
+                vectorDrawable.getIntrinsicWidth(),
+                vectorDrawable.getIntrinsicHeight());
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
                 vectorDrawable.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
