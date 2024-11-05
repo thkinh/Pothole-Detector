@@ -195,24 +195,10 @@ public class Maps extends AppCompatActivity
 
             }
         });
+        firebase.LoadPotholesFromFirebase(googleMap);
         init();
     }
     private void CurrentPlace(){
-//        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-//        Criteria criteria = new Criteria();
-//        String provider = locationManager.getBestProvider(criteria, true);
-//        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-//        Location location = locationManager.getLastKnownLocation(provider);
-
         Location location = currentLocation;
         if (location != null) {
             double latitude = location.getLatitude();
@@ -228,22 +214,13 @@ public class Maps extends AppCompatActivity
     }
     @SuppressLint("MissingPermission")
     private void enableMyLocation() {
-        // 1. Check if permissions are granted, if so, enable the my location layer
-//        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED
-//                || ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
-//                == PackageManager.PERMISSION_GRANTED) {
-//            googleMap.setMyLocationEnabled(true);
-//            CurrentPlace();
-//            return;
-//        }
-        // 2. Otherwise, request location permissions from the user.
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
             return;
         }
+
         googleMap.setMyLocationEnabled(true);
         CurrentPlace();
     }
