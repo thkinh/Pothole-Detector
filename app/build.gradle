@@ -31,9 +31,9 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
     packagingOptions {
-        // Exclude duplicate files
-        exclude 'META-INF/NOTICE.md'
-        exclude 'META-INF/LICENSE.md'
+        resources {
+            excludes += ['META-INF/NOTICE.md', 'META-INF/LICENSE.md']
+        }
     }
 
 }
