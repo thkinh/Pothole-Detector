@@ -8,4 +8,14 @@
     </string>
 
     <string name="login"><b>Login</b></string>
+
+    <string name="username1"><b>Linh Xe Ôm</b></string>
+
+    <string name="latest">Latest:</string>
+
+    <string name="latesttime"><b>05/11/2024</b></string>
+
+    <string name="title"><b>Pothole Detecting</b></string>
+
+
 </resources>
