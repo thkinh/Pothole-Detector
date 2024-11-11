@@ -6,4 +6,5 @@
     <color name="lightpacificblue">#FFB1D2E3</color>
     <color name="darkpacificblue">#FF0F5996</color>
     <color name="lightsky">#FFE1FEFF</color>
+    <color name="transparent">#00000000</color>
 </resources>

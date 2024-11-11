@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:background="@color/lightpacificblue">
     <include
         android:id="@+id/action_bar"
         layout="@layout/action_bar">
@@ -21,7 +22,27 @@
         android:layout_marginStart="13dp">
     </TextView>
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_notify"
+        android:layout_alignBottom="@id/title"
+        android:layout_toStartOf="@id/icon_power"
+        android:layout_marginEnd="7dp">
+    </ImageView>
+
+    <ImageView
+        android:id="@+id/icon_power"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_power"
+        android:layout_alignBottom="@id/title"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="21dp">
+    </ImageView>
+
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/userinfo"
         android:layout_width="385dp"
         android:layout_height="155dp"
         android:layout_centerHorizontal="true"
@@ -207,5 +228,151 @@
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
 
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/allusers"
+        android:layout_width="385dp"
+        android:layout_height="175dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/userinfo"
+        app:cardCornerRadius="15dp"
+        app:cardBackgroundColor="@color/lightsky">
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <TextView
+                android:id="@+id/txt_allusers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All users"
+                android:textStyle="bold"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="2dp">
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="view detail >"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="2dp">
+            </TextView>
+
+            <ListView
+                android:layout_width="351dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_allusers"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:scrollbars="vertical"
+                tools:listitem="@layout/recycler_item"
+                android:dividerHeight="15dp"
+                android:divider="@color/transparent">
+            </ListView>
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/allroutes"
+        android:layout_width="385dp"
+        android:layout_height="175dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/allusers"
+        app:cardCornerRadius="15dp"
+        app:cardBackgroundColor="@color/lightsky">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/txt_allroutes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All routes"
+                android:textStyle="bold"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="2dp">
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="view detail >"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="2dp">
+            </TextView>
+
+            <ListView
+                android:layout_width="351dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_allroutes"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:scrollbars="vertical"
+                tools:listitem="@layout/recycler_item"
+                android:dividerHeight="15dp"
+                android:divider="@color/transparent">
+            </ListView>
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="190dp"
+        android:layout_height="160dp"
+        android:layout_below="@id/allroutes"
+        android:layout_alignStart="@id/allroutes"
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="15dp"
+        app:cardBackgroundColor="@color/lightsky">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/txt_recently"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trong 7 ngày gần nhất"
+                android:textStyle="bold"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="2dp">
+            </TextView>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="190dp"
+        android:layout_height="160dp"
+        android:layout_below="@id/allroutes"
+        android:layout_alignEnd="@id/allroutes"
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="15dp"
+        app:cardBackgroundColor="@color/lightsky">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/txt_dangerlevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mức độ nguy hiểm"
+                android:textStyle="bold"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="2dp">
+            </TextView>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 </RelativeLayout>
