@@ -6,4 +6,7 @@
     <color name="colorPrimaryDark">#FFFFFFFF</color>
     <color name="colorAccent">#FFFFFFFF</color>
     <color name="btn_current">#3478F5</color>
+    <color name="main">#4FABD4</color>
+    <color name="submain">#BBDEFB</color>
+    <color name="background">#C8DAE4</color>
 </resources>
