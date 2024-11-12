@@ -23,6 +23,7 @@
                 android:layout_centerVertical="true"
                 app:cardCornerRadius="100dp">
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/img_avatar"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:scaleType="centerCrop"
@@ -31,14 +32,14 @@
             </com.google.android.material.card.MaterialCardView>
 
             <TextView
-                android:id="@+id/username"
+                android:id="@+id/txt_routename"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/avatar"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:text="@string/username1"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textColor="@color/white">
             </TextView>
 
@@ -53,6 +54,7 @@
             </TextView>
 
             <TextView
+                android:id="@+id/txt_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/latest"

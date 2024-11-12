@@ -23,7 +23,7 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.atv_signupscreen);
+        setContentView(R.layout.at_signupscreen);
 
         // Ánh xạ các view từ layout
         usernameEditText = findViewById(R.id.editText_username_scrSignup);

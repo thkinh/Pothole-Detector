@@ -14,7 +14,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.atv_forgotpasswordscreen);
+        setContentView(R.layout.at_forgotpasswordscreen);
 
         // Ánh xạ TextView dòng chữ "Sign Up"
         askSignupText = findViewById(R.id.txt_askSignUp_scrForgot);

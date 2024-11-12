@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.atv_flashscreen);
+        setContentView(R.layout.at_splashscreen);
 
         // Ánh xạ Button từ layout
         getStartedButton = findViewById(R.id.btn_getStarted);

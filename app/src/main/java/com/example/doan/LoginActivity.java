@@ -22,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.atv_loginscreen);
+        setContentView(R.layout.at_loginscreen);
 
         // Ánh xạ các view từ layout
         emailEditText = findViewById(R.id.editText_Email_srcLogin);
@@ -76,15 +76,23 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Xác thực đăng nhập (giả lập)
-        if (email.equals("example@example.com") && password.equals("password123")) {
+        if (email.equals("ex") && password.equals("123")) {
             // Đăng nhập thành công
             Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
             // Chuyển sang màn hình chính hoặc màn hình khác theo yêu cầu
+            navigateToDashboard();
             // startActivity(new Intent(LoginActivity.this, MainActivity.class));
         } else {
             // Đăng nhập thất bại
             Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // Hàm điều hướng về màn hình Dashboard
+    private void navigateToDashboard() {
+        Intent intent = new Intent(LoginActivity.this, MainDashboard.class);
+        startActivity(intent);
+        finish(); // Đóng SignupActivity để không thể quay lại màn hình này
     }
 }
 
