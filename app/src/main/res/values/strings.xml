@@ -18,4 +18,35 @@
     <string name="title"><b>Pothole Detecting</b></string>
 
 
+    <!-- Khai báo String cho Authentication UI <HTAT> -->
+    <string name="welcome_message">Welcome!\nYou are not currently logged in.\nPlease!!! Login to get started.</string>
+
+    <string name="btn_getStarted">Get started</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_signup">Sign up</string>
+    <string name="btn_finish">Finish</string>
+    <string name="btn_continueWGoogle">Continue with Google</string>
+
+    <string name="txt_username">Username</string>
+    <string name="txt_email">Email</string>
+    <string name="txt_password">Password</string>
+    <string name="txt_rePassword">Re-Password</string>
+    <string name="txt_forgotPassword"><u>Forgot password?</u></string>
+    <string name="txt_askSignUp">Don\'t have an account? <u>Sign up</u></string>
+    <string name="txt_askLogin">Already have an account? <u>Login</u></string>
+    <string name="txt_newPassword">New password</string>
+    <string name="txt_cfPassword">Confirm password</string>
+    <string name="txt_note"><b>Lưu ý</b>: Không đặt lại mật khấu đã từng sử dụng!</string>
+
+    <string name="editText_newPassword">Enter new password</string>
+    <string name="editText_cfPassword">Retype new password</string>
+    <string name="editText_username">Enter username here</string>
+    <string name="editText_email">Enter email here</string>
+    <string name="editText_password">Enter password here</string>
+
+    <string name="or">OR</string>
+    <string name="language_ENG">ENG</string>
+    <!-- Kết thức phần khai báo String cho Authentication UI <HTAT> -->
+
+
 </resources>

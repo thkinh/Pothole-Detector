@@ -7,4 +7,11 @@
     <color name="darkpacificblue">#FF0F5996</color>
     <color name="lightsky">#FFE1FEFF</color>
     <color name="transparent">#00000000</color>
+
+    //Authentication UI -- HTAT
+    <color name="opacity_black">#75000000</color>
+    <color name="color_1">#0F5996</color>
+    <color name="color_2">#4FABD4</color>
+    <color name="color_word">#E1FEFF</color>
+    <color name="bgr_textbox">#B1D2E3</color>
 </resources>
