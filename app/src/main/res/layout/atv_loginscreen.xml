@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/img_background"
+    android:id="@+id/id_screenLogin"
+    tools:context=".LoginActivity">
+
+    <!-- Tiêu đề "Login into account" -->
+    <ImageView
+        android:id="@+id/id_loginMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="92dp"
+        android:src="@drawable/img_loginmessage" />
+
+    <Button
+        android:id="@+id/btn_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="20dp"
+        android:backgroundTint="@color/color_1"
+        android:drawableLeft="@drawable/ic_flag_eng"
+        android:drawablePadding="0dp"
+        android:gravity="center"
+        android:paddingStart="5dp"
+        android:paddingEnd="15dp"
+        android:text="@string/language_ENG"
+        android:textColor="#01D1D6"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <!-- CardView chứa Email và Password -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/id_cardViewLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/id_loginMessage"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:layout_marginTop="200dp"
+        app:cardCornerRadius="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- Nhãn Email -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_email"
+                android:textColor="@color/color_1"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp"/>
+
+            <!-- Ô nhập Email -->
+            <EditText
+                android:id="@+id/editText_Email_srcLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/rounded_textbox"
+                android:hint="@string/editText_email"
+                android:inputType="textEmailAddress"
+                android:textColorHint="@color/opacity_black"
+                android:padding="10dp"
+                android:minHeight="48dp"
+                android:minWidth="48dp"/>
+
+            <!-- Nhãn Password -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_password"
+                android:textColor="@color/color_1"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="6dp"/>
+
+            <!-- Ô nhập Password -->
+            <EditText
+                android:id="@+id/editText_Password_scrLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/rounded_textbox"
+                android:drawableEnd="@drawable/ic_show_password"
+                android:hint="@string/editText_password"
+                android:inputType="textPassword"
+                android:textColorHint="@color/opacity_black"
+                android:padding="10dp"
+                android:minHeight="48dp"
+                android:minWidth="48dp" />
+
+            <!-- Liên kết "Forgot password?" -->
+            <TextView
+                android:id="@+id/txt_forgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="@string/txt_forgotPassword"
+                android:textColor="@color/color_1"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"/>
+
+            <!-- Login Button -->
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:backgroundTint="@color/color_1"
+                android:text="@string/btn_login"
+                android:textColor="@color/color_word"
+                android:textStyle="bold"
+                android:textSize="26sp"
+                app:cornerRadius="12dp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Layout chứa box hỏi người dùng đăng kí và đăng nhập bằng google -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_top_corners"
+        android:padding="16dp">
+
+        <!-- Dòng hỏi người dùng nếu chưa có tài khoản -->
+        <TextView
+            android:id="@+id/txt_askSignUp_scrLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/txt_askSignUp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <!-- Divider và chữ "OR" -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/opacity_black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/or"
+                android:textStyle="bold"
+                android:textColor="@color/opacity_black"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/opacity_black" />
+        </LinearLayout>
+
+        <!-- Nút "Continue with Google" -->
+        <Button
+            android:id="@+id/btn_continueWGoogle_scrLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:backgroundTint="@color/white"
+            android:drawableLeft="@drawable/img_google"
+            android:text="@string/btn_continueWGoogle"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:drawablePadding="10dp"
+            android:padding="10dp"
+            android:paddingStart="65dp"
+            android:paddingEnd="65dp"
+            android:textSize="20sp"
+            tools:ignore="RtlHardcoded" />
+
+    </LinearLayout>
+</RelativeLayout>
