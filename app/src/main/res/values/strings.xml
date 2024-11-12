@@ -48,5 +48,6 @@
     <string name="language_ENG">ENG</string>
     <!-- Kết thức phần khai báo String cho Authentication UI <HTAT> -->
 
+    <string name="test"> test</string>
 
 </resources>
