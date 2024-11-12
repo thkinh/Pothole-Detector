@@ -195,17 +195,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:gravity="center"
             android:backgroundTint="@color/white"
             android:drawableLeft="@drawable/img_google"
-            android:text="@string/btn_continueWGoogle"
-            android:textColor="@color/black"
-            android:textStyle="bold"
             android:drawablePadding="10dp"
+            android:gravity="center"
             android:padding="10dp"
             android:paddingStart="65dp"
             android:paddingEnd="65dp"
+            android:text="@string/btn_continueWGoogle"
+            android:textColor="@color/black"
             android:textSize="20sp"
+            android:textStyle="bold"
             tools:ignore="RtlHardcoded" />
 
     </LinearLayout>

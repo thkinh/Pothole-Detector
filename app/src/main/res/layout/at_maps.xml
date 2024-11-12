@@ -2,59 +2,135 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/tools"
+    android:layout_above="@id/bottom_navigation">
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navigation"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:elevation="10dp"
-        android:background="@drawable/white_border"
-        android:id="@+id/relayout1">
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navigation"
+        android:layout_marginBottom="0dp"
+        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:id="@+id/ic_magnify"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/ic_magnify"
-            />
-
-        <EditText
-            android:id="@+id/input_search"
+        <RelativeLayout
+            android:id="@+id/relayout1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@+id/ic_magnify"
-            android:background="@null"
-            android:hint="@string/search"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            android:imeOptions="actionSearch"
-        />
+            android:layout_height="60dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/white_border"
+            android:elevation="10dp">
+
+            <ImageButton
+                android:id="@+id/ic_magnify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/white"
+                android:src="@drawable/ic_magnify" />
+
+            <EditText
+                android:id="@+id/input_search"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/filter"
+                android:layout_toRightOf="@+id/ic_magnify"
+                android:background="@null"
+                android:hint="@string/search"
+                android:imeOptions="actionSearch"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <ImageButton
+                android:id="@+id/filter"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_filter" />
+
+        </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/btn_current"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="10dp"
+            android:layout_marginStart="354dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="7dp"
+            android:background="@drawable/white_border_oral"
+            android:scaleType="centerInside"
+            map:srcCompat="@drawable/ic_go" />
+
+        <ImageButton
+            android:id="@+id/btn_go"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_above="@+id/btn_current"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="10dp"
+            android:layout_marginStart="354dp"
+            android:layout_marginTop="101dp"
+            android:layout_marginEnd="7dp"
+            android:background="@drawable/white_border_oral"
+            map:srcCompat="@drawable/maps_pin_navigation" />
+        <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="90dp"
+            android:background="@drawable/background_startdetect"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:clickable="true">
+            <ImageView
+                android:id="@+id/play"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/ic_play"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25dp"
+                android:text="Start Detect"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+
+
+        </LinearLayout>
 
     </RelativeLayout>
 
-    <ImageButton
-        android:id="@+id/btn_current"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="352dp"
-        android:layout_marginTop="73dp"
-        android:layout_marginEnd="9dp"
-        android:background="@drawable/white_border_oral"
-        map:srcCompat="@drawable/maps_pin_navigation" />
-
-
+        android:theme="@style/ThemeOverlay.App.BottomNavigationView"
+        android:background="@drawable/nav_background_curved"
+        app:menu="@menu/nav_menu_bottom"
+        app:itemIconTint="@color/bottom_nav_selector"
+        app:itemTextColor="@color/bottom_nav_selector">
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 </RelativeLayout>
