@@ -6,11 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="match_parent"
-            android:layout_height="600dp"
-            android:scaleType="center"
-            android:src="@drawable/betterbackground"/>
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/betterbackground" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="match_parent"

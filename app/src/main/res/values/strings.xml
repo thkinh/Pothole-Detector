@@ -2,8 +2,7 @@
     <string name="app_name">DoAn</string>
     <string name="key_api_google_map">AIzaSyAU7gVtnVKyrasCLaFjsQ6xUlqsfSaGCQQ</string>
 
-    <string
-        name="welcome">
+    <string name="welcome">
         <b>Welcome!\nYou are not currently logged in.\nPlease log in to get started.</b>
     </string>
 
@@ -11,11 +10,14 @@
 
     <string name="username1"><b>Linh Xe Ôm</b></string>
 
+    <string name="routename1"><b>Tăng Nhơn Phú</b></string>
+
     <string name="latest">Latest:</string>
 
     <string name="latesttime"><b>05/11/2024</b></string>
 
     <string name="title"><b>Pothole Detecting</b></string>
+    <string name="title_activity_main_dashboard">MainDashboard</string>
 
 
 </resources>
