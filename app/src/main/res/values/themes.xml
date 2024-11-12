@@ -3,6 +3,14 @@
     <style name="Base.Theme.DoAn" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/pacificblue</item>
+        <item name="colorPrimaryDark">@color/darkpacificblue</item>
+        <item name="colorAccent">@color/lightsky</item>
+    </style>
+
+    <style name="roundedImageViewRounded">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
 
     <style name="Theme.DoAn" parent="Base.Theme.DoAn" />
