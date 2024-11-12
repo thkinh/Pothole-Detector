@@ -398,7 +398,6 @@
         app:menu="@menu/nav_menu_bottom"
         app:itemIconSize="40dp"
         app:itemIconTint="@color/bottom_nav_selector"
-        app:itemTextColor="@color/bottom_nav_selector"
-        app:itemBackground="">
+        app:itemTextColor="@color/bottom_nav_selector">
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 </RelativeLayout>
