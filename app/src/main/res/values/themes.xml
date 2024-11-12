@@ -8,6 +8,11 @@
         <item name="colorAccent">@color/lightsky</item>
     </style>
 
+    <style name="ThemeOverlay.App.BottomNavigationView" parent="">
+        <item name="colorSurface">@color/pacificblue</item>
+        <item name="colorSecondaryContainer">@color/lightpacificblue</item>
+    </style>
+
     <style name="roundedImageViewRounded">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
