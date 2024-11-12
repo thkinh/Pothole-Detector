@@ -23,6 +23,10 @@ import android.os.PersistableBundle;
 import android.provider.SyncStateContract;
 import android.util.Log;
 
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.Priority;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.firebase.database.core.Tag;
 
@@ -114,10 +118,9 @@ public class Maps extends AppCompatActivity
             public void onSuccess(Location location) {
                 if (location != null){
                     currentLocation = location;
-
-                    firebase = new LogicFirebase(Maps.this);
 //         Initialize Firebase Realtime Database
                     mapFragment.getMapAsync(Maps.this);
+                    firebase = new LogicFirebase(Maps.this);
                 }
             }
         });
@@ -180,19 +183,11 @@ public class Maps extends AppCompatActivity
         // and move the map's camera to the same location.
 
         enableMyLocation();
-        googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+        btn_current.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMyLocationButtonClick() {
-                Toast.makeText(getContext(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-
-                return false;
-            }
-        });
-        googleMap.setOnMyLocationClickListener(new GoogleMap.OnMyLocationClickListener() {
-            @Override
-            public void onMyLocationClick(@NonNull Location location) {
-                Toast.makeText(getContext(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
-
+            public void onClick(View view) {
+                getLocation();
+                CurrentPlace();
             }
         });
         firebase.LoadPotholesFromFirebase(googleMap);
@@ -300,5 +295,52 @@ public class Maps extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+
+
+
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
+    private boolean isFirstLocationUpdate = true;
+
+    private void setupLocationUpdates() {
+        LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
+                .setMinUpdateIntervalMillis(2000)
+                .build();
+
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                if (locationResult == null) return;
+
+                // Lấy vị trí mới từ LocationResult
+                Location location = locationResult.getLastLocation();
+                if (location != null) {
+                    // Cập nhật vị trí camera nếu có thay đổi
+                    updateCameraLocation(location);
+                }
+            }
+        };
+        // Bắt đầu nhận cập
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedClient.requestLocationUpdates(locationRequest, locationCallback, null);
+    }
+
+    private void updateCameraLocation(Location location) {
+        if (googleMap != null) {
+            LatLng newLocation = new LatLng(location.getLatitude(), location.getLongitude());
+            // Di chuyển camera tới vị trí mới
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newLocation, 15));
+        }
     }
 }
