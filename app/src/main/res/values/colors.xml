@@ -17,4 +17,9 @@
     <color name="color_word">#E1FEFF</color>
     <color name="bgr_textbox">#B1D2E3</color>
 
+    //Setting
+    <color name="setting_list">#BBDEFB</color>
+    <color name="setting">#C8DAE4</color>
+    <color name="switchsetting">#FF65558F</color>
+
 </resources>
