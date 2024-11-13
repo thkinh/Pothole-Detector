@@ -1,43 +1,53 @@
 package com.example.doan;
 
-import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.example.doan.databinding.AtMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button getStartedButton;  // Đối tượng Button
+    AtMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = AtMainBinding.inflate(getLayoutInflater());
         EdgeToEdge.enable(this);
-        setContentView(R.layout.at_splashscreen);
+        setContentView(binding.getRoot());
+        replaceFragment(new FragmentDashboard());
 
-        // Ánh xạ Button từ layout
-        getStartedButton = findViewById(R.id.btn_getStarted);
-
-        // Thiết lập sự kiện nhấn cho nút Get Started
-        getStartedButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Khi nhấn Get Started, chuyển sang LoginActivity
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
+        binding.bottomNavigation.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.btn_home) {
+                replaceFragment(new FragmentDashboard());
+            } else if (item.getItemId() == R.id.btn_map) {
+                replaceFragment(new FragmentMap());
+            } else if (item.getItemId() == R.id.btn_setting) {
+                replaceFragment(new FragmentSetting());
             }
+            return true;
         });
+    }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainlayout, fragment);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Handle the configuration change if needed
     }
 }

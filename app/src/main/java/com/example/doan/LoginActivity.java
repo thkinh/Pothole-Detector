@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
 
     // Hàm điều hướng về màn hình Dashboard
     private void navigateToDashboard() {
-        Intent intent = new Intent(LoginActivity.this, MainDashboard.class);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish(); // Đóng SignupActivity để không thể quay lại màn hình này
     }

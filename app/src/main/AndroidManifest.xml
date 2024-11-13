@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DoAn"
         tools:targetApi="31">
+
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -35,7 +36,7 @@
             android:value="@string/key_api_google_map" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,12 +44,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:configChanges="orientation|screenSize"/>
         <activity
             android:name=".MainDashboard"
-            android:exported="true"></activity>
+            android:exported="true">
+        </activity>
+
         <activity
             android:name=".Maps"
-            android:exported="true"></activity>
+            android:exported="true">
+        </activity>
         <activity
             android:name=".LoginActivity"
             android:exported="true" />

@@ -5,30 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_above="@id/bottom_navigation">
+    android:layout_above="@id/bottom_navigation"
+    tools:context=".FragmentMap">
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/bottom_navigation" />
+        android:layout_height="match_parent" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom_navigation"
         android:layout_marginBottom="0dp"
         android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/relayout1"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_width="331dp"
+            android:layout_height="36dp"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
             android:layout_marginRight="10dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/white_border"
             android:elevation="10dp">
 
@@ -56,12 +55,12 @@
                 android:hint="@string/search"
                 android:imeOptions="actionSearch"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="10sp" />
 
             <ImageButton
                 android:id="@+id/filter"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:minHeight="48dp"
                 android:minWidth="48dp"
                 android:layout_alignParentEnd="true"
@@ -100,9 +99,10 @@
             android:background="@drawable/white_border_oral"
             map:srcCompat="@drawable/maps_pin_navigation"
             android:contentDescription="Hien thi vi tri hien tai"/>
+
         <LinearLayout
-            android:layout_width="250dp"
-            android:layout_height="90dp"
+            android:layout_width="200dp"
+            android:layout_height="70dp"
             android:background="@drawable/background_startdetect"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
@@ -118,7 +118,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="25dp"
+                android:textSize="20dp"
                 android:text="Start Detect"
                 android:textColor="@color/white"
                 android:textStyle="bold"/>
@@ -129,17 +129,4 @@
 
     </RelativeLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:theme="@style/ThemeOverlay.App.BottomNavigationView"
-        android:background="@drawable/nav_background_curved"
-        app:menu="@menu/nav_menu_bottom"
-        app:itemIconTint="@color/nav_color"
-        app:itemTextColor="@color/nav_color">
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
 </RelativeLayout>

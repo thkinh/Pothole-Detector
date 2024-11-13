@@ -5,12 +5,13 @@
     android:layout_width="411dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/setting"
-    android:layout_centerVertical="true">
+    android:layout_centerHorizontal="true"
+    tools:context=".FragmentSetting">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/setting"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="70dp"
         app:cardBackgroundColor="@color/pacificblue">
         <RelativeLayout
             android:layout_width="match_parent"
@@ -29,8 +30,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/setting"
-        android:layout_above="@id/bottom_navigation">
+        android:layout_below="@id/setting">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -78,25 +78,25 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp">
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="20dp"
-                                android:text="Vietnamese"
-                                android:textSize="25dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="20dp"
+                            android:text="Vietnamese"
+                            android:textSize="25dp" />
 
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginEnd="25dp"
-                                android:background="@drawable/ic_vietnamese" />
-                        </RelativeLayout>
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="25dp"
+                            android:background="@drawable/ic_vietnamese" />
+                    </RelativeLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -164,75 +164,75 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp">
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="20dp"
-                                android:text="Detection Sensitivity"
-                                android:textSize="25dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="20dp"
+                            android:text="Detection Sensitivity"
+                            android:textSize="25dp" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:text="HIGH>"
-                                android:textSize="20dp"
-                                android:gravity="center"
-                                android:layout_marginEnd="30dp"/>
-                        </RelativeLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:text="HIGH>"
+                            android:textSize="20dp"
+                            android:gravity="center"
+                            android:layout_marginEnd="30dp"/>
+                    </RelativeLayout>
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="20dp"
-                                android:text="Weekly report"
-                                android:textSize="25dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="20dp"
+                            android:text="Weekly report"
+                            android:textSize="25dp" />
 
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:thumb="@drawable/thumb_white"
-                                app:track="@drawable/track_setting"
-                                app:showText="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginEnd="30dp"
-                                android:gravity="center"/>
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:thumb="@drawable/thumb_white"
+                            app:track="@drawable/track_setting"
+                            app:showText="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="30dp"
+                            android:gravity="center"/>
 
-                        </RelativeLayout>
+                    </RelativeLayout>
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="20dp"
-                                android:text="Alert preferences"
-                                android:textSize="25dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="20dp"
+                            android:text="Alert preferences"
+                            android:textSize="25dp" />
 
 
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:thumb="@drawable/thumb_white"
-                                app:track="@drawable/track_setting"
-                                app:showText="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginEnd="30dp"
-                                android:gravity="center"/>
-                        </RelativeLayout>
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:thumb="@drawable/thumb_white"
+                            app:track="@drawable/track_setting"
+                            app:showText="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="30dp"
+                            android:gravity="center"/>
+                    </RelativeLayout>
 
 
                 </LinearLayout>
@@ -280,30 +280,30 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp">
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="20dp"
-                                android:text="Rank changing"
-                                android:textSize="25dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="20dp"
+                            android:text="Rank changing"
+                            android:textSize="25dp" />
 
 
 
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:thumb="@drawable/thumb_white"
-                                app:track="@drawable/track_setting"
-                                app:showText="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginEnd="30dp"
-                                android:gravity="center"/>
-                        </RelativeLayout>
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:thumb="@drawable/thumb_white"
+                            app:track="@drawable/track_setting"
+                            app:showText="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="30dp"
+                            android:gravity="center"/>
+                    </RelativeLayout>
 
                 </LinearLayout>
             </RelativeLayout>
@@ -350,73 +350,59 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp">
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="20dp"
-                                android:text="New contributions"
-                                android:textSize="25dp" />
-
-
-
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:thumb="@drawable/thumb_white"
-                                app:track="@drawable/track_setting"
-                                app:showText="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginEnd="30dp"
-                                android:gravity="center"/>
-                        </RelativeLayout>
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="20dp"
-                                android:text="Share your data  "
-                                android:textSize="25dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="20dp"
+                            android:text="New contributions"
+                            android:textSize="25dp" />
 
 
 
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:thumb="@drawable/thumb_white"
-                                app:track="@drawable/track_setting"
-                                app:showText="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginEnd="30dp"
-                                android:gravity="center"/>
-                        </RelativeLayout>
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:thumb="@drawable/thumb_white"
+                            app:track="@drawable/track_setting"
+                            app:showText="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="30dp"
+                            android:gravity="center"/>
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="20dp"
+                            android:text="Share your data  "
+                            android:textSize="25dp" />
+
+
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:thumb="@drawable/thumb_white"
+                            app:track="@drawable/track_setting"
+                            app:showText="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="30dp"
+                            android:gravity="center"/>
+                    </RelativeLayout>
 
                 </LinearLayout>
             </RelativeLayout>
 
         </LinearLayout>
     </ScrollView>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:theme="@style/ThemeOverlay.App.BottomNavigationView"
-        android:background="@drawable/nav_background_curved"
-        app:menu="@menu/nav_menu_bottom"
-        app:itemIconTint="@color/nav_color"
-        app:itemTextColor="@color/nav_color">
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 </RelativeLayout>
