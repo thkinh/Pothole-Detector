@@ -56,4 +56,6 @@
 
     <string name="test"> test</string>
 
+    <string name="setting"> SETTING</string>
+
 </resources>

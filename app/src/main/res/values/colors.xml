@@ -21,4 +21,9 @@
     <color name="orange">#FFA500</color>
     <color name="yellow">#FFFF00</color>
 
+    //Setting
+    <color name="setting_list">#BBDEFB</color>
+    <color name="setting">#C8DAE4</color>
+    <color name="switchsetting">#FF65558F</color>
+
 </resources>
