@@ -12,8 +12,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom_navigation"
-        tools:layout="@layout/at_maps" />
+        android:layout_above="@id/bottom_navigation" />
 
     <RelativeLayout
         android:layout_width="match_parent"
