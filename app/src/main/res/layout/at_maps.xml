@@ -73,7 +73,7 @@
         </RelativeLayout>
 
         <ImageButton
-            android:id="@+id/btn_current"
+            android:id="@+id/btn_go"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentEnd="true"
@@ -88,10 +88,10 @@
             android:contentDescription="tim duong di den"/>
 
         <ImageButton
-            android:id="@+id/btn_go"
+            android:id="@+id/btn_current"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_above="@+id/btn_current"
+            android:layout_above="@id/btn_go"
             android:layout_alignParentEnd="true"
             android:layout_margin="10dp"
             android:layout_marginStart="354dp"
