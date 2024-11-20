@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/img_background"
-    android:id="@+id/id_screenSignup"
-    tools:context=".SignupActivity">
+    android:id="@+id/id_screenRecoverAccount"
+    tools:context=".RecoverAccount">
 
     <Switch
         android:id="@+id/sw_language"
@@ -25,30 +24,30 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/sw_language"
-        android:layout_above="@id/bottom">
+        android:layout_below="@id/sw_language">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <!-- Tiêu đề "Login into account" -->
             <ImageView
-                android:id="@+id/img_signupMessage"
+                android:id="@+id/img_recoveraccount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="92dp"
-                android:src="@drawable/img_signupmessage" />
+                android:layout_marginTop="192dp"
+                android:src="@drawable/img_recoveraccount" />
 
             <!-- CardView chứa Email và Password -->
             <androidx.cardview.widget.CardView
-                android:id="@+id/signup_card"
+                android:id="@+id/cardView_recoverAccount"
                 android:layout_width="411dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/img_signupMessage"
+                android:layout_below="@id/img_recoveraccount"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
                 android:layout_margin="16dp"
-                android:layout_marginTop="200dp"
                 app:cardCornerRadius="16dp">
 
                 <LinearLayout
@@ -57,52 +56,35 @@
                     android:orientation="vertical"
                     android:padding="12dp">
 
-                    <!-- Nhãn Username -->
+                    <!-- Note -->
                     <TextView
+                        android:id="@+id/txt_popupNote"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/txt_username"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center"
+                        android:text="@string/txt_popupNote"
                         android:textColor="@color/color_1"
-                        android:textStyle="bold"
                         android:textSize="16sp"
-                        android:layout_marginBottom="6dp"/>
-
-                    <!-- Ô nhập Username -->
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp"/>
 
                     <!-- Nhãn Email -->
-
-                    <EditText
-                        android:id="@+id/editText_username_scrSignup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:autofillHints=""
-                        android:background="@drawable/rounded_textbox"
-                        android:gravity="center_vertical"
-                        android:hint="@string/editText_username"
-                        android:inputType="textPersonName"
-                        android:minWidth="48dp"
-                        android:minHeight="48dp"
-                        android:padding="10dp"
-                        android:textColorHint="@color/opacity_black" />
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
                         android:text="@string/txt_email"
                         android:textColor="@color/color_1"
-                        android:textStyle="bold"
                         android:textSize="16sp"
-                        android:layout_marginTop="14dp"
-                        android:layout_marginBottom="6dp"/>
+                        android:textStyle="bold" />
 
-                    <!-- Ô nhập Email -->
+                    <!-- Ô nhập email để xác nhận -->
                     <EditText
-                        android:id="@+id/editText_Email_scrSignup"
+                        android:id="@+id/editText_recoverAccount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:autofillHints=""
                         android:gravity="center_vertical"
                         android:background="@drawable/rounded_textbox"
                         android:hint="@string/editText_email"
@@ -110,81 +92,23 @@
                         android:textColorHint="@color/opacity_black"
                         android:padding="10dp"
                         android:minHeight="48dp"
-                        android:minWidth="48dp"/>
+                        android:minWidth="48dp"
+                        android:layout_marginBottom="12dp"/>
 
-                    <!-- Nhãn Password -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/txt_password"
-                        android:textColor="@color/color_1"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:layout_marginTop="14dp"
-                        android:layout_marginBottom="6dp"/>
-
-                    <!-- Ô nhập Password -->
-                    <EditText
-                        android:id="@+id/editText_password_scrSignup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:autofillHints=""
-                        android:gravity="center_vertical"
-                        android:background="@drawable/rounded_textbox"
-                        android:drawableEnd="@drawable/ic_show_password"
-                        android:hint="@string/editText_password"
-                        android:inputType="textPassword"
-                        android:textColorHint="@color/opacity_black"
-                        android:padding="10dp"
-                        android:minHeight="48dp"
-                        android:minWidth="48dp" />
-
-                    <!-- Nhãn Re-Password -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/txt_rePassword"
-                        android:textColor="@color/color_1"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:layout_marginTop="14dp"
-                        android:layout_marginBottom="6dp"/>
-
-                    <!-- Ô nhập Re-Password -->
-                    <EditText
-                        android:id="@+id/editText_rePassword_scrSignup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/rounded_textbox"
-                        android:drawableEnd="@drawable/ic_show_password"
-                        android:hint="@string/editText_password"
-                        android:importantForAutofill="no"
-                        android:inputType="textPassword"
-                        android:textColorHint="@color/opacity_black"
-                        android:padding="10dp"
-                        android:minHeight="48dp"
-                        android:minWidth="48dp" />
-
-                    <!-- Signup Button -->
+                    <!-- Confirm Button -->
                     <Button
-                        android:id="@+id/btn_signup"
+                        android:id="@+id/btn_confirm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center"
                         android:backgroundTint="@color/color_1"
-                        android:text="@string/btn_signup"
+                        android:text="@string/btn_confirm"
                         android:textColor="@color/color_word"
-                        android:textSize="22sp"
                         android:textStyle="bold"
-                        android:layout_marginTop="30dp"
+                        android:textSize="22sp"
                         android:minHeight="48dp"
-                        android:minWidth="48dp"
-                        app:cornerRadius="12dp"/>
-
+                        app:cornerRadius="12dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </RelativeLayout>
@@ -203,12 +127,12 @@
 
         <!-- Dòng hỏi người dùng nếu chưa có tài khoản -->
         <TextView
-            android:id="@+id/txt_askLogin_scrSignup"
+            android:id="@+id/txt_askSignUp_scrRAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:text="@string/txt_askLogin"
+            android:text="@string/txt_askSignUp"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="16sp" />
@@ -246,7 +170,7 @@
 
         <!-- Nút "Continue with Google" -->
         <Button
-            android:id="@+id/btn_continueWGoogle_scrSignup"
+            android:id="@+id/btn_continueWGoogle_scrForgot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -262,6 +186,5 @@
             android:paddingEnd="65dp"
             android:textSize="12sp"
             tools:ignore="RtlHardcoded" />
-
     </LinearLayout>
 </RelativeLayout>
