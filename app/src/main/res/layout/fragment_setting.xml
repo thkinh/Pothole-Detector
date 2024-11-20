@@ -22,6 +22,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
                 android:text="@string/setting"
+                android:textStyle="bold"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="20dp"/>
         </RelativeLayout>
@@ -44,19 +45,21 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_margin="10dp"
-                        android:background="@drawable/ic_language"/>
+                        android:background="@drawable/ic_language" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Language"
-                        android:textSize="32dp"
+                        android:textSize="24dp"
+                        android:textStyle="bold"
                         android:layout_margin="10dp"/>
 
                     <ImageView
@@ -87,7 +90,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
                             android:text="Vietnamese"
-                            android:textSize="25dp" />
+                            android:textSize="20dp" />
 
                         <ImageView
                             android:layout_width="50dp"
@@ -107,7 +110,8 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
                             android:text="English"
-                            android:textSize="25dp" />
+                            android:textStyle="bold"
+                            android:textSize="20dp" />
 
                         <ImageView
                             android:layout_width="50dp"
@@ -130,7 +134,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <ImageView
                         android:layout_width="50dp"
@@ -142,7 +147,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Notification"
-                        android:textSize="32dp"
+                        android:textSize="24dp"
+                        android:textStyle="bold"
                         android:layout_margin="10dp"/>
 
                     <ImageView
@@ -173,7 +179,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
                             android:text="Detection Sensitivity"
-                            android:textSize="25dp" />
+                            android:textSize="20dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -183,6 +189,7 @@
                             android:text="HIGH>"
                             android:textSize="20dp"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:layout_marginEnd="30dp"/>
                     </RelativeLayout>
 
@@ -195,7 +202,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
                             android:text="Weekly report"
-                            android:textSize="25dp" />
+                            android:textSize="20dp" />
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:layout_width="wrap_content"
@@ -219,7 +226,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
                             android:text="Alert preferences"
-                            android:textSize="25dp" />
+                            android:textSize="20dp" />
 
 
                         <androidx.appcompat.widget.SwitchCompat
@@ -246,7 +253,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <ImageView
                         android:layout_width="50dp"
@@ -258,7 +266,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="User"
-                        android:textSize="32dp"
+                        android:textSize="24dp"
+                        android:textStyle="bold"
                         android:layout_margin="10dp"/>
 
                     <ImageView
@@ -289,7 +298,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
                             android:text="Rank changing"
-                            android:textSize="25dp" />
+                            android:textSize="20dp" />
 
 
 
@@ -316,7 +325,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <ImageView
                         android:layout_width="50dp"
@@ -328,7 +338,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Data sharing"
-                        android:textSize="32dp"
+                        android:textSize="24dp"
+                        android:textStyle="bold"
                         android:layout_margin="10dp"/>
 
                     <ImageView
@@ -359,7 +370,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
                             android:text="New contributions"
-                            android:textSize="25dp" />
+                            android:textSize="20dp" />
 
 
 
@@ -383,7 +394,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
                             android:text="Share your data  "
-                            android:textSize="25dp" />
+                            android:textSize="20dp" />
 
 
 
