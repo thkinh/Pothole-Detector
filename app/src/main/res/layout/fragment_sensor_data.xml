@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#4FABD4">
+    <!--sensor data-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/textview_meanZ"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="mZ: 1.333"
+            android:textSize="16sp"
+            android:padding="20dp"
+            android:textColor="#AF1740" />
+        <TextView
+            android:id="@+id/detect_tv_sdZ"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="sdZ: 0.378"
+            android:textSize="16sp"
+            android:padding="20dp"
+            android:textColor="#31EF1E"/>
+        <TextView
+            android:id="@+id/detect_tv_sensitive"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="sensitivity: HIGH"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:padding="20dp"
+            android:textColor="#740938"/>
+    </LinearLayout>
+
+    <!--Time Data-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <TextClock
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="15sp"
+            android:padding="20dp"
+            android:textColor="#3C552D"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="05/11/2024"
+            android:padding="20dp"
+            android:textColor="#3C552D"/>
+
+    </LinearLayout>
+
+</LinearLayout>

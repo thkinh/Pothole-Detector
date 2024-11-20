@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="15dp"
+    android:background="#4FABD4"
+    android:orientation="horizontal"
+    android:layout_alignParentBottom="true"
+    >
+        <ImageButton
+            android:id="@+id/exitDetect"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_leftarrow"
+            android:background="@null" />
+
+        <ImageButton
+            android:id="@+id/startDectect"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="center"
+            android:src="@drawable/ic_play"
+            android:background="@null" />
+
+        <ImageButton
+            android:id="@+id/settingDetect"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:scaleType="centerInside"
+            android:src="@drawable/setting1"
+            android:background="@null" />
+
+</LinearLayout>
+

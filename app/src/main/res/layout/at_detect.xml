@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- Fragment Container -->
+    <FrameLayout
+        android:id="@+id/topFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/ControlDetect"
+        android:layout_below="@id/topFragmentContainer">
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+        <ImageButton
+            android:id="@+id/current_location"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="10dp"
+            android:layout_marginStart="354dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="7dp"
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_go"
+            android:contentDescription="tim duong di den"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ControlDetect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="#4FABD4"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+    <ImageButton
+        android:id="@+id/exitDetect"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_leftarrow"
+        android:background="@null" />
+
+    <ImageButton
+        android:id="@+id/startDectect"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_play"
+        android:background="@null" />
+
+    <ImageButton
+        android:id="@+id/settingDetect"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:scaleType="centerInside"
+        android:src="@drawable/setting1"
+        android:background="@null" />
+
+</LinearLayout>
+
+</RelativeLayout>
+
+
