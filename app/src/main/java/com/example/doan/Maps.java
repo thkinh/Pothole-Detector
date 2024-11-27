@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Criteria;
@@ -36,6 +37,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +65,7 @@ public class Maps extends AppCompatActivity
         OnMapReadyCallback,
         OnRequestPermissionsResultCallback {
     ImageButton btn_current;
+
     private EditText et_search;
     LogicFirebase firebase;
     Location currentLocation;
@@ -94,7 +97,12 @@ public class Maps extends AppCompatActivity
         if(savedInstanceState != null){
             mapFragmentBundle = savedInstanceState.getBundle(MAPFRAGMENT_BUNDLE_KEY);
         }
+
         btn_current = findViewById(R.id.btn_current);
+        btn_current.setOnClickListener(view -> {
+            Intent intent = new Intent(Maps.this, Detect.class);
+            startActivity(intent);
+        });
         et_search = (EditText)findViewById(R.id.input_search);
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -183,13 +191,15 @@ public class Maps extends AppCompatActivity
         // and move the map's camera to the same location.
 
         enableMyLocation();
-        btn_current.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getLocation();
-                CurrentPlace();
-            }
-        });
+//        btn_current.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //getLocation();
+//                //CurrentPlace();
+//                Intent intent = new Intent(Maps.this, Detect.class);
+//                startActivity(intent);
+//            }
+//        });
         firebase.LoadPotholesFromFirebase(googleMap);
         init();
     }

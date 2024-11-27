@@ -3,6 +3,7 @@ package com.example.doan;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,7 +48,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "FragmentMap";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final String MAPFRAGMENT_BUNDLE_KEY = "Map Fragment bundle key";
-
+    private ImageView btn_play;
     private ImageButton btn_current;
     private EditText et_search;
     private LogicFirebase firebase;
@@ -74,6 +76,11 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         btn_current = view.findViewById(R.id.btn_current);
+        btn_play = view.findViewById(R.id.play);
+        btn_play.setOnClickListener(view1 -> {
+            Intent intent = new Intent(FragmentMap.this.getActivity(), Detect.class);
+            startActivity(intent);
+        });
         et_search = view.findViewById(R.id.input_search);
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
@@ -148,6 +155,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
             public void onClick(View view) {
                 getLocation();
                 CurrentPlace();
+
             }
         });
         if (firebase != null) {
