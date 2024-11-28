@@ -83,9 +83,18 @@ dependencies {
     implementation 'com.github.dangiashish:Google-Direction-Api:1.6'
 
 
+    // Map SDK for Android
+    implementation 'com.google.android.libraries.navigation:navigation:6.0.0'
+
     androidTestImplementation platform(libs.compose.bom)
     androidTestImplementation libs.ui.test.junit4
     debugImplementation libs.ui.tooling
     debugImplementation libs.ui.test.manifest
 }
 apply plugin: 'com.google.gms.google-services'
+// SDK already bundles the Google Maps SDK.
+configurations {
+    implementation {
+        exclude group: 'com.google.android.gms', module: 'play-services-maps'
+    }
+}

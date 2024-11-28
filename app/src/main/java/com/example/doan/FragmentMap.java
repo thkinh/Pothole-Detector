@@ -71,8 +71,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, RouteLi
     private boolean permissionDenied = false;
     private SupportMapFragment mapFragment;
     private GoogleMap googleMap;
-    private LocationRequest locationRequest;
-    private LocationCallback locationCallback;
 
     FusedLocationProviderClient fusedLocationProviderClient;
 
@@ -94,6 +92,10 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, RouteLi
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         btn_current = view.findViewById(R.id.btn_current);
+        btn_current.setOnClickListener(view1 -> {
+            Intent intent = new Intent(FragmentMap.this.getActivity(), ActivityMapNavigation.class);
+            startActivity(intent);
+        });
         btn_play = view.findViewById(R.id.play);
         btn_play.setOnClickListener(view1 -> {
             Intent intent = new Intent(FragmentMap.this.getActivity(), Detect.class);
