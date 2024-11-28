@@ -35,9 +35,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,7 +61,8 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
     private GoogleMap googleMap;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
-
+    FusedLocationProviderClient fusedLocationProviderClient;
+    double userLat, userLong;
     public FragmentMap() {
         // Required empty public constructor
     }
@@ -150,14 +153,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap map) {
         googleMap = map;
         enableMyLocation();
-        btn_current.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getLocation();
-                CurrentPlace();
 
-            }
-        });
         if (firebase != null) {
             firebase.LoadPotholesFromFirebase(googleMap);
         }
@@ -179,7 +175,26 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
             return;
         }
         googleMap.setMyLocationEnabled(true);
-        CurrentPlace();
+        fetchMyLocation();
+    }
+    private void fetchMyLocation() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                userLat = location.getLatitude();
+                userLong= location.getLongitude();
+                LatLng latLng = new LatLng(userLat,userLong);
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(latLng)
+                        .zoom(12)
+                        .build();
+                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
+        });
     }
 
     private void setupLocationUpdates() {

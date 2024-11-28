@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">DoAn</string>
-    <string name="key_api_google_map">AIzaSyAU7gVtnVKyrasCLaFjsQ6xUlqsfSaGCQQ</string>
+    <string name="key_api_google_map">AIzaSyCYrgpV-zWA1qBUeBndf8ePT1KZ_JcKPLA</string>
 
     <string name="welcome">
         <b>Welcome!\nYou are not currently logged in.\nPlease log in to get started.</b>
