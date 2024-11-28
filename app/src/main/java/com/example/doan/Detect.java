@@ -44,8 +44,12 @@ public class Detect extends AppCompatActivity
         });
 
         btn_settingDetect.setOnClickListener(view -> {
-            Intent intent = new Intent(Detect.this, Setting.class );
-            startActivity(intent);
+            FragmentSetting fragment = new FragmentSetting();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.topFragmentContainer, fragment);
+            transaction.addToBackStack(null); // Optional: add to back stack to allow back navigation
+            transaction.commit();
         });
     }
 

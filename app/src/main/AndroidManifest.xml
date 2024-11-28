@@ -19,7 +19,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DoAn"
         tools:targetApi="31">
-
+        <activity
+            android:name=".OPTActive2"
+            android:exported="false" />
+        <activity
+            android:name=".Notify"
+            android:exported="false" />
+        <activity
+            android:name=".StatiticsActivity"
+            android:exported="true" />
+        <activity
+            android:name=".AllUsersActivity"
+            android:exported="true" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -38,21 +49,22 @@
         <activity
             android:name=".SplashScreen"
             android:exported="true">
-        </activity>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:configChanges="orientation|screenSize"/>
+            android:configChanges="orientation|screenSize"
+            android:exported="true" />
         <activity
             android:name=".MainDashboard"
-            android:exported="true">
-        </activity>
-
+            android:exported="true" />
         <activity
             android:name=".Maps"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".LoginActivity"
             android:exported="true" />
@@ -62,15 +74,14 @@
         <activity
             android:name=".Detect"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity
             android:name=".ForgotPasswordActivity"
+            android:exported="true" />
+        <activity
+            android:name=".RecoverAccount"
             android:exported="true" />
     </application>
 

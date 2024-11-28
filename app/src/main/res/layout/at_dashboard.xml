@@ -254,6 +254,7 @@
                 </TextView>
 
                 <TextView
+                    android:id="@+id/viewdetail_user"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="view detail >"
@@ -303,6 +304,7 @@
                 </TextView>
 
                 <TextView
+                    android:id="@+id/viewdetail_route"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="view detail >"
@@ -336,6 +338,7 @@
             app:cardBackgroundColor="@color/lightsky">
 
             <RelativeLayout
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -371,6 +374,7 @@
             app:cardBackgroundColor="@color/lightsky">
 
             <RelativeLayout
+                android:id="@+id/statpie"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 

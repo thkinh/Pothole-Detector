@@ -1,10 +1,14 @@
 package com.example.doan;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
@@ -35,10 +39,14 @@ public class FragmentDashboard extends Fragment {
         // Required empty public constructor
     }
 
+    Activity context;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
+
+        context = getActivity();
 
         // Set up the graph
         GraphView graph = view.findViewById(R.id.graph);
@@ -84,6 +92,55 @@ public class FragmentDashboard extends Fragment {
         listViewRoute.setAdapter(listAdapterRoute);
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (context != null) {
+            TextView newDetailUserTxt = context.findViewById(R.id.viewdetail_user);
+            if (newDetailUserTxt != null) {
+                newDetailUserTxt.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, AllUsersActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            }
+
+            TextView newDetailRouteTxt = context.findViewById(R.id.viewdetail_route);
+            if (newDetailRouteTxt != null) {
+                newDetailRouteTxt.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, StatiticsActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            }
+
+            TextView newRecentlyTxt = context.findViewById(R.id.txt_recently);
+            if (newRecentlyTxt != null) {
+                newRecentlyTxt.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, StatiticsActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            }
+            TextView newDangerLevelTxt = context.findViewById(R.id.txt_dangerlevel);
+            if (newDangerLevelTxt != null) {
+                newDangerLevelTxt.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, StatiticsActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            }
+        }
     }
 
     private DataPoint[] getDataPoint() {

@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="mZ: 1.333"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:padding="20dp"
             android:textColor="#AF1740" />
         <TextView
@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="sdZ: 0.378"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:padding="20dp"
             android:textColor="#31EF1E"/>
         <TextView
@@ -32,7 +32,7 @@
             android:layout_height="match_parent"
             android:text="sensitivity: HIGH"
             android:textStyle="bold"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:padding="20dp"
             android:textColor="#740938"/>
     </LinearLayout>
