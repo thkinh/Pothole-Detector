@@ -8,12 +8,19 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.codebyashish.googledirectionapi.AbstractRouting;
+import com.codebyashish.googledirectionapi.ErrorHandling;
+import com.codebyashish.googledirectionapi.RouteDrawing;
+import com.codebyashish.googledirectionapi.RouteInfoModel;
+import com.codebyashish.googledirectionapi.RouteListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,11 +35,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-public class FragmentMapDirection extends AppCompatActivity implements OnMapReadyCallback {
+import java.util.ArrayList;
+
+public class FragmentMapDirection extends AppCompatActivity
+        implements
+        OnMapReadyCallback, RouteListener {
     FusedLocationProviderClient fusedLocationProviderClient;
     GoogleMap map;
     double userLat, userLong;
-    private LatLng destination;
+    private LatLng destination, userLocation;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +73,25 @@ public class FragmentMapDirection extends AppCompatActivity implements OnMapRead
                 markerOptions.position(latLng);
                 markerOptions.icon(setIcon(FragmentMapDirection.this,R.drawable.ic_map_pin));
                 map.addMarker(markerOptions);
+                getRoute(userLocation,destination);
             }
         });
         fetchMyLocation();
+    }
+
+    private void getRoute(LatLng start, LatLng end) {
+        if (start == null || end == null) {
+            Toast.makeText(this, "Unable to get location", Toast.LENGTH_LONG).show();
+            Log.e("TAG", " latlngs are null");
+        } else {
+            RouteDrawing routeDrawing = new RouteDrawing.Builder()
+                    .context(FragmentMapDirection.this)  // pass your activity or fragment's context
+                    .travelMode(AbstractRouting.TravelMode.DRIVING)
+                    .withListener(this).alternativeRoutes(true)
+                    .waypoints(start, end)
+                    .build();
+            routeDrawing.execute();
+        }
     }
 
     private void fetchMyLocation() {
@@ -77,6 +104,7 @@ public class FragmentMapDirection extends AppCompatActivity implements OnMapRead
             public void onSuccess(Location location) {
                 userLat = location.getLatitude();
                 userLong= location.getLongitude();
+                userLocation = new LatLng(userLat,userLong);
                 LatLng latLng = new LatLng(userLat,userLong);
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(latLng)
@@ -95,5 +123,29 @@ public class FragmentMapDirection extends AppCompatActivity implements OnMapRead
         Canvas canvas = new Canvas(bitmap);
         drawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+    @Override
+    public void onRouteFailure(ErrorHandling e) {
+        Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void onRouteStart() {
+        Toast.makeText(this, "Start", Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void onRouteSuccess(ArrayList<RouteInfoModel> list, int indexing) {
+        Toast.makeText(this, "Success", Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void onRouteCancelled() {
+        Toast.makeText(this, "Cancel", Toast.LENGTH_LONG).show();
+
     }
 }

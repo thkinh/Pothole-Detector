@@ -79,6 +79,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:25.1.1'
     implementation platform('com.google.firebase:firebase-bom:33.5.0')
     implementation 'com.google.firebase:firebase-analytics'
+    // Direction SDK for Android
+    implementation 'com.github.dangiashish:Google-Direction-Api:1.6'
+
+
     androidTestImplementation platform(libs.compose.bom)
     androidTestImplementation libs.ui.test.junit4
     debugImplementation libs.ui.tooling
