@@ -70,6 +70,8 @@ dependencies {
     implementation 'com.sun.mail:jakarta.mail:2.0.1'
 
     // Maps SDK for Android
+
+    implementation 'com.github.dangiashish:Google-Direction-Api:1.6'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'com.jjoe64:graphview:4.2.2'
     implementation("com.google.android.gms:play-services-maps:19.0.0")

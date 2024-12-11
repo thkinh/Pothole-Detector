@@ -1,0 +1,256 @@
+[33mcommit 4a08daf23d15106da78c6bc0f8fe5243cb087a2d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mgooglemap[m[33m, [m[1;31morigin/googlemap[m[33m)[m
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Wed Dec 11 10:40:27 2024 +0700
+
+    update
+
+[33mcommit f1b72fd274482a69a64f22f73f2e4b583c18950a[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Author: thkinh <139554989+thkinh@users.noreply.github.com>
+Date:   Fri Nov 29 01:15:03 2024 +0700
+
+    Removed sensitive files
+
+[33mcommit c7627f51a13430c9a1161d9d3224fe6b3af759a1[m
+Merge: c5c6898 f2877fe
+Author: thkinh <139554989+thkinh@users.noreply.github.com>
+Date:   Fri Nov 29 00:59:29 2024 +0700
+
+    Merge branch 'main' of https://github.com/thkinh/Pothole-Detector
+
+[33mcommit c5c68981b80f3dcd374604e75d2ffe0a25f96460[m
+Author: thkinh <139554989+thkinh@users.noreply.github.com>
+Date:   Fri Nov 29 00:59:09 2024 +0700
+
+    removed sensitives files
+
+[33mcommit f2877fe0e732ea48be85b1984e586896270eb9c9[m
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Wed Nov 27 11:23:48 2024 +0700
+
+    commit moi nhat ke tu Buoi bao cao giao dien man hinh Lop thuc hanh Thay Tan.
+
+[33mcommit b526e1c6fbf76ba06b3a150f8f43ff37a2270a4f[m
+Merge: 74dca5a aa3e666
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Wed Nov 20 13:30:16 2024 +0700
+
+    solve conflict
+
+[33mcommit aa3e6661a5d8dd5fedc9be5fbfc53b9dd1ff3dbd[m
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Wed Nov 20 13:26:34 2024 +0700
+
+    commit before merge
+
+[33mcommit 74dca5af2adb39dae2bf5753adc8649717f4ba6f[m
+Author: thkinh <139554989+thkinh@users.noreply.github.com>
+Date:   Wed Nov 20 13:23:06 2024 +0700
+
+    add screen detect
+
+[33mcommit d1ab3fab47dcda765b90c629a2c706f83847cda6[m
+Merge: 5fc6a74 1a314b7
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Wed Nov 20 12:47:34 2024 +0700
+
+    Merge remote-tracking branch 'origin/UI-Authentication' into xml-UI
+
+[33mcommit 1a314b7bad80b3f075007c70ef37b8a14119af87[m[33m ([m[1;31morigin/UI-Authentication[m[33m)[m
+Author: Tafi-Solitude-uit <22521274@gm.uit.edu.vn>
+Date:   Wed Nov 20 12:42:17 2024 +0700
+
+    add screen recover account
+
+[33mcommit 5fc6a742ed32f3b53a4eb60dd694c24ea6bdda45[m[33m ([m[1;31morigin/xml-UI[m[33m)[m
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Wed Nov 20 12:34:16 2024 +0700
+
+    Them man hinh userinfo, statitic va co the chuyen tu fragment sang activity moi.
+
+[33mcommit d187abee1e5cadef9fc558864bd3ddcb7812598c[m
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Wed Nov 13 11:09:35 2024 +0700
+
+    Them tinh nang chuyen doi giua cac fragment, sua lai mot ti giao dien map va setting.
+
+[33mcommit a262511c97d6abfe96579d931dddf00e5b68af22[m
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Wed Nov 13 08:40:10 2024 +0700
+
+    merge thanh cong setting-UI vao xml-UI.
+
+[33mcommit b7468fcd56ec0b4e84e20dbb3638cb243ac5a8b6[m
+Merge: 1d2224e c9289d0
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Wed Nov 13 08:37:30 2024 +0700
+
+    Giai quyet conflict cua file manifest, loginscreen.xml va color values.
+
+[33mcommit c9289d0d9ec656f49b2ca8a197eb6fb5dbe5eca5[m[33m ([m[1;31morigin/setting-UI[m[33m)[m
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Wed Nov 13 08:24:40 2024 +0700
+
+    Sua loi size too small, unknown fragment cho view at_maps.
+
+[33mcommit 4432d917337ce0979c7c2ca21b6161145491475a[m
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Wed Nov 13 08:02:51 2024 +0700
+
+    update
+
+[33mcommit 693409b83ef5fffb60b27a23eb714456519677dd[m
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Tue Nov 12 21:53:13 2024 +0700
+
+    add map screen
+
+[33mcommit 1d2224e0746afcd0caaba97f9567749fcbc15e9c[m
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Tue Nov 12 21:48:28 2024 +0700
+
+    Hoan thanh dashboard.
+
+[33mcommit a234922d8f371aa88fcd2a01a3d335344c959b99[m
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Tue Nov 12 20:31:27 2024 +0700
+
+    add setting screen
+
+[33mcommit dfb03c251ce3c1d5c8057028be8ec5c4f4230f5e[m
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Tue Nov 12 19:43:36 2024 +0700
+
+    add setting screen
+
+[33mcommit 1484730008b363a2134f22d84502f47f3db443bc[m
+Merge: c3aff47 371c18e
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Tue Nov 12 16:51:57 2024 +0700
+
+    Merge branch 'xml-UI' of https://github.com/thkinh/Pothole-Detector into xml-UI
+
+[33mcommit 371c18e42567d7714af22ba65a44e496c4cb9aa2[m
+Merge: cdf7ad2 efb5d39
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Tue Nov 12 16:41:12 2024 +0700
+
+    The scroll view cho dashboard.
+
+[33mcommit cdf7ad247e9b2d7776da9f488840e6e8a313a931[m
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Tue Nov 12 16:39:25 2024 +0700
+
+    The scroll view cho dashboard.
+
+[33mcommit c3aff47742a8011a4a2c6b0d2362b359b4786e7a[m
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Tue Nov 12 16:39:04 2024 +0700
+
+    update
+
+[33mcommit c06f9d2897afec4691c90f8499d4b663ae93641e[m
+Merge: 148ebef 7a8bdd2
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Tue Nov 12 16:30:50 2024 +0700
+
+    merge branch UI-Authentication
+
+[33mcommit 7a8bdd25d324319f33930f5984180a1f56d158c6[m
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Tue Nov 12 16:26:30 2024 +0700
+
+    update
+
+[33mcommit 148ebef299f9f34b0092fa6577e575369f68b382[m
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Tue Nov 12 16:05:27 2024 +0700
+
+    Merge brach xml-UI
+
+[33mcommit dfe105945f7e92600e1f601c143facf30aaedaa9[m
+Merge: 671b344 efb5d39
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Tue Nov 12 15:49:33 2024 +0700
+
+    ok
+
+[33mcommit efb5d395a21146c1ba0baa135d3d5d671c45fab6[m
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Tue Nov 12 15:37:40 2024 +0700
+
+    Updat
+
+[33mcommit 671b344be373985c227ecf8cfc50cd1cb304ed7a[m
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Tue Nov 12 15:01:58 2024 +0700
+
+    Update
+
+[33mcommit 37ac4294455f3b33b118364eed8e247b26b09425[m
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Tue Nov 12 14:44:46 2024 +0700
+
+    Sua linear layout cho dashboard, bo sung bottom navigation bar.
+
+[33mcommit 97fbf5a4fe6e38c30fa5f3f4559b8abc475d7f55[m
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Tue Nov 12 14:21:50 2024 +0700
+
+    Add button zoom current place
+
+[33mcommit 8fbe41ac25e4408641cd94625348b4b6f4f34415[m
+Author: Tafi-Solitude-uit <22521274@gm.uit.edu.vn>
+Date:   Tue Nov 12 14:21:22 2024 +0700
+
+    test merge
+
+[33mcommit 00117348ae9f3ec28df774d804e1d2a0c9a57cdd[m
+Author: Tafi-Solitude-uit <22521274@gm.uit.edu.vn>
+Date:   Tue Nov 12 14:12:05 2024 +0700
+
+    Remove Sign in, Sign up old version
+
+[33mcommit 800217baaf74d1c3ff41c0039fda1c4bade206a9[m
+Author: Tafi-Solitude-uit <22521274@gm.uit.edu.vn>
+Date:   Tue Nov 12 13:52:19 2024 +0700
+
+    Add icon_flag_eng
+
+[33mcommit 7ee03b27b4895eac5dffc2e6b77c8625aaa080ad[m
+Author: Tafi-Solitude-uit <22521274@gm.uit.edu.vn>
+Date:   Tue Nov 12 13:49:57 2024 +0700
+
+    Add Authentication UI and Class Authentication Activity Class
+
+[33mcommit 206c503cdac2127e5457ceb876f7a6df4c6de2b5[m
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Mon Nov 11 11:12:12 2024 +0700
+
+    Hoan thanh khung giao dien cua dashboard.
+
+[33mcommit 7e2cfe544db06e04cea2471b85b84cbb4fc70e49[m
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Mon Nov 11 00:57:27 2024 +0700
+
+    Bo sung mot phan giao dien dashboard lan 1.
+
+[33mcommit 0ed541ffa975acd06e5a352b7212b682e306c68f[m
+Author: TaiKhau <lekhauhuutai48@gmail.com>
+Date:   Sun Nov 10 09:31:15 2024 +0700
+
+    Bo sung giao dien splash screen.
+
+[33mcommit f5dc895d15f8f18f3b5148e969d51cdd014c6be7[m
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Tue Nov 5 22:49:01 2024 +0700
+
+    load pothole from firebase
+
+[33mcommit e290c6e1fc955c501a9c8d4f4fbabd345a7057c5[m
+Merge: ddb25e4 837df19
+Author: Nguyễn Hữu Tài <huutai.network@gmail.com>
+Date:   Tue Nov 5 22:38:37 2024 +0700
+
+    Merge branch 'main' of https://github.com/thkinh/Pothole-Detector
+
+[33mcommit ddb25e42f6841819
