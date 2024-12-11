@@ -4,7 +4,8 @@
     android:id="@+id/id_screenRecoverAccount"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/img_background">
+    android:background="@drawable/img_background"
+    tools:context=".OPTActive2">
 
     <Switch
         android:id="@+id/sw_language"
@@ -80,7 +81,7 @@
 
                     <!-- Ô nhập email để xác nhận -->
                     <EditText
-                        android:id="@+id/editText_recoverAccount"
+                        android:id="@+id/editText_otp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -88,7 +89,7 @@
                         android:background="@drawable/rounded_textbox"
                         android:gravity="center_vertical"
                         android:hint="@string/editText_opt"
-                        android:inputType="textNoSuggestions"
+                        android:inputType="number"
                         android:minWidth="48dp"
                         android:minHeight="48dp"
                         android:padding="10dp"

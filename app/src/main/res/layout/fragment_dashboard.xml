@@ -30,13 +30,13 @@
             android:layout_marginEnd="7dp">
         </ImageView>
 
-        <ImageView
+        <ImageButton
             android:id="@+id/ic_power"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_power"
             android:layout_alignParentEnd="true">
-        </ImageView>
+        </ImageButton>
     </RelativeLayout>
 
     <ScrollView
@@ -75,6 +75,7 @@
                             android:layout_marginTop="2dp"
                             app:cardCornerRadius="100dp">
                             <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/avt"
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
                                 android:scaleType="centerCrop"
@@ -83,7 +84,7 @@
                         </com.google.android.material.card.MaterialCardView>
 
                         <TextView
-                            android:id="@+id/txt_routename"
+                            android:id="@+id/txt_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_toEndOf="@id/avatar"

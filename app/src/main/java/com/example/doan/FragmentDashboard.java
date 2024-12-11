@@ -1,27 +1,44 @@
 package com.example.doan;
 
+import androidx.credentials.CredentialManager;
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+import com.bumptech.glide.Glide;
 
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
 
 public class FragmentDashboard extends Fragment {
 
@@ -34,6 +51,13 @@ public class FragmentDashboard extends Fragment {
     private ListDataRoute listDataRoute;
 
     private PieChart pieChart;
+
+    // For Firebase Auth and Google Sign In
+    private ImageView ivImage;
+    private TextView tvName;
+    private ImageButton btLogout;
+    private FirebaseAuth mAuth;
+    private GoogleSignInClient googleSignInClient;
 
     public FragmentDashboard() {
         // Required empty public constructor
@@ -91,12 +115,62 @@ public class FragmentDashboard extends Fragment {
         ListView listViewRoute = view.findViewById(R.id.listroute);
         listViewRoute.setAdapter(listAdapterRoute);
 
+        // Assign variables
+        ivImage = view.findViewById(R.id.avt);
+        tvName = view.findViewById(R.id.txt_name);
+        btLogout = view.findViewById(R.id.ic_power);
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+        // Initialize Firebase user
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        // Check condition
+        if (mUser != null) {
+            // When Firebase user is not null, set image and name
+            Glide.with(this).load(mUser.getPhotoUrl()).into(ivImage);
+            tvName.setText(mUser.getDisplayName());
+        }
+
+        // Khởi tạo GoogleSignInClient
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id)) // Thay bằng ID client của bạn trong google-services.json
+                .requestEmail()
+                .build();
+        googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
+
+        // Gắn sự kiện cho nút Logout
+        btLogout = view.findViewById(R.id.ic_power);
+        btLogout.setOnClickListener(v -> logout());
+
         return view;
+    }
+
+    private void logout() {
+        // Đăng xuất Firebase
+        mAuth.signOut();
+
+        // Đăng xuất tài khoản Google
+        googleSignInClient.signOut().addOnCompleteListener(requireActivity(), task -> {
+            if (task.isSuccessful()) {
+                // Hiển thị thông báo và kết thúc Activity
+                Toast.makeText(requireContext(), "Logout successful", Toast.LENGTH_SHORT).show();
+                requireActivity().finish(); // Kết thúc Activity
+            } else {
+                // Xử lý khi có lỗi
+                Toast.makeText(requireContext(), "Logout failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        Intent intent = new Intent(requireActivity(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        requireActivity().finish();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
         if (context != null) {
             TextView newDetailUserTxt = context.findViewById(R.id.viewdetail_user);
             if (newDetailUserTxt != null) {
