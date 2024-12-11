@@ -10,12 +10,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.doan.api.auth.AuthManager;
+
 public class RecoverAccount extends androidx.appcompat.app.AppCompatActivity {
     private EditText editTextEmail;
     private Button cofirmButton;
 
     private TextView askSignup;
-
+    private AuthManager authManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,24 +31,34 @@ public class RecoverAccount extends androidx.appcompat.app.AppCompatActivity {
         // Thiết lập sự kiện nhấn cho nút Signup
         cofirmButton.setOnClickListener(v -> handleSendEmail());
 
-        // Điều hướng trở lại màn hình đăng nhập khi nhấn vào "Already have an account?"
-        //askSignup.setOnClickListener(v -> navigateToSignupScreen());
+        authManager = AuthManager.getInstance();
     }
 
     // Hàm xử lý đăng ký
     private void handleSendEmail() {
         String email = editTextEmail.getText().toString().trim();
-
         // Kiểm tra thông tin hợp lệ
         if (TextUtils.isEmpty(email) || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             editTextEmail.setError("Enter a valid email");
             return;
         }
-        // Hiển thị thông báo đăng ký thành công
-        Toast.makeText(RecoverAccount.this, "Send email successful", Toast.LENGTH_SHORT).show();
 
-        // Điều hướng về màn hình đăng nhập
-        navigateToOPTScreen();
+        authManager.getVerify(email, new AuthManager.GetVerifyCallback() {
+            @Override
+            public void onSuccess(Integer id) {
+                runOnUiThread(() ->{
+                    Toast.makeText(RecoverAccount.this, "Your id is " + id, Toast.LENGTH_SHORT).show();
+                    navigateToOPTScreen();
+                });
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                runOnUiThread(() -> Toast.makeText(RecoverAccount.this,
+                        errorMessage,
+                        Toast.LENGTH_SHORT).show());
+            }
+        });
     }
 
     // Hàm điều hướng về màn hình OPT
