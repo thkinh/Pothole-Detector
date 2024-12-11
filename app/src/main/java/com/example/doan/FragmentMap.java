@@ -22,6 +22,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,11 +92,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, RouteLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        btn_current = view.findViewById(R.id.btn_current);
-        btn_current.setOnClickListener(view1 -> {
-//            Intent intent = new Intent(FragmentMap.this.getActivity(), ActivityMapNavigation.class);
-//            startActivity(intent);
-        });
+
         btn_play = view.findViewById(R.id.play);
         btn_play.setOnClickListener(view1 -> {
             Intent intent = new Intent(FragmentMap.this.getActivity(), Detect.class);
@@ -172,9 +169,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, RouteLi
     public void onMapReady(GoogleMap map) {
         googleMap = map;
         enableMyLocation();
-        if (firebase != null) {
-            firebase.LoadPotholesFromFirebase(googleMap);
-        }
         map.getUiSettings().setZoomControlsEnabled(true);
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -252,6 +246,15 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, RouteLi
             return;
         }
         googleMap.setMyLocationEnabled(true);
+        View locationButton = ((View) mapFragment.getView().findViewById(Integer.parseInt("1")).getParent())
+                .findViewById(Integer.parseInt("2"));
+        if (locationButton != null) {
+            RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);  // Disable top alignment rule
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);  // Align to bottom
+            rlp.setMargins(0, 180, 180, 280);  // Set margin for position adjustment
+            locationButton.setLayoutParams(rlp);
+        }
         CurrentPlace();
     }
 
