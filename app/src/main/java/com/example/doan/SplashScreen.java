@@ -25,13 +25,10 @@ public class SplashScreen extends AppCompatActivity {
         getStartedButton = findViewById(R.id.btn_getStarted);
 
         // Thiết lập sự kiện nhấn cho nút Get Started
-        getStartedButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Khi nhấn Get Started, chuyển sang LoginActivity
-                Intent intent = new Intent(SplashScreen.this, LoginActivity.class);
-                startActivity(intent);
-            }
+        getStartedButton.setOnClickListener(view -> {
+            // Khi nhấn Get Started, chuyển sang LoginActivity
+            Intent intent = new Intent(SplashScreen.this, LoginActivity.class);
+            startActivity(intent);
         });
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {

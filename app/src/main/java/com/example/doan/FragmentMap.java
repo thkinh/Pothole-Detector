@@ -51,7 +51,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
     private ImageView btn_play;
     private ImageButton btn_current;
     private EditText et_search;
-    private LogicFirebase firebase;
     private Location currentLocation;
     private FusedLocationProviderClient fusedClient;
     private boolean permissionDenied = false;
@@ -102,8 +101,9 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
                 if (location != null) {
                     currentLocation = location;
                     if (googleMap != null) {
-                        firebase = new LogicFirebase(requireContext());
-                        firebase.LoadPotholesFromFirebase(googleMap);
+
+                        //TODO: THEM CAI IN POTHOLES LEN MAN HINH VI TAO VUA XOA
+
                     }
                 }
             }
@@ -158,9 +158,10 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
 
             }
         });
-        if (firebase != null) {
-            firebase.LoadPotholesFromFirebase(googleMap);
-        }
+//        if (firebase != null)
+//        {
+//            //TODO: VUA XOA CAI IN POTHOLE LEN MAN HINH, voi xac dinh lai cai server != null
+//        }
     }
 
     private void CurrentPlace() {
