@@ -71,6 +71,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(AppUser user) {
                 // Login successful
                 runOnUiThread(() ->{
+                    //TODO: ADD this user just found as the global account
+                    //  authManager.getAccount();
                    Toast.makeText(LoginActivity.this, "Welcome "+ user.getUsername(), Toast.LENGTH_SHORT).show();
                    navigateToDashboard();
                 });

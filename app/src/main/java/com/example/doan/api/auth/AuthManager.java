@@ -82,6 +82,38 @@ public class AuthManager {
     }
 
 
+    public void signUp(AppUser appUser, SignUpCallback callback) {
+        Call<AppUser> appUserCall = authService.add(appUser);
+        appUserCall.enqueue(new Callback<AppUser>() {
+            @Override
+            public void onResponse(Call<AppUser> call, Response<AppUser> response) {
+                if (response.isSuccessful() && response.body()!= null){
+                    Log.d("HTTP_Response", "200");
+                    AppUser appUser = new AppUser(
+                            response.body().getUsername(),
+                            response.body().getEmail(),
+                            response.body().getPassword());
+                    callback.onSuccess(appUser);
+                }
+                else {
+                    callback.onFailure(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AppUser> call, Throwable t) {
+                callback.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+
+
+    public interface SignUpCallback{
+        void onSuccess(AppUser user);
+        void onFailure(String errorMessage);
+    }
+
     public interface SignInCallback {
         void onSuccess(AppUser user);
         void onFailure(String errorMessage);

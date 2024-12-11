@@ -57,7 +57,22 @@ public class SignupActivity extends AppCompatActivity {
             AppUser appUser = new AppUser(username, email, password);
             //appUser.setDate_created(date_created);
 
-            //TODO: ADD signup api method
+            authManager.signUp(appUser, new AuthManager.SignUpCallback() {
+                @Override
+                public void onSuccess(AppUser user) {
+                    runOnUiThread(() -> Toast.makeText(SignupActivity.this,
+                            "Welcome new user: "+ user.getUsername(),
+                            Toast.LENGTH_SHORT).show());
+                    Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+                @Override
+                public void onFailure(String errorMessage) {
+                    runOnUiThread(() -> Toast.makeText(SignupActivity.this,
+                            errorMessage,
+                            Toast.LENGTH_SHORT).show());
+                }
+            });
         }
         else
         {
