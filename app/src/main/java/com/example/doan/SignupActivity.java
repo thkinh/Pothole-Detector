@@ -10,6 +10,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.doan.api.auth.AuthManager;
+import com.example.doan.model.AppUser;
+
+import java.sql.Date;
+
 public class SignupActivity extends AppCompatActivity {
 
     // Khai báo các view
@@ -19,25 +24,24 @@ public class SignupActivity extends AppCompatActivity {
     private EditText confirmPasswordEditText;
     private Button signupButton;
     private TextView askLoginText;
-
+    private AuthManager authManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_signupscreen);
-
         // Ánh xạ các view từ layout
         usernameEditText = findViewById(R.id.editText_username_scrSignup);
         emailEditText = findViewById(R.id.editText_Email_scrSignup);
         passwordEditText = findViewById(R.id.editText_password_scrSignup);
         confirmPasswordEditText = findViewById(R.id.editText_rePassword_scrSignup);
-        signupButton = findViewById(R.id.btn_signup);
+        signupButton = findViewById(R.id.btn_signup100);
         askLoginText = findViewById(R.id.txt_askLogin_scrSignup);
 
-        // Thiết lập sự kiện nhấn cho nút Signup
-        signupButton.setOnClickListener(v -> handleSignup());
 
-        // Điều hướng trở lại màn hình đăng nhập khi nhấn vào "Already have an account?"
+        signupButton.setOnClickListener(v -> handleSignup());
         askLoginText.setOnClickListener(v -> navigateToLogin());
+
+        authManager = AuthManager.getInstance();
     }
 
     // Hàm xử lý đăng ký
@@ -47,33 +51,57 @@ public class SignupActivity extends AppCompatActivity {
         String password = passwordEditText.getText().toString().trim();
         String confirmPassword = confirmPasswordEditText.getText().toString().trim();
 
-        // Kiểm tra thông tin hợp lệ
+        if (ValidateInput(username, email, password, confirmPassword))
+        {
+            Date date_created = new Date(System.currentTimeMillis());
+            AppUser appUser = new AppUser(username, email, password);
+            //appUser.setDate_created(date_created);
+
+            authManager.signUp(appUser, new AuthManager.SignUpCallback() {
+                @Override
+                public void onSuccess(AppUser user) {
+                    runOnUiThread(() -> Toast.makeText(SignupActivity.this,
+                            "Welcome new user: "+ user.getUsername(),
+                            Toast.LENGTH_SHORT).show());
+                    Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+                @Override
+                public void onFailure(String errorMessage) {
+                    runOnUiThread(() -> Toast.makeText(SignupActivity.this,
+                            errorMessage,
+                            Toast.LENGTH_SHORT).show());
+                }
+            });
+        }
+        else
+        {
+            Toast.makeText(SignupActivity.this, "Something was wrong with the inputs bro!", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private boolean ValidateInput(String username, String email, String password, String confirm_pass)
+    {
         if (TextUtils.isEmpty(username)) {
             usernameEditText.setError("Username is required");
-            return;
+            return false;
         }
         if (TextUtils.isEmpty(email) || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             emailEditText.setError("Enter a valid email");
-            return;
+            return false;
         }
         if (TextUtils.isEmpty(password) || password.length() < 6) {
             passwordEditText.setError("Password must be at least 6 characters");
-            return;
+            return false;
         }
-        if (!password.equals(confirmPassword)) {
+        if (!password.equals(confirm_pass)) {
             confirmPasswordEditText.setError("Passwords do not match");
-            return;
+            return false;
         }
-
-        // Thực hiện đăng ký (Lưu thông tin hoặc gửi thông tin lên server)
-        // Tại đây bạn có thể thực hiện yêu cầu đăng ký với backend của mình.
-
-        // Hiển thị thông báo đăng ký thành công
-        Toast.makeText(SignupActivity.this, "Signup successful", Toast.LENGTH_SHORT).show();
-
-        // Điều hướng về màn hình đăng nhập
-        navigateToLogin();
+        return true;
     }
+
 
     // Hàm điều hướng về màn hình Login
     private void navigateToLogin() {

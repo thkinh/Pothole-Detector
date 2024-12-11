@@ -1,6 +1,5 @@
 package com.example.doan;
 
-import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
 import android.content.IntentSender;
@@ -16,6 +15,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+
+import com.example.doan.api.auth.AuthManager;
+import com.example.doan.model.AppUser;
 
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.BeginSignInResult;
@@ -44,6 +47,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private TextView askSignupText;
     private TextView forgotPassword;
+
+    private AuthManager authManager;
 
     //For Google Sign In
     private Button googleButton;
@@ -90,31 +95,19 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // Thiết lập sự kiện nhấn cho nút Login
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleLogin();
-            }
+        loginButton.setOnClickListener(view -> handleLogin());
+
+        askSignupText.setOnClickListener(v-> {
+            Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+            startActivity(intent);
         });
 
-        // Thiết lập sự kiện nhấn cho dòng chữ Signup để chuyển sang màn hình đăng ký
-        askSignupText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Chuyển sang SignupActivity
-                Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-                startActivity(intent);
-            }
+        forgotPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RecoverAccount.class);
+            startActivity(intent);
         });
 
-        //thiết lập sự kiện nhấn cho dòng chữ Forgot Password để chuyển sang màn hình forgot password
-        forgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, RecoverAccount.class);
-                startActivity(intent);
-            }
-        });
+        authManager = AuthManager.getInstance();
     }
 
     // Hàm xử lý đăng nhập
@@ -122,31 +115,38 @@ public class LoginActivity extends AppCompatActivity {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
-        // Kiểm tra nếu các trường email và mật khẩu trống
         if (TextUtils.isEmpty(email)) {
             emailEditText.setError("Please enter your email");
             return;
         }
-
         if (TextUtils.isEmpty(password)) {
             passwordEditText.setError("Please enter your password");
             return;
         }
 
-        // Xác thực đăng nhập (giả lập)
-        if (email.equals("ex") && password.equals("123")) {
-            // Đăng nhập thành công
-            Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-            // Chuyển sang màn hình chính hoặc màn hình khác theo yêu cầu
-            navigateToDashboard();
-            // startActivity(new Intent(LoginActivity.this, MainActivity.class));
-        } else {
-            // Đăng nhập thất bại
-            Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
-        }
+        authManager.signIn(email, password, new AuthManager.SignInCallback() {
+            @Override
+            public void onSuccess(AppUser user) {
+                // Login successful
+                runOnUiThread(() ->{
+                    //TODO: ADD this user just found as the global account
+                    //  authManager.getAccount();
+                   Toast.makeText(LoginActivity.this, "Welcome "+ user.getUsername(), Toast.LENGTH_SHORT).show();
+                   navigateToDashboard();
+                });
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                // Login failed
+                runOnUiThread(() -> Toast.makeText(LoginActivity.this,
+                        errorMessage,
+                        Toast.LENGTH_SHORT).show());
+                //Log.e("FAILED: ", errorMessage);
+            }
+        });
     }
 
-    // Hàm điều hướng về màn hình Dashboard
     private void navigateToDashboard() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
