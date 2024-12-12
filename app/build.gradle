@@ -90,6 +90,12 @@ dependencies {
     androidTestImplementation libs.ui.test.junit4
     debugImplementation libs.ui.tooling
     debugImplementation libs.ui.test.manifest
+    implementation 'com.mapbox.maps:android:11.8.1'
+    implementation('com.mapbox.maps:android:11.8.1') {
+        exclude group: 'com.google.android.gms', module: 'play-services-cronet'
+    }
+    //Java language
+    implementation "androidx.fragment:fragment:1.8.5"
 }
 
 apply plugin: 'com.google.gms.google-services'

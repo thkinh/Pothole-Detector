@@ -1,129 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_above="@id/bottom_navigation"
-    tools:context=".FragmentMap">
+    android:layout_height="match_parent">
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <RelativeLayout
+    <com.mapbox.maps.MapView
+        android:id="@+id/mapbox"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="0dp"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:id="@+id/relayout1"
-            android:layout_width="331dp"
-            android:layout_height="36dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/white_border"
-            android:elevation="10dp">
-
-            <ImageButton
-                android:id="@+id/ic_magnify"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/white"
-                android:src="@drawable/ic_magnify"
-                android:contentDescription="tim kiem vi tri"/>
-
-            <EditText
-                android:id="@+id/input_search"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/filter"
-                android:layout_toRightOf="@+id/ic_magnify"
-                android:background="@null"
-                android:hint="@string/search"
-                android:imeOptions="actionSearch"
-                android:textColor="@color/black"
-                android:textSize="10sp" />
-
-            <ImageButton
-                android:id="@+id/filter"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:minHeight="48dp"
-                android:minWidth="48dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/ic_filter"
-                android:contentDescription="loc o ga"/>
-
-        </RelativeLayout>
-
-        <ImageButton
-            android:id="@+id/btn_current"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="10dp"
-            android:layout_marginStart="354dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="7dp"
-            android:background="@drawable/white_border_oral"
-            android:scaleType="centerInside"
-            map:srcCompat="@drawable/ic_go"
-            android:contentDescription="tim duong di den"/>
-
-        <ImageButton
-            android:id="@+id/btn_go"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_above="@+id/btn_current"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="10dp"
-            android:layout_marginStart="354dp"
-            android:layout_marginTop="101dp"
-            android:layout_marginEnd="7dp"
-            android:background="@drawable/white_border_oral"
-            map:srcCompat="@drawable/maps_pin_navigation"
-            android:contentDescription="Hien thi vi tri hien tai"/>
-
-        <LinearLayout
-            android:layout_width="200dp"
-            android:layout_height="70dp"
-            android:background="@drawable/background_startdetect"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:clickable="true">
-            <ImageView
-                android:id="@+id/play"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/ic_play"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20dp"
-                android:text="Start Detect"
-                android:textColor="@color/white"
-                android:textStyle="bold"/>
-        </LinearLayout>
-
-    </RelativeLayout>
+        app:mapbox_cameraTargetLat="39.5"
+        app:mapbox_cameraTargetLng="-98.0"
+        app:mapbox_cameraZoom="2.0"
+        app:mapbox_cameraPitch="0.0"
+        app:mapbox_cameraBearing="0.0" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/mylocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
+        android:src="@drawable/ic_my_location_button"/>
 
 </RelativeLayout>
