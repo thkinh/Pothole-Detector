@@ -2,18 +2,22 @@ package com.example.doan;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
 import com.example.doan.databinding.AtMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity implements OnMapFragmentInteractionListener {
 
     AtMainBinding binding;
-
+    private FragmentManager fragmentManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,11 +36,18 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
-
     }
 
+
+    @Override
+    public void onMapButtonClicked(Fragment fragment) {
+        replaceFragment(fragment);
+    }
+
+
+
     private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainlayout, fragment);
         fragmentTransaction.commit();
@@ -47,4 +58,5 @@ public class MainActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         // Handle the configuration change if needed
     }
+
 }

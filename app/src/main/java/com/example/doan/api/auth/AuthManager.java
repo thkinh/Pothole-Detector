@@ -4,8 +4,6 @@ import android.util.Log;
 import com.example.doan.api.RetrofitInstance;
 import com.example.doan.model.AppUser;
 
-import java.util.concurrent.CompletableFuture;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

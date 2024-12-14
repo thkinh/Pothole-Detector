@@ -13,8 +13,6 @@
         app:mapbox_cameraPitch="0.0"
         app:mapbox_cameraBearing="0.0" />
 
-
-
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

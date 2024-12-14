@@ -5,11 +5,9 @@ import static com.mapbox.maps.plugin.gestures.GesturesUtils.addOnMapClickListene
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.getGestures;
 import static com.mapbox.maps.plugin.locationcomponent.LocationComponentUtils.getLocationComponent;
 import static com.mapbox.navigation.base.extensions.RouteOptionsExtensions.applyDefaultNavigationOptions;
-import static com.mapbox.turf.TurfMeasurement.destination;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -23,14 +21,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.mapbox.android.core.location.LocationEngine;
@@ -41,22 +36,15 @@ import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.android.gestures.MoveGestureDetector;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
-import com.mapbox.api.directions.v5.MapboxDirections;
 import com.mapbox.api.directions.v5.models.Bearing;
 import com.mapbox.api.directions.v5.models.RouteOptions;
 import com.mapbox.geojson.Point;
 import com.mapbox.maps.CameraOptions;
-import com.mapbox.maps.MapOptions;
 import com.mapbox.maps.MapView;
 import com.mapbox.maps.Style;
-import com.mapbox.maps.ViewAnnotationOptions;
 import com.mapbox.maps.extension.style.layers.properties.generated.TextAnchor;
-import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource;
-import com.mapbox.maps.plugin.LocationPuck2D;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
 import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
-import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener;
-import com.mapbox.maps.plugin.annotation.generated.PointAnnotation;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
@@ -79,6 +67,7 @@ import kotlin.Unit;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
+
 
 public class FragmentMap extends Fragment
         implements PermissionsListener , OnMapReadyCallback {
@@ -127,6 +116,7 @@ public class FragmentMap extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (PermissionsManager.areLocationPermissionsGranted(getContext())) {
 
         } else {
@@ -148,6 +138,15 @@ public class FragmentMap extends Fragment
         return view;
     }
 
+    private OnMapFragmentInteractionListener listener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof OnMapFragmentInteractionListener){
+            listener = (OnMapFragmentInteractionListener) context;
+        }
+    }
     //để hiển thị vị trí hiện tại và các thành phần của vị trí Mapbox thông qua location component
     //thông qua thư viện location của mapbox
     //nhưng ở đây sử dụng thư viện LocationComponentPlugin để kích hoạt vị trí người dùng
@@ -163,8 +162,7 @@ public class FragmentMap extends Fragment
         navigationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), MapNavigationActivity.class);
-                startActivity(intent);
+                listener.onMapButtonClicked(new FragmentMapNavigation());
             }
         });
 
@@ -178,31 +176,6 @@ public class FragmentMap extends Fragment
                 PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
                 ViewAnnotationManager viewAnnotationManager = mapView.getViewAnnotationManager();
 
-                addOnMapClickListener(mapView.getMapboxMap(), new OnMapClickListener() {
-                    @Override
-                    public boolean onMapClick(@NonNull Point point) {
-                        PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions().withTextAnchor(TextAnchor.CENTER).withIconImage(bitmap)
-                                .withPoint(point);
-                        pointAnnotationManager.create(pointAnnotationOptions);
-
-                        pointAnnotationManager.addClickListener(new OnPointAnnotationClickListener() {
-                            @Override
-                            public boolean onAnnotationClick(@NonNull PointAnnotation pointAnnotation) {
-                                ViewAnnotationOptions options = new ViewAnnotationOptions.Builder().geometry(pointAnnotation.getPoint()).build();
-                                View viewAnnotation = viewAnnotationManager.addViewAnnotation(R.layout.fragment_map, options);
-
-                                viewAnnotation.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        Toast.makeText(getContext(), "View Clicked!", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                return false;
-                            }
-                        });
-                        return false;
-                    }
-                });
 
                 setMylocationButton();
                 setSearchET();
@@ -371,6 +344,7 @@ public class FragmentMap extends Fragment
             }
         });
     }
+
 
 
 }
