@@ -24,6 +24,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mapbox.android.core.location.LocationEngine;
@@ -53,20 +55,31 @@ import com.mapbox.maps.plugin.gestures.OnMoveListener;
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentConstants;
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin;
 import com.mapbox.maps.plugin.locationcomponent.generated.LocationComponentSettings;
+import com.mapbox.navigation.base.formatter.DistanceFormatterOptions;
 import com.mapbox.navigation.base.options.NavigationOptions;
 import com.mapbox.navigation.base.route.NavigationRoute;
 import com.mapbox.navigation.base.route.NavigationRouterCallback;
 import com.mapbox.navigation.base.route.RouterFailure;
 import com.mapbox.navigation.base.route.RouterOrigin;
+import com.mapbox.navigation.base.trip.model.RouteProgress;
 import com.mapbox.navigation.core.MapboxNavigation;
 import com.mapbox.navigation.core.directions.session.RoutesObserver;
 import com.mapbox.navigation.core.directions.session.RoutesUpdatedResult;
+import com.mapbox.navigation.core.formatter.MapboxDistanceFormatter;
 import com.mapbox.navigation.core.lifecycle.MapboxNavigationApp;
 import com.mapbox.navigation.core.trip.session.LocationMatcherResult;
 import com.mapbox.navigation.core.trip.session.LocationObserver;
+import com.mapbox.navigation.core.trip.session.RouteProgressObserver;
 import com.mapbox.navigation.core.trip.session.VoiceInstructionsObserver;
 import com.mapbox.navigation.ui.base.util.MapboxNavigationConsumer;
+import com.mapbox.navigation.ui.maneuver.api.MapboxManeuverApi;
+import com.mapbox.navigation.ui.maneuver.model.Maneuver;
+import com.mapbox.navigation.ui.maneuver.model.ManeuverError;
+import com.mapbox.navigation.ui.maneuver.view.MapboxManeuverView;
 import com.mapbox.navigation.ui.maps.location.NavigationLocationProvider;
+import com.mapbox.navigation.ui.maps.route.arrow.api.MapboxRouteArrowApi;
+import com.mapbox.navigation.ui.maps.route.arrow.api.MapboxRouteArrowView;
+import com.mapbox.navigation.ui.maps.route.arrow.model.RouteArrowOptions;
 import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineApi;
 import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineView;
 import com.mapbox.navigation.ui.maps.route.line.model.MapboxRouteLineOptions;
@@ -91,11 +104,10 @@ import kotlin.jvm.functions.Function1;
 
 public class MapNavigationActivity extends AppCompatActivity {
     MapView mapView;
-    MaterialButton setRoute;
-    FloatingActionButton focusLocationBtn;
     private final NavigationLocationProvider navigationLocationProvider = new NavigationLocationProvider();
     private MapboxRouteLineView routeLineView;
     private MapboxRouteLineApi routeLineApi;
+
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
         public void onNewRawLocation(@NonNull Location location) {
@@ -139,7 +151,7 @@ public class MapNavigationActivity extends AppCompatActivity {
         public void onMoveBegin(@NonNull MoveGestureDetector moveGestureDetector) {
             focusLocation = false;
             getGestures(mapView).removeOnMoveListener(this);
-            focusLocationBtn.show();
+
         }
 
         @Override
@@ -201,17 +213,48 @@ public class MapNavigationActivity extends AppCompatActivity {
 
     private boolean isVoiceInstructionsMuted = false;
 
+    private MapboxManeuverView maneuverView;
+    private MapboxManeuverApi maneuverApi;
+    private MapboxRouteArrowView routeArrowView;
+    private MapboxRouteArrowApi routeArrowApi = new MapboxRouteArrowApi();
+    private RouteProgressObserver routeProgressObserver = new RouteProgressObserver() {
+        @Override
+        public void onRouteProgressChanged(@NonNull RouteProgress routeProgress) {
+            Style style = mapView.getMapboxMap().getStyle();
+            if (style != null) {
+                routeArrowView.renderManeuverUpdate(style, routeArrowApi.addUpcomingManeuverArrow(routeProgress));
+            }
+
+            maneuverApi.getManeuvers(routeProgress).fold(new Expected.Transformer<ManeuverError, Object>() {
+                @NonNull
+                @Override
+                public Object invoke(@NonNull ManeuverError input) {
+                    return new Object();
+                }
+            }, new Expected.Transformer<List<Maneuver>, Object>() {
+                @NonNull
+                @Override
+                public Object invoke(@NonNull List<Maneuver> input) {
+                    maneuverView.setVisibility(View.VISIBLE);
+                    maneuverView.renderManeuvers(maneuverApi.getManeuvers(routeProgress));
+                    return new Object();
+                }
+            });
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_map_navigation);
 
         mapView = findViewById(R.id.mapView);
-        focusLocationBtn = findViewById(R.id.focusLocation);
-        setRoute = findViewById(R.id.setRoute);
+        maneuverView = findViewById(R.id.maneuverView);
+        maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(MapNavigationActivity.this).build()));
+        routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(MapNavigationActivity.this).build());
 
         MapboxRouteLineOptions options = new MapboxRouteLineOptions.Builder(this).withRouteLineResources(new RouteLineResources.Builder().build())
                 .withRouteLineBelowLayerId(LocationComponentConstants.LOCATION_INDICATOR_LAYER).build();
+
         routeLineView = new MapboxRouteLineView(options);
         routeLineApi = new MapboxRouteLineApi(options);
 
@@ -226,6 +269,7 @@ public class MapNavigationActivity extends AppCompatActivity {
         mapboxNavigation.registerRoutesObserver(routesObserver);
         mapboxNavigation.registerLocationObserver(locationObserver);
         mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver);
+        mapboxNavigation.registerRouteProgressObserver(routeProgressObserver);
 
         MapboxSoundButton soundButton = findViewById(R.id.soundButton);
         soundButton.unmute();
@@ -257,16 +301,9 @@ public class MapNavigationActivity extends AppCompatActivity {
             mapboxNavigation.startTripSession();
         }
 
-        focusLocationBtn.hide();
+
         LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
         getGestures(mapView).addOnMoveListener(onMoveListener);
-
-        setRoute.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MapNavigationActivity.this, "Please select a location in map", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
             @Override
@@ -286,29 +323,11 @@ public class MapNavigationActivity extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
                 AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
                 PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
-//                addOnMapClickListener(mapView.getMapboxMap(), new OnMapClickListener() {
-//                    @Override
-//                    public boolean onMapClick(@NonNull Point point) {
-//                        pointAnnotationManager.deleteAll();
-//                        PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions().withTextAnchor(TextAnchor.CENTER).withIconImage(bitmap)
-//                                .withPoint(point);
-//                        pointAnnotationManager.create(pointAnnotationOptions);
-//
-//                        setRoute.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View view) {
-//                                fetchRoute(point);
-//                            }
-//                        });
-//                        return true;
-//                    }
-//                });
-                focusLocationBtn.setOnClickListener(new View.OnClickListener() {
+                addOnMapClickListener(mapView.getMapboxMap(), new OnMapClickListener() {
                     @Override
-                    public void onClick(View view) {
-                        focusLocation = true;
-                        getGestures(mapView).addOnMoveListener(onMoveListener);
-                        focusLocationBtn.hide();
+                    public boolean onMapClick(@NonNull Point point) {
+                        fetchRoute(point);
+                        return true;
                     }
                 });
             }
@@ -322,29 +341,22 @@ public class MapNavigationActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LocationEngineResult result) {
                 Location location = result.getLastLocation();
-                setRoute.setEnabled(false);
-                setRoute.setText("Fetching route...");
                 RouteOptions.Builder builder = RouteOptions.builder();
                 Point origin = Point.fromLngLat(Objects.requireNonNull(location).getLongitude(), location.getLatitude());
                 builder.coordinatesList(Arrays.asList(origin, point));
                 builder.alternatives(false);
                 builder.profile(DirectionsCriteria.PROFILE_DRIVING);
-                builder.bearingsList(Arrays.asList(Bearing.builder().angle(location.getBearing()).degrees(45.0).build(), null));
+                builder.bearingsList(Arrays.asList(Bearing.builder().angle(location.getBearing()).build(), null));
                 applyDefaultNavigationOptions(builder);
 
                 mapboxNavigation.requestRoutes(builder.build(), new NavigationRouterCallback() {
                     @Override
                     public void onRoutesReady(@NonNull List<NavigationRoute> list, @NonNull RouterOrigin routerOrigin) {
                         mapboxNavigation.setNavigationRoutes(list);
-                        focusLocationBtn.performClick();
-                        setRoute.setEnabled(true);
-                        setRoute.setText("Set route");
                     }
 
                     @Override
                     public void onFailure(@NonNull List<RouterFailure> list, @NonNull RouteOptions routeOptions) {
-                        setRoute.setEnabled(true);
-                        setRoute.setText("Set route");
                         Toast.makeText(MapNavigationActivity.this, "Route request failed", Toast.LENGTH_SHORT).show();
                     }
 
