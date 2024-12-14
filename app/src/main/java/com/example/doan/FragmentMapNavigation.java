@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -110,6 +112,7 @@ public class FragmentMapNavigation extends Fragment {
     private MapboxRouteLineApi routeLineApi;
     private CardView cardView;
     private ImageView imageView;
+    private FloatingActionButton mylocationButton;
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
         public void onNewRawLocation(@NonNull Location location) {
@@ -153,6 +156,7 @@ public class FragmentMapNavigation extends Fragment {
         public void onMoveBegin(@NonNull MoveGestureDetector moveGestureDetector) {
             focusLocation = false;
             getGestures(mapView).removeOnMoveListener(this);
+            mylocationButton.show();
 
         }
 
@@ -277,6 +281,8 @@ public class FragmentMapNavigation extends Fragment {
         mapView = view.findViewById(R.id.mapView);
         cardView = view.findViewById(R.id.tripProgressCard);
         imageView = view.findViewById(R.id.stop);
+        mylocationButton = view.findViewById(R.id.mylocationButton);
+        mylocationButton.hide();
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -367,6 +373,14 @@ public class FragmentMapNavigation extends Fragment {
                     }
                 });
 
+                mylocationButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        focusLocation = true;
+                        getGestures(mapView).addOnMoveListener(onMoveListener);
+                        mylocationButton.hide();
+                    }
+                });
             }
         });
     }
@@ -390,6 +404,8 @@ public class FragmentMapNavigation extends Fragment {
                     @Override
                     public void onRoutesReady(@NonNull List<NavigationRoute> list, @NonNull RouterOrigin routerOrigin) {
                         mapboxNavigation.setNavigationRoutes(list);
+                        mylocationButton.performClick();
+
                     }
 
                     @Override
