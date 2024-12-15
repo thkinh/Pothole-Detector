@@ -392,8 +392,8 @@ public class FragmentMapNavigation extends Fragment {
             @Override
             public void onSuccess(LocationEngineResult result) {
                 Location location = result.getLastLocation();
-                RouteOptions.Builder builder = RouteOptions.builder();
                 Point origin = Point.fromLngLat(Objects.requireNonNull(location).getLongitude(), location.getLatitude());
+                RouteOptions.Builder builder = RouteOptions.builder();
                 builder.coordinatesList(Arrays.asList(origin, point));
                 builder.alternatives(false);
                 builder.profile(DirectionsCriteria.PROFILE_DRIVING);
