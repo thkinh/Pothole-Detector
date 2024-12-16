@@ -1,6 +1,7 @@
 package com.example.doan;
 
 
+import static com.mapbox.core.constants.Constants.PRECISION_6;
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.addOnMapClickListener;
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.getGestures;
 import static com.mapbox.maps.plugin.locationcomponent.LocationComponentUtils.getLocationComponent;
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -38,16 +40,22 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.android.gestures.MoveGestureDetector;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.MapboxDirections;
-import com.mapbox.api.directions.v5.models.Bearing;
+
+
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.LineString;
+import com.mapbox.geojson.Point;
+
+
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.api.directions.v5.models.RouteOptions;
-import com.mapbox.geojson.Point;
 import com.mapbox.maps.CameraOptions;
 import com.mapbox.maps.MapView;
-import com.mapbox.maps.MapboxMap;
 import com.mapbox.maps.Style;
 import com.mapbox.maps.extension.style.layers.properties.generated.TextAnchor;
+import com.mapbox.maps.extension.style.sources.SourceUtils;
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
 import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
@@ -64,16 +72,16 @@ import com.mapbox.search.ui.adapter.autocomplete.PlaceAutocompleteUiAdapter;
 import com.mapbox.search.ui.view.CommonSearchViewConfiguration;
 import com.mapbox.search.ui.view.SearchResultsView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
+import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 
@@ -90,6 +98,12 @@ public class FragmentMap extends Fragment
     private SearchResultsView searchResultsView;
     private TextInputEditText searchET;
     private boolean ignoreNextQueryUpdate = false;
+    private static final String ROUTE_LAYER_ID = "route-layer-id";
+    private static final String ROUTE_SOURCE_ID = "route-source-id";
+    private static final String ICON_LAYER_ID = "icon-layer-id";
+    private static final String ICON_SOURCE_ID = "icon-source-id";
+    private static final String RED_PIN_ICON_ID = "red-pin-icon-id";
+
 
     public FragmentMap() {
         super(R.layout.fragment_map);
@@ -151,10 +165,11 @@ public class FragmentMap extends Fragment
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof OnMapFragmentInteractionListener){
+        if (context instanceof OnMapFragmentInteractionListener) {
             listener = (OnMapFragmentInteractionListener) context;
         }
     }
+
     //để hiển thị vị trí hiện tại và các thành phần của vị trí Mapbox thông qua location component
     //thông qua thư viện location của mapbox
     //nhưng ở đây sử dụng thư viện LocationComponentPlugin để kích hoạt vị trí người dùng
@@ -182,6 +197,7 @@ public class FragmentMap extends Fragment
                 setMylocationButton();
                 setSearchET();
 
+
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
                 Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
                 AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
@@ -191,14 +207,10 @@ public class FragmentMap extends Fragment
                 addOnMapClickListener(mapView.getMapboxMap(), new OnMapClickListener() {
                     @Override
                     public boolean onMapClick(@NonNull Point point) {
-
-
                         pointAnnotationManager.deleteAll();
-
                         PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions().withTextAnchor(TextAnchor.CENTER).withIconImage(resizedBitmap)
                                 .withPoint(point);
                         pointAnnotationManager.create(pointAnnotationOptions);
-
                         fetchDirection(point);
                         return false;
                     }
@@ -337,55 +349,82 @@ public class FragmentMap extends Fragment
 
     @SuppressLint("MissingPermission")
     private void fetchDirection(Point destination) {
+        Log.d("FetchDirection", "fetchDirection() started"); // Log khi bắt đầu hàm
 
         LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(getContext());
+        Log.d("FetchDirection", "LocationEngine initialized");
 
         locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
             @Override
             public void onSuccess(LocationEngineResult result) {
-
+                Log.d("FetchDirection", "Location fetch succeeded");
                 Location location = result.getLastLocation();
-                Point origin = Point.fromLngLat(Objects.requireNonNull(location).getLongitude(), location.getLatitude());
-                List<Point> coordinates = new ArrayList<>();
-                coordinates.add(origin);
-                coordinates.add(destination);
-                try {
 
-                    MapboxDirections.Builder builder = MapboxDirections.builder();
-                    RouteOptions routeOptions = RouteOptions.builder()
-                            .profile(DirectionsCriteria.PROFILE_DRIVING_TRAFFIC)
-                            .geometries(DirectionsCriteria.GEOMETRY_POLYLINE6)
-                            .coordinatesList(coordinates)
-                            .waypointsPerRoute(true)
-                            .alternatives(true)
-                            .build();
-                    builder.routeOptions(routeOptions);
-                    builder.accessToken(getString(R.string.mapbox_access_token));
-                    Toast.makeText(getContext(), "Can't show direction on map 1", Toast.LENGTH_SHORT).show();
-
-                    Response<DirectionsResponse> response =null;
-                    try {
-                         response=builder.build().executeCall();
-                    } catch (IOException e) {
-                        System.out.println("Đã xảy ra lỗi đầu tiên: " + e.getMessage());
-                    }
-
-                    // 3. Log information from the response
-                    System.out.printf("%nCheck that the GET response is successful %b", response.isSuccessful());
-                    System.out.printf("%nFirst route's waypoints: %s", response.body().routes().get(0).waypoints());
-                    System.out.printf("%nSecond route's waypoints: %s", response.body().routes().get(1).waypoints());
-                    System.out.printf("%nRoot waypoints: %s", response.body().waypoints());
-                } catch (RuntimeException e) {
-                    System.out.println("Đã xảy ra lỗi thứ 2: " + e.getMessage());
+                if (location == null) {
+                    Log.e("FetchDirection", "Error: Location is null");
+                    Toast.makeText(getContext(), "Unable to get current location", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
+                Log.d("FetchDirection", "Location details: Lat=" + location.getLatitude() + ", Lng=" + location.getLongitude());
+                Point origin = Point.fromLngLat(location.getLongitude(), location.getLatitude());
+
+                if (origin == null || destination == null) {
+                    Log.e("FetchDirection", "Error: Origin or Destination is null");
+                    return;
+                }
+
+
+                MapboxDirections.Builder builder = MapboxDirections.builder();
+                RouteOptions routeOptions = RouteOptions.builder()
+                        .profile(DirectionsCriteria.PROFILE_DRIVING_TRAFFIC)
+                        .geometries(DirectionsCriteria.GEOMETRY_POLYLINE6)
+                        .coordinatesList(Arrays.asList(origin, destination))
+                        .waypointsPerRoute(true)
+                        .alternatives(true)
+                        .build();
+                Log.d("FetchDirection", "RouteOptions built successfully");
+
+                builder.routeOptions(routeOptions);
+                builder.accessToken(getString(R.string.mapbox_access_token));
+
+                builder.build().enqueueCall(new Callback<DirectionsResponse>() {
+                    @Override
+                    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                        // You can get the generic HTTP info about the response
+                        DirectionsResponse directionsResponse = response.body();
+                        DirectionsRoute currentRoute = directionsResponse.routes().get(0);
+
+                        // Make a toast which displays the route's distance
+                        Toast.makeText(getContext(), String.format("Route distance: %.2f meters", currentRoute.distance()), Toast.LENGTH_SHORT).show();
+
+//                        if (mapView != null) {
+////                                mapView.getMapboxMap().lo(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+//                            mapView.getMapboxMap().loadStyle(new Style.OnStyleLoaded() {
+//                                @Override
+//                                public void onStyleLoaded(@NonNull Style style) {
+//                                    // Create a list to store our line coordinates.
+//                                    // Retrieve and update the source designated for showing the directions route
+//
+//
+//
+//
+//                                }
+//                            });
+//                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+
+                    }
+                });
             }
 
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(getContext(), "Can't show direction on map", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
 }
-

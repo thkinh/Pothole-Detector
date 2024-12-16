@@ -405,11 +405,11 @@ public class FragmentMapNavigation extends Fragment {
             public void onSuccess(LocationEngineResult result) {
                 Location location = result.getLastLocation();
                 Point origin = Point.fromLngLat(Objects.requireNonNull(location).getLongitude(), location.getLatitude());
-                RouteOptions.Builder builder = RouteOptions.builder();
-                builder.coordinatesList(Arrays.asList(origin, point));
-                builder.alternatives(false);
-                builder.profile(DirectionsCriteria.PROFILE_DRIVING);
-                builder.bearingsList(Arrays.asList(Bearing.builder().angle(location.getBearing()).build(), null));
+                RouteOptions.Builder builder = RouteOptions.builder()
+                        .coordinatesList(Arrays.asList(origin, point))
+                        .alternatives(false)
+                        .profile(DirectionsCriteria.PROFILE_DRIVING)
+                        .bearingsList(Arrays.asList(Bearing.builder().angle(location.getBearing()).build(), null));
                 applyDefaultNavigationOptions(builder);
 
                 mapboxNavigation.requestRoutes(builder.build(), new NavigationRouterCallback() {
