@@ -74,7 +74,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        btn_current = view.findViewById(R.id.btn_current);
         btn_play = view.findViewById(R.id.play);
         btn_play.setOnClickListener(view1 -> {
             Intent intent = new Intent(FragmentMap.this.getActivity(), Detect.class);
