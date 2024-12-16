@@ -1,14 +1,12 @@
 package com.example.doan;
 
 
-import static com.mapbox.core.constants.Constants.PRECISION_6;
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.addOnMapClickListener;
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.getGestures;
 import static com.mapbox.maps.plugin.locationcomponent.LocationComponentUtils.getLocationComponent;
 import static com.mapbox.navigation.base.extensions.RouteOptionsExtensions.applyDefaultNavigationOptions;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -25,9 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
+import com.example.doan.model.Pothole;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -42,8 +38,7 @@ import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.MapboxDirections;
 
 
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.LineString;
+import com.mapbox.api.directions.v5.models.Bearing;
 import com.mapbox.geojson.Point;
 
 
@@ -54,18 +49,19 @@ import com.mapbox.maps.CameraOptions;
 import com.mapbox.maps.MapView;
 import com.mapbox.maps.Style;
 import com.mapbox.maps.extension.style.layers.properties.generated.TextAnchor;
-import com.mapbox.maps.extension.style.sources.SourceUtils;
-import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
 import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
-import com.mapbox.maps.plugin.gestures.OnMapClickListener;
 import com.mapbox.maps.plugin.gestures.OnMoveListener;
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin;
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener;
 import com.mapbox.maps.viewannotation.ViewAnnotationManager;
+import com.mapbox.navigation.base.route.NavigationRoute;
+import com.mapbox.navigation.base.route.NavigationRouterCallback;
+import com.mapbox.navigation.base.route.RouterFailure;
+import com.mapbox.navigation.base.route.RouterOrigin;
 import com.mapbox.search.autocomplete.PlaceAutocomplete;
 import com.mapbox.search.autocomplete.PlaceAutocompleteSuggestion;
 import com.mapbox.search.ui.adapter.autocomplete.PlaceAutocompleteUiAdapter;
@@ -75,6 +71,7 @@ import com.mapbox.search.ui.view.SearchResultsView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
@@ -86,10 +83,11 @@ import retrofit2.Response;
 
 
 public class FragmentMap extends Fragment
-        implements PermissionsListener , OnMapReadyCallback {
+        implements PermissionsListener {
     private MapView mapView;
     private PermissionsManager permissionsManager;
 
+    private List<Pothole> potholes ;
     //Các thành phần của layout
     private FloatingActionButton navigationButton;
     private FloatingActionButton mylocationButton;
@@ -136,94 +134,7 @@ public class FragmentMap extends Fragment
     };
 
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (PermissionsManager.areLocationPermissionsGranted(getContext())) {
-
-        } else {
-            permissionsManager = new PermissionsManager(this);
-            permissionsManager.requestLocationPermissions(getActivity());
-        }
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
-        mapView = (MapView) view.findViewById(R.id.mapbox);
-        mylocationButton = (FloatingActionButton) view.findViewById(R.id.mylocationButton);
-        mylocationButton.hide();
-        navigationButton = (FloatingActionButton) view.findViewById(R.id.navigationButton);
-        searchET = (TextInputEditText) view.findViewById(R.id.searchET);
-        searchResultsView = (SearchResultsView) view.findViewById(R.id.search_results_view);
-        return view;
-    }
-
-    private OnMapFragmentInteractionListener listener;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof OnMapFragmentInteractionListener) {
-            listener = (OnMapFragmentInteractionListener) context;
-        }
-    }
-
-    //để hiển thị vị trí hiện tại và các thành phần của vị trí Mapbox thông qua location component
-    //thông qua thư viện location của mapbox
-    //nhưng ở đây sử dụng thư viện LocationComponentPlugin để kích hoạt vị trí người dùng
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-
-        placeAutocomplete = PlaceAutocomplete.create(getString(R.string.mapbox_access_token));
-        searchResultsView.initialize(new SearchResultsView.Configuration(new CommonSearchViewConfiguration()));
-        placeAutocompleteUiAdapter = new PlaceAutocompleteUiAdapter(searchResultsView, placeAutocomplete, LocationEngineProvider.getBestLocationEngine(getContext()));
-
-        navigationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onMapButtonClicked(new FragmentMapNavigation());
-            }
-        });
-
-        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-            @Override
-            public void onStyleLoaded(@NonNull Style style) {
-
-
-                setMylocationButton();
-                setSearchET();
-
-
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
-                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
-                AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
-                PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
-                ViewAnnotationManager viewAnnotationManager = mapView.getViewAnnotationManager();
-
-                addOnMapClickListener(mapView.getMapboxMap(), new OnMapClickListener() {
-                    @Override
-                    public boolean onMapClick(@NonNull Point point) {
-                        pointAnnotationManager.deleteAll();
-                        PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions().withTextAnchor(TextAnchor.CENTER).withIconImage(resizedBitmap)
-                                .withPoint(point);
-                        pointAnnotationManager.create(pointAnnotationOptions);
-                        fetchDirection(point);
-                        return false;
-                    }
-                });
-
-            }
-        });
-
-    }
-
-
     private PermissionsListener permissionsListener;
-
     //Lắng nghe các quyền cần để sử dụng cho ứng dụng
     @Override
     public void onExplanationNeeded(@NonNull List<String> list) {
@@ -241,25 +152,6 @@ public class FragmentMap extends Fragment
     }
 
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
-        AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
-        PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
-        //Đặt địa chỉ đích để vẽ đường đi
-        addOnMapClickListener(mapView.getMapboxMap(), new OnMapClickListener() {
-            @Override
-            public boolean onMapClick(@NonNull Point point) {
-
-                addMarkerDestination(point);
-                return true;
-            }
-        });
-
-
-    }
-
 
     public void setMylocationButton() {
         mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(10.0).build());
@@ -269,13 +161,11 @@ public class FragmentMap extends Fragment
         locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
         getGestures(mapView).addOnMoveListener(onMoveListener);
 
-        mylocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
-                getGestures(mapView).addOnMoveListener(onMoveListener);
-                mylocationButton.hide();
-            }
+        mylocationButton.setOnClickListener(viewButton -> {
+
+            locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
+            getGestures(mapView).addOnMoveListener(onMoveListener);
+            mylocationButton.hide();
         });
     }
 
@@ -342,38 +232,146 @@ public class FragmentMap extends Fragment
         });
     }
 
-    //Chưa chạy được
-    public void addMarkerDestination(Point point) {
+
+    //Tạo các điểm pothole cố định trên map
+    private void createPointPothole(){
+
+        potholes = new ArrayList<>();
+        Pothole pothole1 = new Pothole(10.868698, 106.8885);
+        Pothole pothole2 = new Pothole(10.867776, 106.803824);
+        Pothole pothole3 = new Pothole(10.867172, 106.803109);
+        Pothole pothole4 = new Pothole(10.873592, 106.803434);
+        Pothole pothole5 = new Pothole(10.874991, 106.805494);
+        Pothole pothole6 = new Pothole(10.872040, 106.798741);
+        potholes.add(pothole1);
+        potholes.add(pothole2);
+        potholes.add(pothole3);
+        potholes.add(pothole4);
+        potholes.add(pothole5);
+        potholes.add(pothole6);
+    }
+
+    private PointAnnotationManager pointPotholeAnnotationManager ;
+    //Quản lí các điểm pothole trên map
+    public void addPotholeToMap(){
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_pothole_pin);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
+        AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
+        pointPotholeAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
+
+        for (Pothole pothle : potholes) {
+
+            PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
+                    .withTextAnchor(TextAnchor.CENTER)
+                    .withIconImage(resizedBitmap)
+                    .withPoint(Point.fromLngLat(pothle.GetLongitude(),pothle.GetLattitude()));
+            pointPotholeAnnotationManager.create(pointAnnotationOptions);
+
+        }
 
     }
 
+    private void setclickOnMap(){
+
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
+        AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
+        PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
+        ViewAnnotationManager viewAnnotationManager = mapView.getViewAnnotationManager();
+
+        addOnMapClickListener(mapView.getMapboxMap(), pointDestination -> {
+            // Xóa tất cả các annotation
+            pointAnnotationManager.deleteAll();
+
+            // Tạo annotation mới tại vị trí click
+            PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
+                    .withTextAnchor(TextAnchor.CENTER)
+                    .withIconImage(resizedBitmap)
+                    .withPoint(pointDestination);
+            pointAnnotationManager.create(pointAnnotationOptions);
+
+            // Gọi hàm getRoute với point
+            getRoute(pointDestination);
+
+            return false;
+        });
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (PermissionsManager.areLocationPermissionsGranted(getContext())) {
+
+        } else {
+            permissionsManager = new PermissionsManager(this);
+            permissionsManager.requestLocationPermissions(getActivity());
+        }
+        createPointPothole();
+    }
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
+        mapView = (MapView) view.findViewById(R.id.mapbox);
+        mylocationButton = (FloatingActionButton) view.findViewById(R.id.mylocationButton);
+        mylocationButton.hide();
+        navigationButton = (FloatingActionButton) view.findViewById(R.id.navigationButton);
+        searchET = (TextInputEditText) view.findViewById(R.id.searchET);
+        searchResultsView = (SearchResultsView) view.findViewById(R.id.search_results_view);
+        return view;
+    }
+
+
+    //để hiển thị vị trí hiện tại và các thành phần của vị trí Mapbox thông qua location component
+    //thông qua thư viện location của mapbox
+    //nhưng ở đây sử dụng thư viện LocationComponentPlugin để kích hoạt vị trí người dùng
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+        placeAutocomplete = PlaceAutocomplete.create(getString(R.string.mapbox_access_token));
+        searchResultsView.initialize(new SearchResultsView.Configuration(new CommonSearchViewConfiguration()));
+        placeAutocompleteUiAdapter = new PlaceAutocompleteUiAdapter(searchResultsView, placeAutocomplete, LocationEngineProvider.getBestLocationEngine(getContext()));
+        //Nhấp chuột vào đây sẽ thực hiện hiển thị navigation map
+        navigationButton.setOnClickListener( viewButton -> {
+
+        });
+
+        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
+
+                addPotholeToMap();
+
+                setMylocationButton();
+
+                setSearchET();
+
+                setclickOnMap();
+
+
+
+            }
+        });
+
+    }
+
+
+
     @SuppressLint("MissingPermission")
-    private void fetchDirection(Point destination) {
-        Log.d("FetchDirection", "fetchDirection() started"); // Log khi bắt đầu hàm
+    private void getRoute(Point destination) {
 
         LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(getContext());
-        Log.d("FetchDirection", "LocationEngine initialized");
 
         locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
             @Override
             public void onSuccess(LocationEngineResult result) {
-                Log.d("FetchDirection", "Location fetch succeeded");
                 Location location = result.getLastLocation();
 
-                if (location == null) {
-                    Log.e("FetchDirection", "Error: Location is null");
-                    Toast.makeText(getContext(), "Unable to get current location", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                Log.d("FetchDirection", "Location details: Lat=" + location.getLatitude() + ", Lng=" + location.getLongitude());
                 Point origin = Point.fromLngLat(location.getLongitude(), location.getLatitude());
-
-                if (origin == null || destination == null) {
-                    Log.e("FetchDirection", "Error: Origin or Destination is null");
-                    return;
-                }
-
 
                 MapboxDirections.Builder builder = MapboxDirections.builder();
                 RouteOptions routeOptions = RouteOptions.builder()
@@ -383,7 +381,6 @@ public class FragmentMap extends Fragment
                         .waypointsPerRoute(true)
                         .alternatives(true)
                         .build();
-                Log.d("FetchDirection", "RouteOptions built successfully");
 
                 builder.routeOptions(routeOptions);
                 builder.accessToken(getString(R.string.mapbox_access_token));
@@ -398,20 +395,6 @@ public class FragmentMap extends Fragment
                         // Make a toast which displays the route's distance
                         Toast.makeText(getContext(), String.format("Route distance: %.2f meters", currentRoute.distance()), Toast.LENGTH_SHORT).show();
 
-//                        if (mapView != null) {
-////                                mapView.getMapboxMap().lo(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-//                            mapView.getMapboxMap().loadStyle(new Style.OnStyleLoaded() {
-//                                @Override
-//                                public void onStyleLoaded(@NonNull Style style) {
-//                                    // Create a list to store our line coordinates.
-//                                    // Retrieve and update the source designated for showing the directions route
-//
-//
-//
-//
-//                                }
-//                            });
-//                        }
                     }
 
                     @Override
