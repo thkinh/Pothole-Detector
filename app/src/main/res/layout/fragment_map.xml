@@ -1,104 +1,85 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_above="@id/bottom_navigation"
-    tools:context=".FragmentMap">
+    android:layout_height="match_parent">
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <RelativeLayout
+    <com.mapbox.maps.MapView
+        android:id="@+id/mapbox"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="0dp"
-        android:orientation="vertical">
+        app:mapbox_cameraTargetLat="39.5"
+        app:mapbox_cameraTargetLng="-98.0"
+        app:mapbox_cameraZoom="2.0"
+        app:mapbox_cameraPitch="0.0"
+        app:mapbox_cameraBearing="0.0" />
 
-        <RelativeLayout
-            android:id="@+id/relayout1"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/white_border"
-            android:elevation="10dp">
-
-            <ImageButton
-                android:id="@+id/ic_magnify"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/white"
-                android:src="@drawable/ic_magnify"
-                android:contentDescription="tim kiem vi tri"/>
-
-            <EditText
-                android:id="@+id/input_search"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/filter"
-                android:layout_toRightOf="@+id/ic_magnify"
-                android:background="@null"
-                android:hint="@string/search"
-                android:imeOptions="actionSearch"
-                android:textColor="@color/black"
-                android:textSize="17sp" />
-
-            <ImageButton
-                android:id="@+id/filter"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:minHeight="48dp"
-                android:minWidth="48dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/ic_filter"
-                android:contentDescription="loc o ga"/>
-
-        </RelativeLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64sp"
+        android:layout_marginStart="10sp"
+        android:layout_marginEnd="10sp"
+        android:elevation="4dp"
+        android:hint="@string/search_edittext"
+        android:id="@+id/searchLayout"
+        app:boxCornerRadiusBottomEnd="20sp"
+        app:boxCornerRadiusBottomStart="20sp"
+        app:boxCornerRadiusTopEnd="20sp"
+        app:boxCornerRadiusTopStart="20sp"
+        app:boxStrokeWidthFocused="0sp"
+        app:boxStrokeWidth="0sp"
+        app:startIconDrawable="@drawable/ic_search_map"
+        style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense">
+    <com.google.android.material.textfield.TextInputEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:id="@+id/searchET"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
 
+    <com.mapbox.search.ui.view.SearchResultsView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_results_view"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:elevation="4dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="22dp"
+        android:layout_below="@id/searchLayout" />
 
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp">
 
-        <LinearLayout
-            android:layout_width="200dp"
-            android:layout_height="70dp"
-            android:background="@drawable/background_startdetect"
-            android:layout_centerHorizontal="true"
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:clickable="true">
-            <ImageView
-                android:id="@+id/play"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/ic_play"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20dp"
-                android:text="Start Detect"
-                android:textColor="@color/white"
-                android:textStyle="bold"/>
-        </LinearLayout>
+            android:id="@+id/mylocationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_my_location_button"
+            android:layout_marginBottom="10dp"/>
 
-    </RelativeLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+
+            android:id="@+id/navigationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_direction_map_button"
+            android:layout_marginBottom="10dp"/>
+
+
+    </LinearLayout>
 
 </RelativeLayout>

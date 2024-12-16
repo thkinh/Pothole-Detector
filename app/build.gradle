@@ -33,8 +33,8 @@ android {
         compose true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     packagingOptions {
         resources {
@@ -82,6 +82,7 @@ dependencies {
 
     // Maps SDK for Android
     implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation 'com.google.android.libraries.places:places:3.3.0'
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
@@ -94,6 +95,19 @@ dependencies {
     androidTestImplementation libs.ui.test.junit4
     debugImplementation libs.ui.tooling
     debugImplementation libs.ui.test.manifest
+    //Mapbox SDK for Android
+    implementation 'com.mapbox.navigation:android:2.15.2'
+    implementation 'com.mapbox.maps:android:10.15.0'
+    //Search
+    implementation "com.mapbox.search:mapbox-search-android-ui:1.0.0-rc.6"
+    //Mapbox for java
+    implementation 'com.mapbox.mapboxsdk:mapbox-sdk-geojson:7.3.1'
+//    implementation 'com.mapbox.maps:android:11.8.1'
+//    implementation('com.mapbox.maps:android:11.8.1') {
+//        exclude group: 'com.google.android.gms', module: 'play-services-cronet'
+//    }
+    //Java language
+    implementation "androidx.fragment:fragment:1.8.5"
 }
 
 apply plugin: 'com.google.gms.google-services'

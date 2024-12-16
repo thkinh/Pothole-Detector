@@ -1,7 +1,5 @@
 package com.example.doan.model;
 
-import java.sql.Date;
-
 public class AppUser {
     private Integer id;
     private String username;

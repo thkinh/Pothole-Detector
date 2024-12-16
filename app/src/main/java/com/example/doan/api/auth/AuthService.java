@@ -16,4 +16,7 @@ public interface AuthService{
 
     @GET("user/getByEmail")
     Call<AppUser> signIn(@Query("email") String email);
+
+    @POST("user/password/getVerify")
+    Call<Integer> getVerifyCode(@Query("email") String email);
 }

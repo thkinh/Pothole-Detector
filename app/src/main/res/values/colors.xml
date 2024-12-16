@@ -26,4 +26,5 @@
     <color name="setting">#C8DAE4</color>
     <color name="switchsetting">#FF65558F</color>
 
-</resources>
+    <string name="search_edittext">Address</string>
+    </resources>

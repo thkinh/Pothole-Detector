@@ -4,8 +4,6 @@ import android.util.Log;
 import com.example.doan.api.RetrofitInstance;
 import com.example.doan.model.AppUser;
 
-import java.util.concurrent.CompletableFuture;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -81,6 +79,27 @@ public class AuthManager {
         });
     }
 
+    public void getVerify(String email,  GetVerifyCallback callback){
+        String trueEmail = "\"" + email + "\"";
+        Call<Integer> call = authService.getVerifyCode(trueEmail);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.isSuccessful()){
+                    Log.d("HTTP_Response", "200");
+                    callback.onSuccess(response.body());
+                }
+                else {
+                    Log.e("API error: ", response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                callback.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
 
     public void signUp(AppUser appUser, SignUpCallback callback) {
         Call<AppUser> appUserCall = authService.add(appUser);
@@ -108,6 +127,11 @@ public class AuthManager {
     }
 
 
+
+    public interface GetVerifyCallback{
+        void onSuccess(Integer id);
+        void onFailure(String errorMessage);
+    }
 
     public interface SignUpCallback{
         void onSuccess(AppUser user);
