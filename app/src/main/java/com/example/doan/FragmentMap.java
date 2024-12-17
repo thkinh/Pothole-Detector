@@ -74,6 +74,7 @@ import com.mapbox.maps.MapboxMap;
 import com.mapbox.maps.Style;
 import com.mapbox.maps.extension.style.layers.Layer;
 import com.mapbox.maps.extension.style.layers.LayerUtils;
+import com.mapbox.maps.extension.style.layers.generated.CircleLayer;
 import com.mapbox.maps.extension.style.layers.generated.LineLayer;
 import com.mapbox.maps.extension.style.layers.generated.SymbolLayer;
 import com.mapbox.maps.extension.style.layers.properties.generated.TextAnchor;
@@ -102,6 +103,8 @@ import com.mapbox.search.autocomplete.PlaceAutocompleteSuggestion;
 import com.mapbox.search.ui.adapter.autocomplete.PlaceAutocompleteUiAdapter;
 import com.mapbox.search.ui.view.CommonSearchViewConfiguration;
 import com.mapbox.search.ui.view.SearchResultsView;
+import com.mapbox.turf.TurfClassification;
+import com.mapbox.turf.TurfMisc;
 
 
 import java.util.ArrayList;
@@ -117,13 +120,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import com.example.doan.Mapbox;
 public class FragmentMap extends Fragment
         implements PermissionsListener {
     private MapView mapView;
     private PermissionsManager permissionsManager;
 
-    private List<Pothole> potholes ;
+    private List<Point> potholeList ;
     //Các thành phần của layout
     private FloatingActionButton navigationButton;
     private FloatingActionButton mylocationButton;
@@ -140,13 +142,6 @@ public class FragmentMap extends Fragment
     private static final String RED_PIN_ICON_ID = "red-pin-icon-id";
     private String sysbolIconId = "symbolIconId";
     private String geojsonSourceLayerId = "geojsonSourceLayerId";
-    //Các thành phần trên map navigation Mapbox
-    MapboxNavigation navigation;
-    private CarmenContext home;
-    private CarmenContext work;
-    //route
-    private MapboxDirections client;
-    double distance;
 
     public FragmentMap() {
         super(R.layout.fragment_map);
@@ -277,42 +272,42 @@ public class FragmentMap extends Fragment
         });
     }
 
-
+    LatLng LatLng;
     //Tạo các điểm pothole cố định trên map
     private void createPointPothole(){
 
-        potholes = new ArrayList<>();
-        Pothole pothole1 = new Pothole(10.866296, 106.8017840);
-        Pothole pothole2 = new Pothole(10.867776, 106.803824);
-        Pothole pothole3 = new Pothole(10.867172, 106.803109);
-        Pothole pothole4 = new Pothole(10.873592, 106.803434);
-        Pothole pothole5 = new Pothole(10.874991, 106.805494);
-        Pothole pothole6 = new Pothole(10.872040, 106.798741);
-        potholes.add(pothole1);
-        potholes.add(pothole2);
-        potholes.add(pothole3);
-        potholes.add(pothole4);
-        potholes.add(pothole5);
-        potholes.add(pothole6);
+        potholeList = new ArrayList<>();
+        Point pothole1 = Point.fromLngLat( 106.8030533,10.8700083);
+        Point pothole2 = Point.fromLngLat( 106.8041,10.87015);
+        Point pothole3 = Point.fromLngLat( 106.8049,10.86918);
+        Point pothole4 = Point.fromLngLat( 106.8024,10.86771);
+        Point pothole5 = Point.fromLngLat( 106.8024,10.86672);
+        Point pothole6 = Point.fromLngLat( 106.7993,10.86475);
+        potholeList.add(pothole1);
+        potholeList.add(pothole2);
+        potholeList.add(pothole3);
+        potholeList.add(pothole4);
+        potholeList.add(pothole5);
+        potholeList.add(pothole6);
     }
 
     private PointAnnotationManager pointPotholeAnnotationManager ;
     //Quản lí các điểm pothole trên map
     public void addPotholeToMap(){
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_pothole_pin);
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_pothole_waning_map);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
         AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
         pointPotholeAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
 
-
+        for ( Point potholePoint : potholeList) {
             PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                     .withTextAnchor(TextAnchor.CENTER)
-                    .withIconImage(bitmap)
-                    .withPoint(Point.fromLngLat(10.866296, 106.8017840));
+                    .withIconImage(resizedBitmap)
+                    .withPoint(potholePoint);
             pointPotholeAnnotationManager.create(pointAnnotationOptions);
 
-
-
+//            Toast.makeText(getContext(), "Pothole", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setclickOnMap(){
@@ -414,23 +409,6 @@ public class FragmentMap extends Fragment
 
                 setclickOnMap();
 
-
-                Drawable drawable = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_layer_symbol,null);
-                Bitmap bitmap = BitmapUtils.INSTANCE.getBitmapFromDrawable(drawable);
-                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
-
-                //Add the symbol layer icon to map for future use
-                style.addImage(sysbolIconId,bitmap);
-
-//                //Create an empty GeoJson source using the empty feature collection.
-//                setUpSource(style);
-//
-//                //Set up a new symbol layer for displaying the searched location's feature coordinates.
-//                setupLayer(style);
-//
-//                initSource(style);
-//
-//                initlayer(style)
             }
         });
 
@@ -447,7 +425,7 @@ public class FragmentMap extends Fragment
                 Location location = result.getLastLocation();
 
                 Point origin = Point.fromLngLat(location.getLongitude(), location.getLatitude());
-
+                Toast.makeText(getContext(), String.valueOf(location.getLongitude()) + "   "+String.valueOf(location.getLatitude()), Toast.LENGTH_SHORT).show();
                 MapboxDirections.Builder builder = MapboxDirections.builder();
                 RouteOptions routeOptions = RouteOptions.builder()
                         .profile(DirectionsCriteria.PROFILE_DRIVING_TRAFFIC)
@@ -470,19 +448,50 @@ public class FragmentMap extends Fragment
 
                         LineString lineString = LineString.fromPolyline(currentRoute.geometry(),PRECISION_6);
 
+                        //Các điểm hình thành lên linestring
+                        List<Point> pointList = lineString.coordinates();
+                        List<Point> potholeonLineList;
+//                        for (Point routePoint : pointList) {
+//                            Log.d("LineStringPoint", "Longitude: " + routePoint.longitude() + ", Latitude: " + routePoint.latitude());
+//                            Point nearestPothole = TurfClassification.nearestPoint(routePoint, potholeList);
+//                            Log.d("LineStringPoint ","Các pothole gần với " + " " + + routePoint.longitude() + " " + routePoint.latitude()+"là ");
+//
+//                            Log.d("LineStringPoint ","Latitude: " + nearestPothole.latitude());
+//                            Log.d("LineStringPoint ","Longitude: " + nearestPothole.longitude());
+//                            Log.d("LineStringPoint ","khoảng cách từ đầu đến điểm này" + " " + haversine(origin,routePoint));
+//                            Log.d("LineStringPoint ","");
+//
+//                        }
+                        for (Point potholePoint : potholeList) {
+                            // Tìm điểm gần nhất trên LineString
+                            boolean check= booleanPointOnLine(potholePoint,lineString);
+                            // In ra thông tin về điểm pothole gần nhất
+                            Log.d("On line", "Pothole at: " + potholePoint.coordinates() + " on line: " +check) ;
+                        }
                         Feature routeFeature = Feature.fromGeometry(lineString);
                         // Make a toast which displays the route's distance
-                        String encodedPolyline = currentRoute.geometry();
+
+
+
                         Toast.makeText(getContext(), String.format("Route distance: %.2f meters", currentRoute.distance()), Toast.LENGTH_SHORT).show();
                         mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS,style -> {
-                            GeoJsonSource.Builder route = new GeoJsonSource.Builder(ROUTE_SOURCE_ID).feature(routeFeature);
+                            GeoJsonSource.Builder lineRoute = new GeoJsonSource.Builder(ROUTE_SOURCE_ID).feature(routeFeature);
+                            GeoJsonSource.Builder pointRoute = new GeoJsonSource.Builder(ICON_SOURCE_ID).feature(routeFeature);
 
-                            SourceUtils.addSource(style,route.build());
+                            SourceUtils.addSource(style,lineRoute.build());
+                            SourceUtils.addSource(style,pointRoute.build());
                             LineLayer routeLayer = new LineLayer(ROUTE_LAYER_ID, ROUTE_SOURCE_ID)
                                     .lineColor("#3b9ddd")
-                                    .lineWidth(5F);
+                                    .lineWidth(3F);
                             LayerUtils.addLayer(style,routeLayer);
+                            // Add a CircleLayer to display the points
+                            CircleLayer pointLayer = new CircleLayer(ICON_LAYER_ID, ICON_SOURCE_ID)
+                                    .circleRadius(8f)
+                                    .circleColor("#3b9ddd");
+
+                            LayerUtils.addLayer(style, pointLayer);
                         });
+
 
                     }
 
@@ -498,5 +507,84 @@ public class FragmentMap extends Fragment
 
             }
         });
+    }
+    public static double haversine(Point source , Point destination) {
+
+        double lat1= source.latitude();
+        double lon1= source.longitude();
+        double lat2= destination.latitude();
+        double lon2= destination.longitude();
+        final int R = 6371; // Radius of the Earth in km
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // Returns distance in kilometers
+    }
+    // Hàm kiểm tra điểm có nằm trên LineString hay không
+    public static boolean booleanPointOnLine(Point point, LineString lineString) {
+        // Duyệt qua tất cả các đoạn tuyến trong LineString
+        for (int i = 0; i < lineString.coordinates().size() - 1; i++) {
+            Point start = lineString.coordinates().get(i);
+            Point end = lineString.coordinates().get(i + 1);
+
+            // Kiểm tra khoảng cách từ điểm tới đoạn thẳng (tính bằng độ dài khoảng cách)
+            if (isPointOnSegment(point, start, end)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Hàm kiểm tra điểm có nằm trên đoạn thẳng giữa 2 điểm không
+    private static boolean isPointOnSegment(Point point, Point start, Point end) {
+        // Tính toán khoảng cách từ điểm tới đoạn thẳng
+        double distance = distanceFromPointToSegment(point, start, end);
+        // Đặt một ngưỡng độ chính xác (tolerance)
+        return distance < 0.0001; // Bạn có thể thay đổi giá trị này để phù hợp với yêu cầu
+    }
+
+    // Hàm tính khoảng cách từ điểm đến đoạn thẳng
+    private static double distanceFromPointToSegment(Point point, Point start, Point end) {
+        double x0 = point.longitude();
+        double y0 = point.latitude();
+        double x1 = start.longitude();
+        double y1 = start.latitude();
+        double x2 = end.longitude();
+        double y2 = end.latitude();
+
+        // Tính chiều dài đoạn thẳng (x1, y1) đến (x2, y2)
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+
+        // Tính khoảng cách từ điểm (x0, y0) tới đoạn thẳng
+        double dot = (x0 - x1) * dx + (y0 - y1) * dy;
+        double lengthSquared = dx * dx + dy * dy;
+        double param = -1.0;
+
+        // Tính toán điểm gần nhất trên đoạn thẳng
+        if (lengthSquared != 0) { // Tránh chia cho 0
+            param = dot / lengthSquared;
+        }
+
+        double nearestX, nearestY;
+
+        if (param < 0) {
+            nearestX = x1;
+            nearestY = y1;
+        } else if (param > 1) {
+            nearestX = x2;
+            nearestY = y2;
+        } else {
+            nearestX = x1 + param * dx;
+            nearestY = y1 + param * dy;
+        }
+
+        // Tính khoảng cách giữa điểm và điểm gần nhất trên đoạn thẳng
+        double dx2 = x0 - nearestX;
+        double dy2 = y0 - nearestY;
+        return Math.sqrt(dx2 * dx2 + dy2 * dy2);
     }
 }

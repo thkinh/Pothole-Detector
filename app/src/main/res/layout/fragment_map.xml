@@ -7,11 +7,11 @@
         android:id="@+id/mapbox"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:mapbox_cameraBearing="0.0"
+        app:mapbox_cameraPitch="0.0"
         app:mapbox_cameraTargetLat="39.5"
         app:mapbox_cameraTargetLng="-98.0"
-        app:mapbox_cameraZoom="2.0"
-        app:mapbox_cameraPitch="0.0"
-        app:mapbox_cameraBearing="0.0" />
+        app:mapbox_cameraZoom="2.0" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
