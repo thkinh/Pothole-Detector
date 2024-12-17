@@ -10,9 +10,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.doan.databinding.AtMainBinding;
+import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapFragmentInteractionListener {
 
     AtMainBinding binding;
     private FragmentManager fragmentManager;
@@ -35,6 +36,13 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
     }
+
+
+    @Override
+    public void onMapButtonClicked(Fragment fragment) {
+        replaceFragment(fragment);
+    }
+
 
 
     private void replaceFragment(Fragment fragment) {

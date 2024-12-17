@@ -1,14 +1,17 @@
 package com.example.doan;
 
 
+import static com.mapbox.core.constants.Constants.PRECISION_6;
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.addOnMapClickListener;
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.getGestures;
 import static com.mapbox.maps.plugin.locationcomponent.LocationComponentUtils.getLocationComponent;
 import static com.mapbox.navigation.base.extensions.RouteOptionsExtensions.applyDefaultNavigationOptions;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,11 +22,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
 import com.example.doan.model.Pothole;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -39,16 +46,40 @@ import com.mapbox.api.directions.v5.MapboxDirections;
 
 
 import com.mapbox.api.directions.v5.models.Bearing;
+import com.mapbox.api.geocoding.v5.models.CarmenContext;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.GeoJson;
+import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 
 
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.api.directions.v5.models.RouteOptions;
+
+import com.mapbox.geojson.Point;
+import com.mapbox.geojson.MultiPoint;
+import com.mapbox.geojson.LineString;
+import com.mapbox.geojson.MultiLineString;
+import com.mapbox.geojson.Polygon;
+import com.mapbox.geojson.MultiPolygon;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
+
+import com.mapbox.geojson.utils.PolylineUtils;
 import com.mapbox.maps.CameraOptions;
 import com.mapbox.maps.MapView;
+import com.mapbox.maps.MapboxMap;
 import com.mapbox.maps.Style;
+import com.mapbox.maps.extension.style.layers.Layer;
+import com.mapbox.maps.extension.style.layers.LayerUtils;
+import com.mapbox.maps.extension.style.layers.generated.LineLayer;
+import com.mapbox.maps.extension.style.layers.generated.SymbolLayer;
 import com.mapbox.maps.extension.style.layers.properties.generated.TextAnchor;
+import com.mapbox.maps.extension.style.sources.SourceUtils;
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource;
+
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
 import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
@@ -57,16 +88,21 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
 import com.mapbox.maps.plugin.gestures.OnMoveListener;
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin;
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener;
+import com.mapbox.maps.plugin.locationcomponent.utils.BitmapUtils;
 import com.mapbox.maps.viewannotation.ViewAnnotationManager;
+import com.mapbox.navigation.base.options.NavigationOptions;
 import com.mapbox.navigation.base.route.NavigationRoute;
 import com.mapbox.navigation.base.route.NavigationRouterCallback;
 import com.mapbox.navigation.base.route.RouterFailure;
 import com.mapbox.navigation.base.route.RouterOrigin;
+import com.mapbox.navigation.core.MapboxNavigation;
+
 import com.mapbox.search.autocomplete.PlaceAutocomplete;
 import com.mapbox.search.autocomplete.PlaceAutocompleteSuggestion;
 import com.mapbox.search.ui.adapter.autocomplete.PlaceAutocompleteUiAdapter;
 import com.mapbox.search.ui.view.CommonSearchViewConfiguration;
 import com.mapbox.search.ui.view.SearchResultsView;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,7 +117,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
+import com.example.doan.Mapbox;
 public class FragmentMap extends Fragment
         implements PermissionsListener {
     private MapView mapView;
@@ -96,12 +132,21 @@ public class FragmentMap extends Fragment
     private SearchResultsView searchResultsView;
     private TextInputEditText searchET;
     private boolean ignoreNextQueryUpdate = false;
+    //Các thành phần trên map Mapbox
     private static final String ROUTE_LAYER_ID = "route-layer-id";
     private static final String ROUTE_SOURCE_ID = "route-source-id";
     private static final String ICON_LAYER_ID = "icon-layer-id";
     private static final String ICON_SOURCE_ID = "icon-source-id";
     private static final String RED_PIN_ICON_ID = "red-pin-icon-id";
-
+    private String sysbolIconId = "symbolIconId";
+    private String geojsonSourceLayerId = "geojsonSourceLayerId";
+    //Các thành phần trên map navigation Mapbox
+    MapboxNavigation navigation;
+    private CarmenContext home;
+    private CarmenContext work;
+    //route
+    private MapboxDirections client;
+    double distance;
 
     public FragmentMap() {
         super(R.layout.fragment_map);
@@ -237,7 +282,7 @@ public class FragmentMap extends Fragment
     private void createPointPothole(){
 
         potholes = new ArrayList<>();
-        Pothole pothole1 = new Pothole(10.868698, 106.8885);
+        Pothole pothole1 = new Pothole(10.866296, 106.8017840);
         Pothole pothole2 = new Pothole(10.867776, 106.803824);
         Pothole pothole3 = new Pothole(10.867172, 106.803109);
         Pothole pothole4 = new Pothole(10.873592, 106.803434);
@@ -259,19 +304,19 @@ public class FragmentMap extends Fragment
         AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
         pointPotholeAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
 
-        for (Pothole pothle : potholes) {
 
             PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                     .withTextAnchor(TextAnchor.CENTER)
-                    .withIconImage(resizedBitmap)
-                    .withPoint(Point.fromLngLat(pothle.GetLongitude(),pothle.GetLattitude()));
+                    .withIconImage(bitmap)
+                    .withPoint(Point.fromLngLat(10.866296, 106.8017840));
             pointPotholeAnnotationManager.create(pointAnnotationOptions);
 
-        }
+
 
     }
 
     private void setclickOnMap(){
+
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
@@ -293,8 +338,20 @@ public class FragmentMap extends Fragment
             // Gọi hàm getRoute với point
             getRoute(pointDestination);
 
+
             return false;
         });
+    }
+
+
+    private OnMapFragmentInteractionListener listener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof OnMapFragmentInteractionListener){
+            listener = (OnMapFragmentInteractionListener) context;
+        }
     }
 
     @Override
@@ -344,6 +401,11 @@ public class FragmentMap extends Fragment
             @Override
             public void onStyleLoaded(@NonNull Style style) {
 
+
+                navigationButton.setOnClickListener(viewButton ->{
+                    listener.onMapButtonClicked(new FragmentMapNavigation());
+                } );
+
                 addPotholeToMap();
 
                 setMylocationButton();
@@ -353,13 +415,26 @@ public class FragmentMap extends Fragment
                 setclickOnMap();
 
 
+                Drawable drawable = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_layer_symbol,null);
+                Bitmap bitmap = BitmapUtils.INSTANCE.getBitmapFromDrawable(drawable);
+                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
 
+                //Add the symbol layer icon to map for future use
+                style.addImage(sysbolIconId,bitmap);
+
+//                //Create an empty GeoJson source using the empty feature collection.
+//                setUpSource(style);
+//
+//                //Set up a new symbol layer for displaying the searched location's feature coordinates.
+//                setupLayer(style);
+//
+//                initSource(style);
+//
+//                initlayer(style)
             }
         });
 
     }
-
-
 
     @SuppressLint("MissingPermission")
     private void getRoute(Point destination) {
@@ -392,8 +467,22 @@ public class FragmentMap extends Fragment
                         DirectionsResponse directionsResponse = response.body();
                         DirectionsRoute currentRoute = directionsResponse.routes().get(0);
 
+
+                        LineString lineString = LineString.fromPolyline(currentRoute.geometry(),PRECISION_6);
+
+                        Feature routeFeature = Feature.fromGeometry(lineString);
                         // Make a toast which displays the route's distance
+                        String encodedPolyline = currentRoute.geometry();
                         Toast.makeText(getContext(), String.format("Route distance: %.2f meters", currentRoute.distance()), Toast.LENGTH_SHORT).show();
+                        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS,style -> {
+                            GeoJsonSource.Builder route = new GeoJsonSource.Builder(ROUTE_SOURCE_ID).feature(routeFeature);
+
+                            SourceUtils.addSource(style,route.build());
+                            LineLayer routeLayer = new LineLayer(ROUTE_LAYER_ID, ROUTE_SOURCE_ID)
+                                    .lineColor("#3b9ddd")
+                                    .lineWidth(5F);
+                            LayerUtils.addLayer(style,routeLayer);
+                        });
 
                     }
 

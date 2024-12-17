@@ -92,12 +92,11 @@ dependencies {
     debugImplementation libs.ui.tooling
     debugImplementation libs.ui.test.manifest
     //Mapbox SDK for Android
-    implementation 'com.mapbox.navigation:android:2.15.2'
+    implementation "com.mapbox.navigation:android:2.20.2"
     implementation 'com.mapbox.maps:android:10.15.0'
     //Search
     implementation "com.mapbox.search:mapbox-search-android-ui:1.0.0-rc.6"
     //Mapbox for java
-    implementation 'com.mapbox.mapboxsdk:mapbox-sdk-geojson:7.3.1'
 //    implementation 'com.mapbox.maps:android:11.8.1'
 //    implementation('com.mapbox.maps:android:11.8.1') {
 //        exclude group: 'com.google.android.gms', module: 'play-services-cronet'
