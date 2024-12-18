@@ -22,17 +22,12 @@
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
         <activity
-            android:name=".OPTActive2"
+            android:name=".OTPActive2"
             android:exported="false" />
         <activity
             android:name=".Notify"
             android:exported="false" />
-        <activity
-            android:name=".StatiticsActivity"
-            android:exported="true" />
-        <activity
-            android:name=".AllUsersActivity"
-            android:exported="true" />
+
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -59,9 +54,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".MainDashboard"
-            android:exported="true" />
         <activity
             android:name=".LoginActivity"
             android:exported="true" />

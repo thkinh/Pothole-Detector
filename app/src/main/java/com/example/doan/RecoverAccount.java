@@ -61,7 +61,7 @@ public class RecoverAccount extends androidx.appcompat.app.AppCompatActivity {
 
     // Hàm điều hướng về màn hình OPT
     private void navigateToOPTScreen() {
-        Intent intent = new Intent(RecoverAccount.this, OPTActive2.class);
+        Intent intent = new Intent(RecoverAccount.this, OTPActive2.class);
         startActivity(intent);
     }
 }

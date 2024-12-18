@@ -1,27 +1,27 @@
 package com.example.doan;
 
 import android.os.Bundle;
-import android.widget.ListView;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class AllUsersActivity extends AppCompatActivity {
+public class FragmentUser extends Fragment {
 
     private ListAdapterUser listAdapterUser;
     private ArrayList<ListDataUser> userArrayList = new ArrayList<>();
     private ListDataUser listDataUser;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.at_allusers);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_user, container, false);
 
         // Set up the user list
         int[] userImageList = {R.drawable.avt_linhxeom, R.drawable.avt_taichodien, R.drawable.avt_linhxeom};
@@ -31,8 +31,12 @@ public class AllUsersActivity extends AppCompatActivity {
             listDataUser = new ListDataUser(userNameList[i], dateList[i], userImageList[i]);
             userArrayList.add(listDataUser);
         }
-        listAdapterUser = new ListAdapterUser(this, userArrayList);
-        ListView listViewRoute = findViewById(R.id.listuser);
-        listViewRoute.setAdapter(listAdapterUser);
+        listAdapterUser = new ListAdapterUser(getContext(), userArrayList);
+        ListView listViewUser = view.findViewById(R.id.listuser);
+        listViewUser.setAdapter(listAdapterUser);
+
+        return view;
     }
+
+
 }

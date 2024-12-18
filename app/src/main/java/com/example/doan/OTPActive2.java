@@ -9,11 +9,8 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-public class OPTActive2 extends AppCompatActivity {
+public class OTPActive2 extends AppCompatActivity {
 
     private Button cofirmButton;
     private EditText editTextOTP;
@@ -22,7 +19,7 @@ public class OPTActive2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.at_opt_code);
+        setContentView(R.layout.at_otp_code);
 
         // Ánh xạ các view từ layout
         editTextOTP = findViewById(R.id.editText_otp);
@@ -43,7 +40,7 @@ public class OPTActive2 extends AppCompatActivity {
             return;
         }
         // Hiển thị thông báo đăng ký thành công
-        Toast.makeText(OPTActive2.this, "Confirm OTP successful", Toast.LENGTH_SHORT).show();
+        Toast.makeText(OTPActive2.this, "Confirm OTP successful", Toast.LENGTH_SHORT).show();
 
         // Điều hướng về màn hình đăng nhập
         navigateToLoginScreen();
@@ -51,7 +48,7 @@ public class OPTActive2 extends AppCompatActivity {
 
     // Hàm điều hướng về màn hình OPT
     private void navigateToLoginScreen() {
-        Intent intent = new Intent(OPTActive2.this, LoginActivity.class);
+        Intent intent = new Intent(OTPActive2.this, LoginActivity.class);
         startActivity(intent);
     }
 }
