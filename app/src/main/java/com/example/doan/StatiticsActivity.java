@@ -49,7 +49,7 @@ public class StatiticsActivity extends AppCompatActivity {
         // Set up the route list
         int[] routeImageList = {R.drawable.img_pothole, R.drawable.img_pothole2, R.drawable.img_pothole};
         String[] routeNameList = {"Đặng Văn Cẩn", "Võ Văn Ngân", "Nguyễn Thị Thập"};
-        String[] quantityList = {"6 potholes", "9 potholes", "3 potholes"};
+        String[] quantityList = {"6 latLngList", "9 latLngList", "3 latLngList"};
         for (int i = 0; i < routeImageList.length; i++) {
             listDataRoute = new ListDataRoute(routeNameList[i], quantityList[i], routeImageList[i]);
             routeArrayList.add(listDataRoute);

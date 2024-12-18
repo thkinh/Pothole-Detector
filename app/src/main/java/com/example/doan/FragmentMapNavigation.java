@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -146,6 +145,7 @@ public class FragmentMapNavigation extends Fragment {
     };
     boolean focusLocation = true;
     private MapboxNavigation mapboxNavigation;
+
     private void updateCamera(Point point, Double bearing) {
         MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
         CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(18.0).bearing(bearing).pitch(45.0)
@@ -153,6 +153,7 @@ public class FragmentMapNavigation extends Fragment {
 
         getCamera(mapView).easeTo(cameraOptions, animationOptions);
     }
+
     private final OnMoveListener onMoveListener = new OnMoveListener() {
         @Override
         public void onMoveBegin(@NonNull MoveGestureDetector moveGestureDetector) {
@@ -250,10 +251,10 @@ public class FragmentMapNavigation extends Fragment {
             });
         }
     };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
 
     }
@@ -265,14 +266,13 @@ public class FragmentMapNavigation extends Fragment {
         return view;
     }
 
-
-
     private OnMapFragmentInteractionListener listener;
+
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof OnMapFragmentInteractionListener){
+        if (context instanceof OnMapFragmentInteractionListener) {
             listener = (OnMapFragmentInteractionListener) context;
         }
     }

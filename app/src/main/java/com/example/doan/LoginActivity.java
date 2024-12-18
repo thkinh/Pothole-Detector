@@ -77,15 +77,10 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize sign in client
         gsc1 = GoogleSignIn.getClient(this, gso1);
 
-        // Thiết lập sự kiện nhấn cho nút Google Sign In
-        googleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                googlesignIn();
-            }
+        googleButton.setOnClickListener(view -> {
+            googlesignIn();
         });
 
-        // Thiết lập sự kiện nhấn cho nút Login
         loginButton.setOnClickListener(view -> handleLogin());
 
         askSignupText.setOnClickListener(v-> {

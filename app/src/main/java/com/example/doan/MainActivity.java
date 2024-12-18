@@ -2,7 +2,6 @@ package com.example.doan;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,8 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
 import com.example.doan.databinding.AtMainBinding;
+import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapFragmentInteractionListener {
