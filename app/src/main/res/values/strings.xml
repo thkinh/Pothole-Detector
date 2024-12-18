@@ -33,7 +33,10 @@
     <string name="btn_finish">Finish</string>
     <string name="btn_continueWGoogle">Continue with Google</string>
     <string name="btn_confirm">Confirm</string>
+    <string name="btn_findRoute">Find Route</string>
 
+    <string name="txt_choose_destination">Choose destination or pin on...</string>
+    <string name="txt_choose_starting_point">Choose starting point</string>
     <string name="txt_username">Username</string>
     <string name="txt_opt">OTP CODE</string>
     <string name="txt_email">Email</string>

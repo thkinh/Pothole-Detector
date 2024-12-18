@@ -13,35 +13,52 @@
         app:mapbox_cameraTargetLng="-98.0"
         app:mapbox_cameraZoom="2.0" />
 
-    <com.google.android.material.textfield.TextInputLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64sp"
-        android:layout_marginStart="10sp"
-        android:layout_marginEnd="10sp"
-        android:elevation="4dp"
-        android:hint="@string/search_edittext"
-        android:id="@+id/searchLayout"
-        app:boxCornerRadiusBottomEnd="20sp"
-        app:boxCornerRadiusBottomStart="20sp"
-        app:boxCornerRadiusTopEnd="20sp"
-        app:boxCornerRadiusTopStart="20sp"
-        app:boxStrokeWidthFocused="0sp"
-        app:boxStrokeWidth="0sp"
-        app:startIconDrawable="@drawable/ic_search_map"
-        style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense">
-    <com.google.android.material.textfield.TextInputEditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:id="@+id/searchET"/>
-    </com.google.android.material.textfield.TextInputLayout>
+        android:layout_marginTop="38dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="4dp">
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_edittext"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_search_map" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/searchET"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/search_edittext"
+                    android:padding="4dp"
+                    android:textSize="22sp"
+                    android:inputType="text" />
+            </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
+    </androidx.cardview.widget.CardView>
 
     <com.mapbox.search.ui.view.SearchResultsView
+        android:id="@+id/search_results_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/search_results_view"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
         android:visibility="gone"
@@ -50,36 +67,29 @@
         android:paddingBottom="22dp"
         android:layout_below="@id/searchLayout" />
 
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="10dp">
-
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="18dp">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-
-            android:layout_alignParentBottom="true"
             android:id="@+id/mylocationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:src="@drawable/ic_my_location_button"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/color_2"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-
             android:id="@+id/navigationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:src="@drawable/ic_direction_map_button"
-            android:layout_marginBottom="10dp"/>
-
-
+            android:layout_marginBottom="30dp"
+            android:backgroundTint="@color/color_2"/>
     </LinearLayout>
-
 </RelativeLayout>
