@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -24,6 +25,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.PieChart;
@@ -42,14 +45,6 @@ import java.util.concurrent.Executor;
 
 public class FragmentDashboard extends Fragment {
 
-    private ListAdapterUser listAdapterUser;
-    private ArrayList<ListDataUser> userArrayList = new ArrayList<>();
-    private ListDataUser listDataUser;
-
-    private ListAdapterRoute listAdapterRoute;
-    private ArrayList<ListDataRoute> routeArrayList = new ArrayList<>();
-    private ListDataRoute listDataRoute;
-
     private PieChart pieChart;
 
     // For Firebase Auth and Google Sign In
@@ -58,6 +53,10 @@ public class FragmentDashboard extends Fragment {
     private ImageButton btLogout;
     private FirebaseAuth mAuth;
     private GoogleSignInClient googleSignInClient;
+
+    // For Switching between User and Route in the middle CardView
+    private Button btnUser;
+    private Button btnRoute;
 
     public FragmentDashboard() {
         // Required empty public constructor
@@ -72,6 +71,22 @@ public class FragmentDashboard extends Fragment {
 
         context = getActivity();
 
+        // Assign variables
+        ivImage = view.findViewById(R.id.avt);
+        tvName = view.findViewById(R.id.txt_name);
+        btLogout = view.findViewById(R.id.ic_power);
+        btnUser = view.findViewById(R.id.switch_to_user);
+        btnRoute = view.findViewById(R.id.switch_to_route);
+        btnRoute.setTextColor(getResources().getColor(R.color.gray));
+
+        // Add this block to ensure FragmentUser is displayed first
+        FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+        ft.replace(R.id.fragment_switching, new FragmentUser());
+        ft.commit();
+        btnUser.setBackgroundColor(getResources().getColor(R.color.darkpacificblue));
+        btnUser.setTextColor(getResources().getColor(R.color.white));
+
+//--------------------------Start of statistics--------------------------
         // Set up the graph
         GraphView graph = view.findViewById(R.id.graph);
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(getDataPoint());
@@ -90,36 +105,10 @@ public class FragmentDashboard extends Fragment {
         data.setValueTextSize(2f);
         data.setValueTextColor(R.color.black);
         pieChart.setData(data);
+//---------------------End of statistics---------------------
 
-        // Set up the user list
-        int[] userImageList = {R.drawable.avt_linhxeom, R.drawable.avt_taichodien, R.drawable.avt_linhxeom};
-        String[] userNameList = {"Linh xe ôm", "Tài chó điên", "Linh 14"};
-        String[] dateList = {"05/11/2024", "20/10/2024", "01/04/2014"};
-        for (int i = 0; i < userImageList.length; i++) {
-            listDataUser = new ListDataUser(userNameList[i], dateList[i], userImageList[i]);
-            userArrayList.add(listDataUser);
-        }
-        listAdapterUser = new ListAdapterUser(getContext(), userArrayList);
-        ListView listViewUser = view.findViewById(R.id.listuser);
-        listViewUser.setAdapter(listAdapterUser);
 
-        // Set up the route list
-        int[] routeImageList = {R.drawable.img_pothole, R.drawable.img_pothole2, R.drawable.img_pothole};
-        String[] routeNameList = {"Đặng Văn Cẩn", "Võ Văn Ngân", "Nguyễn Thị Thập"};
-        String[] quantityList = {"6 potholes", "9 potholes", "3 potholes"};
-        for (int i = 0; i < routeImageList.length; i++) {
-            listDataRoute = new ListDataRoute(routeNameList[i], quantityList[i], routeImageList[i]);
-            routeArrayList.add(listDataRoute);
-        }
-        listAdapterRoute = new ListAdapterRoute(getContext(), routeArrayList);
-        ListView listViewRoute = view.findViewById(R.id.listroute);
-        listViewRoute.setAdapter(listAdapterRoute);
-
-        // Assign variables
-        ivImage = view.findViewById(R.id.avt);
-        tvName = view.findViewById(R.id.txt_name);
-        btLogout = view.findViewById(R.id.ic_power);
-
+// ---------------------Start of google sign in---------------------
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         // Initialize Firebase user
@@ -141,6 +130,36 @@ public class FragmentDashboard extends Fragment {
         // Gắn sự kiện cho nút Logout
         btLogout = view.findViewById(R.id.ic_power);
         btLogout.setOnClickListener(v -> logout());
+//----------------------------End of google sign in---------------------
+
+
+//----------------------------Start of user and route---------------------
+        btnUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+                ft.replace(R.id.fragment_switching, new FragmentUser());
+                ft.commit();
+                btnUser.setBackgroundColor(getResources().getColor(R.color.darkpacificblue));
+                btnUser.setTextColor(getResources().getColor(R.color.white));
+                btnRoute.setBackgroundColor(getResources().getColor(R.color.pacificblue));
+                btnRoute.setTextColor(getResources().getColor(R.color.gray));
+            }
+        });
+
+        btnRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+                ft.replace(R.id.fragment_switching, new FragmentRoute());
+                ft.commit();
+                btnUser.setBackgroundColor(getResources().getColor(R.color.pacificblue));
+                btnUser.setTextColor(getResources().getColor(R.color.gray));
+                btnRoute.setBackgroundColor(getResources().getColor(R.color.darkpacificblue));
+                btnRoute.setTextColor(getResources().getColor(R.color.white));
+            }
+        });
+
 
         return view;
     }
