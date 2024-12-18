@@ -159,7 +159,34 @@ public class FragmentDashboard extends Fragment {
                 btnRoute.setTextColor(getResources().getColor(R.color.white));
             }
         });
+//----------------------------End of user and route---------------------
 
+//Bấm vô chữ "trong 7 ngay...." hoặc "muc đo nguy hiem" sẽ chuyen sang fragment statitics
+        TextView newRecentlyTxt = view.findViewById(R.id.txt_recently);
+        if (newRecentlyTxt != null) {
+            newRecentlyTxt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+                    ft.replace(R.id.mainlayout, new FragmentStatistic());
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+            });
+        }
+        TextView newDangerLevelTxt = view.findViewById(R.id.txt_dangerlevel);
+        if (newDangerLevelTxt != null) {
+            newDangerLevelTxt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+                    ft.replace(R.id.mainlayout, new FragmentStatistic());
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+            });
+        }
+//Bấm vô chữ "trong 7 ngay...." hoặc "muc đo nguy hiem" sẽ chuyen sang fragment statitics
 
         return view;
     }
@@ -186,56 +213,7 @@ public class FragmentDashboard extends Fragment {
         requireActivity().finish();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        if (context != null) {
-            TextView newDetailUserTxt = context.findViewById(R.id.viewdetail_user);
-            if (newDetailUserTxt != null) {
-                newDetailUserTxt.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(context, AllUsersActivity.class);
-                        startActivity(intent);
-                    }
-                });
-            }
-
-            TextView newDetailRouteTxt = context.findViewById(R.id.viewdetail_route);
-            if (newDetailRouteTxt != null) {
-                newDetailRouteTxt.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(context, StatiticsActivity.class);
-                        startActivity(intent);
-                    }
-                });
-            }
-
-            TextView newRecentlyTxt = context.findViewById(R.id.txt_recently);
-            if (newRecentlyTxt != null) {
-                newRecentlyTxt.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(context, StatiticsActivity.class);
-                        startActivity(intent);
-                    }
-                });
-            }
-            TextView newDangerLevelTxt = context.findViewById(R.id.txt_dangerlevel);
-            if (newDangerLevelTxt != null) {
-                newDangerLevelTxt.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(context, StatiticsActivity.class);
-                        startActivity(intent);
-                    }
-                });
-            }
-        }
-    }
-
+//------------------Cái này cho cái biểu đồ cột---------------------
     private DataPoint[] getDataPoint() {
         return new DataPoint[]{
                 new DataPoint(0, 1),
@@ -245,4 +223,6 @@ public class FragmentDashboard extends Fragment {
                 new DataPoint(4, 6)
         };
     }
+//------------------Cái này cho cái biểu đồ cột---------------------
+
 }

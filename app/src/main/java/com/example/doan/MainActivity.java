@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements OnMapFragmentInte
     }
 
 
-
     private void replaceFragment(Fragment fragment) {
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

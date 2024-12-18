@@ -1,9 +1,14 @@
 package com.example.doan;
 
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -12,9 +17,15 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
+
 import java.util.ArrayList;
 
-public class StatiticsActivity extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link FragmentStatistic#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class FragmentStatistic extends Fragment {
 
     private PieChart pieChart;
 
@@ -22,19 +33,24 @@ public class StatiticsActivity extends AppCompatActivity {
     private ArrayList<ListDataRoute> routeArrayList = new ArrayList<>();
     private ListDataRoute listDataRoute;
 
+    public FragmentStatistic() {
+        // Required empty public constructor
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.at_statitics);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_statistic, container, false);
 
         // Set up the graph
-        GraphView graph = findViewById(R.id.graph);
+        GraphView graph = view.findViewById(R.id.graph);
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(getDataPoint());
         graph.addSeries(series);
         series.setSpacing(10);
 
         // Set up the chart
-        pieChart = findViewById(R.id.piechart);
+        pieChart = view.findViewById(R.id.piechart);
         ArrayList<PieEntry> yValues = new ArrayList<>();
         yValues.add(new PieEntry(34f));
         yValues.add(new PieEntry(23f));
@@ -46,17 +62,7 @@ public class StatiticsActivity extends AppCompatActivity {
         data.setValueTextColor(R.color.black);
         pieChart.setData(data);
 
-        // Set up the route list
-        int[] routeImageList = {R.drawable.img_pothole, R.drawable.img_pothole2, R.drawable.img_pothole};
-        String[] routeNameList = {"Đặng Văn Cẩn", "Võ Văn Ngân", "Nguyễn Thị Thập"};
-        String[] quantityList = {"6 latLngList", "9 latLngList", "3 latLngList"};
-        for (int i = 0; i < routeImageList.length; i++) {
-            listDataRoute = new ListDataRoute(routeNameList[i], quantityList[i], routeImageList[i]);
-            routeArrayList.add(listDataRoute);
-        }
-        listAdapterRoute = new ListAdapterRoute(this, routeArrayList);
-        ListView listViewRoute = findViewById(R.id.listroute);
-        listViewRoute.setAdapter(listAdapterRoute);
+        return view;
     }
 
     private DataPoint[] getDataPoint() {
