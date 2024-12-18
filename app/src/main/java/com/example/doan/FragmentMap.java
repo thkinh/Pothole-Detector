@@ -726,7 +726,15 @@ public class FragmentMap extends Fragment
 
         navigationButton.setOnClickListener(butotn ->{
             searchET.setVisibility(View.INVISIBLE);
-
+            navigationButton.hide();
+            mylocationButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        focusLocation = true;
+                        getGestures(mapView).addOnMoveListener(onMoveListener);
+                        mylocationButton.hide();
+                    }
+                });
 
             maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
             routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(getContext()).build());
