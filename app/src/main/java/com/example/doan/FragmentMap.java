@@ -714,6 +714,7 @@ public class FragmentMap extends Fragment
                 @Override
                 public Object invoke(@NonNull List<Maneuver> input) {
                     maneuverView.setVisibility(View.VISIBLE);
+                    cardView.setVisibility(View.VISIBLE);
                     maneuverView.renderManeuvers(maneuverApi.getManeuvers(routeProgress));
                     return new Object();
                 }
@@ -724,10 +725,7 @@ public class FragmentMap extends Fragment
     public void setclickNavigationOnMap(Point destination){
 
         navigationButton.setOnClickListener(butotn ->{
-            maneuverView.setVisibility(View.VISIBLE);
             searchET.setVisibility(View.INVISIBLE);
-            cardView.setVisibility(View.VISIBLE);
-
 
 
             maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
