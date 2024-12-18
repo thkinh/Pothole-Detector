@@ -105,6 +105,7 @@ import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin;
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener;
 import com.mapbox.maps.plugin.locationcomponent.utils.BitmapUtils;
 import com.mapbox.maps.viewannotation.ViewAnnotationManager;
+import com.mapbox.navigation.base.formatter.DistanceFormatterOptions;
 import com.mapbox.navigation.base.options.NavigationOptions;
 import com.mapbox.navigation.base.route.NavigationRoute;
 import com.mapbox.navigation.base.route.NavigationRouterCallback;
@@ -115,6 +116,7 @@ import com.mapbox.navigation.core.MapboxNavigation;
 
 import com.mapbox.navigation.core.directions.session.RoutesObserver;
 import com.mapbox.navigation.core.directions.session.RoutesUpdatedResult;
+import com.mapbox.navigation.core.formatter.MapboxDistanceFormatter;
 import com.mapbox.navigation.core.lifecycle.MapboxNavigationApp;
 import com.mapbox.navigation.core.trip.session.LocationMatcherResult;
 import com.mapbox.navigation.core.trip.session.LocationObserver;
@@ -128,6 +130,7 @@ import com.mapbox.navigation.ui.maneuver.view.MapboxManeuverView;
 import com.mapbox.navigation.ui.maps.location.NavigationLocationProvider;
 import com.mapbox.navigation.ui.maps.route.arrow.api.MapboxRouteArrowApi;
 import com.mapbox.navigation.ui.maps.route.arrow.api.MapboxRouteArrowView;
+import com.mapbox.navigation.ui.maps.route.arrow.model.RouteArrowOptions;
 import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineApi;
 import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineView;
 import com.mapbox.navigation.ui.maps.route.line.model.MapboxRouteLineOptions;
@@ -139,6 +142,8 @@ import com.mapbox.navigation.ui.voice.api.MapboxVoiceInstructionsPlayer;
 import com.mapbox.navigation.ui.voice.model.SpeechAnnouncement;
 import com.mapbox.navigation.ui.voice.model.SpeechError;
 import com.mapbox.navigation.ui.voice.model.SpeechValue;
+import com.mapbox.navigation.ui.voice.model.SpeechVolume;
+import com.mapbox.navigation.ui.voice.view.MapboxSoundButton;
 import com.mapbox.search.autocomplete.PlaceAutocomplete;
 import com.mapbox.search.autocomplete.PlaceAutocompleteSuggestion;
 import com.mapbox.search.ui.adapter.autocomplete.PlaceAutocompleteUiAdapter;
@@ -164,6 +169,7 @@ import retrofit2.Response;
 public class FragmentMap extends Fragment
         implements PermissionsListener {
     private MapView mapView;
+    private View view;
     private PermissionsManager permissionsManager;
 
     private List<Point> potholeList ;
@@ -174,9 +180,11 @@ public class FragmentMap extends Fragment
     private PlaceAutocompleteUiAdapter placeAutocompleteUiAdapter;
     private SearchResultsView searchResultsView;
     private TextInputEditText searchET;
+
     private MapboxManeuverView maneuverView;
     private CardView cardView;
     private ImageView imageView;
+
     private boolean ignoreNextQueryUpdate = false;
     //Các thành phần trên map Mapbox
     private static final String ROUTE_LAYER_ID = "route-layer-id";
@@ -471,7 +479,7 @@ public class FragmentMap extends Fragment
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
+        view = inflater.inflate(R.layout.fragment_map, container, false);
         mapView = (MapView) view.findViewById(R.id.mapbox);
         mylocationButton = (FloatingActionButton) view.findViewById(R.id.mylocationButton);
 
@@ -558,10 +566,10 @@ public class FragmentMap extends Fragment
                         Feature routeFeature = Feature.fromGeometry(lineString);
                         // Make a toast which displays the route's distance
 
-                        setclickNavigationOnMap();
 
                         Toast.makeText(getContext(), String.format("Route distance: %.2f meters", currentRoute.distance()), Toast.LENGTH_SHORT).show();
                         mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS,style -> {
+
                             GeoJsonSource.Builder lineRoute = new GeoJsonSource.Builder(ROUTE_SOURCE_ID).feature(routeFeature);
                             GeoJsonSource.Builder pointRoute = new GeoJsonSource.Builder(ICON_SOURCE_ID).feature(routeFeature);
 
@@ -571,6 +579,8 @@ public class FragmentMap extends Fragment
                                     .lineColor("#3b9ddd")
                                     .lineWidth(8D);
                             LayerUtils.addLayer(style,routeLayer);
+
+                            setclickNavigationOnMap(destination);
                         });
                     }
 
@@ -591,6 +601,7 @@ public class FragmentMap extends Fragment
     private final NavigationLocationProvider navigationLocationProvider = new NavigationLocationProvider();
     private MapboxRouteLineView routeLineView;
     private MapboxRouteLineApi routeLineApi;
+    boolean focusLocation = true;
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
         public void onNewRawLocation(@NonNull Location location) {
@@ -600,7 +611,7 @@ public class FragmentMap extends Fragment
         @Override
         public void onNewLocationMatcherResult(@NonNull LocationMatcherResult locationMatcherResult) {
             Location location = locationMatcherResult.getEnhancedLocation();
-            navigationLocationProvider.changePosition(location, locationMatcherResult.getKeyPoints(), null, null);
+//            navigationLocationProvider.changePosition(location, locationMatcherResult.getKeyPoints(), null, null);
             if (focusLocation) {
                 updateCamera(Point.fromLngLat(location.getLongitude(), location.getLatitude()), (double) location.getBearing());
             }
@@ -620,7 +631,8 @@ public class FragmentMap extends Fragment
             });
         }
     };
-    boolean focusLocation = true;
+
+
     private MapboxNavigation mapboxNavigation;
 
     private void updateCamera(Point point, Double bearing) {
@@ -709,16 +721,23 @@ public class FragmentMap extends Fragment
         }
     };
 
-    public void setclickNavigationOnMap(){
+    public void setclickNavigationOnMap(Point destination){
 
         navigationButton.setOnClickListener(butotn ->{
             maneuverView.setVisibility(View.VISIBLE);
             searchET.setVisibility(View.INVISIBLE);
             cardView.setVisibility(View.VISIBLE);
-//            MapboxRouteLineOptions options = new MapboxRouteLineOptions.Builder(getContext()).withRouteLineResources(new RouteLineResources.Builder().build())
-////                    .withRouteLineBelowLayerId(LocationComponentConstants.LOCATION_INDICATOR_LAYER).build();
-//            routeLineView = new MapboxRouteLineView(options);
-//            routeLineApi = new MapboxRouteLineApi(options);
+
+
+
+            maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
+            routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(getContext()).build());
+
+            MapboxRouteLineOptions options = new MapboxRouteLineOptions.Builder(getContext()).withRouteLineResources(new RouteLineResources.Builder().build())
+                    .withRouteLineBelowLayerId(LocationComponentConstants.LOCATION_INDICATOR_LAYER).build();
+
+            routeLineView = new MapboxRouteLineView(options);
+            routeLineApi = new MapboxRouteLineApi(options);
 
             NavigationOptions navigationOptions = new NavigationOptions
                     .Builder(getContext())
@@ -729,7 +748,24 @@ public class FragmentMap extends Fragment
 
             mapboxNavigation.registerRoutesObserver(routesObserver);
             mapboxNavigation.registerLocationObserver(locationObserver);
+            mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver);
+            mapboxNavigation.registerRouteProgressObserver(routeProgressObserver);
 
+            MapboxSoundButton soundButton = view.findViewById(R.id.soundButton);
+            soundButton.unmute();
+            soundButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    isVoiceInstructionsMuted = !isVoiceInstructionsMuted;
+                    if (isVoiceInstructionsMuted) {
+                        soundButton.muteAndExtend(1500L);
+                        mapboxVoiceInstructionsPlayer.volume(new SpeechVolume(0f));
+                    } else {
+                        soundButton.unmuteAndExtend(1500L);
+                        mapboxVoiceInstructionsPlayer.volume(new SpeechVolume(1f));
+                    }
+                }
+            });
 
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -740,7 +776,8 @@ public class FragmentMap extends Fragment
 
             imageView.setOnClickListener(button->{
                 mapboxNavigation.stopTripSession();
-
+                mapboxNavigation.unregisterRoutesObserver(routesObserver);
+                mapboxNavigation.unregisterLocationObserver(locationObserver);
             });
 //
 //            LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
@@ -749,4 +786,46 @@ public class FragmentMap extends Fragment
         });
 
     }
+
+    @SuppressLint("MissingPermission")
+    private void fetchRoute(Point point) {
+        LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(getContext());
+        locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
+            @Override
+            public void onSuccess(LocationEngineResult result) {
+                Location location = result.getLastLocation();
+                Point origin = Point.fromLngLat(Objects.requireNonNull(location).getLongitude(), location.getLatitude());
+                RouteOptions.Builder builder = RouteOptions.builder()
+                        .coordinatesList(Arrays.asList(origin, point))
+                        .alternatives(false)
+                        .profile(DirectionsCriteria.PROFILE_DRIVING)
+                        .bearingsList(Arrays.asList(Bearing.builder().angle(location.getBearing()).build(), null));
+                applyDefaultNavigationOptions(builder);
+
+                mapboxNavigation.requestRoutes(builder.build(), new NavigationRouterCallback() {
+                    @Override
+                    public void onRoutesReady(@NonNull List<NavigationRoute> list, @NonNull RouterOrigin routerOrigin) {
+                        mapboxNavigation.setNavigationRoutes(list);
+//                        mylocationButton.performClick();
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull List<RouterFailure> list, @NonNull RouteOptions routeOptions) {
+                        Toast.makeText(getContext(), "Route request failed", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onCanceled(@NonNull RouteOptions routeOptions, @NonNull RouterOrigin routerOrigin) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+
+            }
+        });
+    }
+
 }
