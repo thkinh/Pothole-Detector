@@ -255,8 +255,6 @@ public class FragmentMapNavigation extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Nullable
@@ -267,8 +265,6 @@ public class FragmentMapNavigation extends Fragment {
     }
 
     private OnMapFragmentInteractionListener listener;
-
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -363,36 +359,36 @@ public class FragmentMapNavigation extends Fragment {
                         return null;
                     }
                 });
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
-                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
-                AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
-                PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
-                addOnMapClickListener(mapView.getMapboxMap(), new OnMapClickListener() {
-                    @Override
-                    public boolean onMapClick(@NonNull Point point) {
-
-
-                        pointAnnotationManager.deleteAll();
-
-                        PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions().withTextAnchor(TextAnchor.CENTER).withIconImage(resizedBitmap)
-                                .withPoint(point);
-                        pointAnnotationManager.create(pointAnnotationOptions);
-
-
-                        fetchRoute(point);
-                        cardView.setVisibility(View.VISIBLE);
-                        return true;
-                    }
-                });
-
-                mylocationButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        focusLocation = true;
-                        getGestures(mapView).addOnMoveListener(onMoveListener);
-                        mylocationButton.hide();
-                    }
-                });
+//                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
+//                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
+//                AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
+//                PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
+//                addOnMapClickListener(mapView.getMapboxMap(), new OnMapClickListener() {
+//                    @Override
+//                    public boolean onMapClick(@NonNull Point point) {
+//
+//
+//                        pointAnnotationManager.deleteAll();
+//
+//                        PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions().withTextAnchor(TextAnchor.CENTER).withIconImage(resizedBitmap)
+//                                .withPoint(point);
+//                        pointAnnotationManager.create(pointAnnotationOptions);
+//
+//
+//                        fetchRoute(point);
+//                        cardView.setVisibility(View.VISIBLE);
+//                        return true;
+//                    }
+//                });
+//
+//                mylocationButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        focusLocation = true;
+//                        getGestures(mapView).addOnMoveListener(onMoveListener);
+//                        mylocationButton.hide();
+//                    }
+//                });
             }
         });
     }
