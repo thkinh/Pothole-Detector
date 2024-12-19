@@ -31,6 +31,7 @@
 
             <!-- EditText cho điểm bắt đầu -->
             <EditText
+                android:id="@+id/editText_startingPoint"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -61,11 +62,12 @@
 
             <!-- Icon chọn điểm đến -->
             <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/ic_location_des" />
 
             <EditText
+                android:id="@+id/editText_destination"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -82,6 +84,7 @@
 
     <!-- Nút tìm kiếm tuyến đường -->
     <Button
+        android:id="@+id/btn_findRoute"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/color_1"
@@ -91,4 +94,15 @@
         android:textSize="22sp"
         android:layout_marginTop="10dp"
         android:padding="8dp" />
+
+    <com.mapbox.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
 </LinearLayout>

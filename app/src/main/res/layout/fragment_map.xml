@@ -63,7 +63,8 @@
                     android:hint="@string/search_edittext"
                     android:padding="4dp"
                     android:textSize="22sp"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:onClick="onSearchClick"/>
             </LinearLayout>
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.cardview.widget.CardView>
