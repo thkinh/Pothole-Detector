@@ -99,10 +99,12 @@ import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
+import com.mapbox.maps.plugin.gestures.OnMapClickListener;
 import com.mapbox.maps.plugin.gestures.OnMoveListener;
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentConstants;
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin;
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener;
+import com.mapbox.maps.plugin.locationcomponent.generated.LocationComponentSettings;
 import com.mapbox.maps.plugin.locationcomponent.utils.BitmapUtils;
 import com.mapbox.maps.viewannotation.ViewAnnotationManager;
 import com.mapbox.navigation.base.formatter.DistanceFormatterOptions;
@@ -162,6 +164,7 @@ import kotlin.Unit;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
+import kotlin.jvm.functions.Function1;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -444,8 +447,13 @@ public class FragmentMap extends Fragment
                     .withPoint(pointDestination);
             pointAnnotationManager.create(pointAnnotationOptions);
 
-            // Gọi hàm getRoute với point
-            getRoute(pointDestination);
+            if (pointDestination != null) {
+                // Gọi hàm getRoute với point
+                getRoute(pointDestination);
+                setclickNavigationOnMap(pointDestination);
+            }else{
+                Toast.makeText(getContext(), "Vui lòng chọn địa chỉ cần đến", Toast.LENGTH_SHORT).show();
+            }
 
 
             return false;
@@ -518,6 +526,7 @@ public class FragmentMap extends Fragment
 
                 setclickOnMap();
 
+
             }
         });
 
@@ -580,7 +589,7 @@ public class FragmentMap extends Fragment
                                     .lineWidth(8D);
                             LayerUtils.addLayer(style,routeLayer);
 
-                            setclickNavigationOnMap(destination);
+
                         });
                     }
 
@@ -736,6 +745,7 @@ public class FragmentMap extends Fragment
                     }
                 });
 
+
             maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
             routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(getContext()).build());
 
@@ -786,15 +796,32 @@ public class FragmentMap extends Fragment
                 mapboxNavigation.unregisterLocationObserver(locationObserver);
             });
 //
-//            LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
-//            getGestures(mapView).addOnMoveListener(onMoveListener);
+            LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
+            getGestures(mapView).addOnMoveListener(onMoveListener);
+            mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+                @Override
+                public void onStyleLoaded(@NonNull Style style) {
+                    mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(20.0).build());
+                    locationComponentPlugin.setEnabled(true);
+                    locationComponentPlugin.setLocationProvider(navigationLocationProvider);
+                    getGestures(mapView).addOnMoveListener(onMoveListener);
+                    locationComponentPlugin.updateSettings(new Function1<LocationComponentSettings, Unit>() {
+                        @Override
+                        public Unit invoke(LocationComponentSettings locationComponentSettings) {
+                            locationComponentSettings.setEnabled(true);
+                            locationComponentSettings.setPulsingEnabled(true);
+                            return null;
+                        }
+                    });
 
+                }
+            });
         });
 
     }
 
     @SuppressLint("MissingPermission")
-    private void fetchRoute(Point point) {
+    private void navigationRoute(Point point) {
         LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(getContext());
         locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
             @Override
@@ -812,7 +839,8 @@ public class FragmentMap extends Fragment
                     @Override
                     public void onRoutesReady(@NonNull List<NavigationRoute> list, @NonNull RouterOrigin routerOrigin) {
                         mapboxNavigation.setNavigationRoutes(list);
-//                        mylocationButton.performClick();
+                        mylocationButton.performClick();
+
                     }
 
                     @Override
