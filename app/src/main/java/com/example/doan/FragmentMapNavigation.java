@@ -176,7 +176,7 @@ public class FragmentMapNavigation extends Fragment {
     private final OnMoveListener onMoveListenerInNavigation = new OnMoveListener() {
         @Override
         public void onMoveBegin(@NonNull MoveGestureDetector moveGestureDetector) {
-
+            focusLocationNavigationMode = false;
             getGestures(mapView).removeOnMoveListener(this);
             mylocationNavigationButton.show();
 
@@ -287,7 +287,6 @@ public class FragmentMapNavigation extends Fragment {
     private final OnIndicatorPositionChangedListener onIndicatorPositionChangedListener = new OnIndicatorPositionChangedListener() {
         @Override
         public void onIndicatorPositionChanged(@NonNull Point point) {
-            focusLocationNavigationMode = false;
             mapView.getMapboxMap().setCamera(new CameraOptions.Builder().center(point).zoom(15.0).build());
             getGestures(mapView).setFocalPoint(mapView.getMapboxMap().pixelForCoordinate(point));
         }
@@ -320,7 +319,6 @@ public class FragmentMapNavigation extends Fragment {
         getGestures(mapView).addOnMoveListener(onMoveListener);
 
         mylocationButton.setOnClickListener(viewButton -> {
-
             locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
             getGestures(mapView).addOnMoveListener(onMoveListener);
 
@@ -340,6 +338,7 @@ public class FragmentMapNavigation extends Fragment {
         maneuverView = view.findViewById(R.id.maneuverView);
         directionButton = view.findViewById(R.id.directionButton);
         soundButton = view.findViewById(R.id.soundButton);
+        soundButton.setVisibility(View.INVISIBLE);
 
         setMylocationButton();
 
@@ -360,6 +359,7 @@ public class FragmentMapNavigation extends Fragment {
                 pointAnnotationManager.create(pointAnnotationOptions);
 
                 navigationButton.setOnClickListener(navigationMode->{
+
                     ChangeModeNavigation(point);
                 });
 
@@ -376,7 +376,7 @@ public class FragmentMapNavigation extends Fragment {
     }
 
     private void ChangeModeNavigation(Point point){
-
+        soundButton.setVisibility(View.VISIBLE);
         navigationButton.hide();
         mylocationButton.hide();
         directionButton.hide();
@@ -436,13 +436,13 @@ public class FragmentMapNavigation extends Fragment {
 
         LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
         getGestures(mapView).addOnMoveListener(onMoveListenerInNavigation);
-
         mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
                 mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(20.0).build());
                 locationComponentPlugin.setEnabled(true);
                 locationComponentPlugin.setLocationProvider(navigationLocationProvider);
+                getLocationComponent(mapView).removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
                 getGestures(mapView).addOnMoveListener(onMoveListenerInNavigation);
                 locationComponentPlugin.updateSettings(new Function1<LocationComponentSettings, Unit>() {
                     @Override
@@ -453,12 +453,12 @@ public class FragmentMapNavigation extends Fragment {
                     }
                 });
 
-
                 mylocationNavigationButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         focusLocationNavigationMode = true;
                         getGestures(mapView).addOnMoveListener(onMoveListenerInNavigation);
+                        getLocationComponent(mapView).removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
                         mylocationNavigationButton.hide();
                     }
                 });
