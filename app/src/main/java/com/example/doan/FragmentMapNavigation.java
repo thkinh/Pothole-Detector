@@ -157,7 +157,7 @@ public class FragmentMapNavigation extends Fragment {
         getCamera(mapView).easeTo(cameraOptions, animationOptions);
     }
 
-    private final OnMoveListener onMoveListener = new OnMoveListener() {
+    private final OnMoveListener onMoveListenerInNavigation = new OnMoveListener() {
         @Override
         public void onMoveBegin(@NonNull MoveGestureDetector moveGestureDetector) {
             focusLocation = false;
@@ -348,7 +348,7 @@ public class FragmentMapNavigation extends Fragment {
 
 
         LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
-        getGestures(mapView).addOnMoveListener(onMoveListener);
+        getGestures(mapView).addOnMoveListener(onMoveListenerInNavigation);
 
         mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
             @Override
@@ -356,7 +356,7 @@ public class FragmentMapNavigation extends Fragment {
                 mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(20.0).build());
                 locationComponentPlugin.setEnabled(true);
                 locationComponentPlugin.setLocationProvider(navigationLocationProvider);
-                getGestures(mapView).addOnMoveListener(onMoveListener);
+                getGestures(mapView).addOnMoveListener(onMoveListenerInNavigation);
                 locationComponentPlugin.updateSettings(new Function1<LocationComponentSettings, Unit>() {
                     @Override
                     public Unit invoke(LocationComponentSettings locationComponentSettings) {
@@ -391,7 +391,7 @@ public class FragmentMapNavigation extends Fragment {
                     @Override
                     public void onClick(View view) {
                         focusLocation = true;
-                        getGestures(mapView).addOnMoveListener(onMoveListener);
+                        getGestures(mapView).addOnMoveListener(onMoveListenerInNavigation);
                         mylocationButton.hide();
                     }
                 });
