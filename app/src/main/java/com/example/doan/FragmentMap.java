@@ -594,7 +594,7 @@ public class FragmentMap extends Fragment
     private final NavigationLocationProvider navigationLocationProvider = new NavigationLocationProvider();
     private MapboxRouteLineView routeLineView;
     private MapboxRouteLineApi routeLineApi;
-    boolean focusLocation = true;
+    boolean focusLocationNavigationMode = true;
 
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
@@ -606,7 +606,7 @@ public class FragmentMap extends Fragment
         public void onNewLocationMatcherResult(@NonNull LocationMatcherResult locationMatcherResult) {
             Location location = locationMatcherResult.getEnhancedLocation();
 //            navigationLocationProvider.changePosition(location, locationMatcherResult.getKeyPoints(), null, null);
-            if (focusLocation) {
+            if (focusLocationNavigationMode) {
                 updateCamera(Point.fromLngLat(location.getLongitude(), location.getLatitude()), (double) location.getBearing());
             }
         }
@@ -630,7 +630,7 @@ public class FragmentMap extends Fragment
     private final OnMoveListener onMoveListenerNavigation = new OnMoveListener() {
         @Override
         public void onMoveBegin(@NonNull MoveGestureDetector moveGestureDetector) {
-            focusLocation = false;
+            focusLocationNavigationMode = false;
             getGestures(mapView).removeOnMoveListener(this);
             mylocationButton.hide();
             mylocationNavigationButton.show();
@@ -746,12 +746,11 @@ public class FragmentMap extends Fragment
             mylocationButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    focusLocation = true;
+                    focusLocationNavigationMode = true;
                     getGestures(mapView).addOnMoveListener(onMoveListener);
                     mylocationButton.hide();
                 }
             });
-
 
             maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
             routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(getContext()).build());
@@ -802,7 +801,7 @@ public class FragmentMap extends Fragment
                 mapboxNavigation.unregisterRoutesObserver(routesObserver);
                 mapboxNavigation.unregisterLocationObserver(locationObserver);
             });
-//
+
             LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
             getGestures(mapView).addOnMoveListener(onMoveListenerNavigation);
             mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
@@ -827,7 +826,7 @@ public class FragmentMap extends Fragment
             mylocationNavigationButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    focusLocation = true;
+                    focusLocationNavigationMode = true;
                     getGestures(mapView).addOnMoveListener(onMoveListenerNavigation);
                     mylocationNavigationButton.hide();
                 }

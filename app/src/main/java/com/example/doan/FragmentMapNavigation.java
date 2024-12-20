@@ -58,6 +58,7 @@ import com.mapbox.maps.plugin.gestures.OnMapClickListener;
 import com.mapbox.maps.plugin.gestures.OnMoveListener;
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentConstants;
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin;
+import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener;
 import com.mapbox.maps.plugin.locationcomponent.generated.LocationComponentSettings;
 import com.mapbox.navigation.base.formatter.DistanceFormatterOptions;
 import com.mapbox.navigation.base.options.NavigationOptions;
@@ -127,7 +128,7 @@ public class FragmentMapNavigation extends Fragment {
         public void onNewLocationMatcherResult(@NonNull LocationMatcherResult locationMatcherResult) {
             Location location = locationMatcherResult.getEnhancedLocation();
             navigationLocationProvider.changePosition(location, locationMatcherResult.getKeyPoints(), null, null);
-            if (focusLocation) {
+            if (focusLocationNavigationMode) {
                 updateCamera(Point.fromLngLat(location.getLongitude(), location.getLatitude()), (double) location.getBearing());
             }
         }
@@ -146,7 +147,7 @@ public class FragmentMapNavigation extends Fragment {
             });
         }
     };
-    boolean focusLocation = true;
+    boolean focusLocationNavigationMode = true;
     private MapboxNavigation mapboxNavigation;
 
     private void updateCamera(Point point, Double bearing) {
@@ -160,7 +161,7 @@ public class FragmentMapNavigation extends Fragment {
     private final OnMoveListener onMoveListenerInNavigation = new OnMoveListener() {
         @Override
         public void onMoveBegin(@NonNull MoveGestureDetector moveGestureDetector) {
-            focusLocation = false;
+            focusLocationNavigationMode = false;
             getGestures(mapView).removeOnMoveListener(this);
             mylocationNavigationButton.show();
 
@@ -268,6 +269,49 @@ public class FragmentMapNavigation extends Fragment {
     }
 
 
+    private final OnIndicatorPositionChangedListener onIndicatorPositionChangedListener = new OnIndicatorPositionChangedListener() {
+        @Override
+        public void onIndicatorPositionChanged(@NonNull Point point) {
+            focusLocationNavigationMode = false;
+            mapView.getMapboxMap().setCamera(new CameraOptions.Builder().center(point).zoom(15.0).build());
+            getGestures(mapView).setFocalPoint(mapView.getMapboxMap().pixelForCoordinate(point));
+        }
+    };
+    private final OnMoveListener onMoveListener = new OnMoveListener() {
+        @Override
+        public void onMoveBegin(@NonNull MoveGestureDetector moveGestureDetector) {
+            getLocationComponent(mapView).removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
+            getGestures(mapView).removeOnMoveListener(onMoveListener);
+            mylocationButton.show();
+        }
+
+        @Override
+        public boolean onMove(@NonNull MoveGestureDetector moveGestureDetector) {
+            return false;
+        }
+
+        @Override
+        public void onMoveEnd(@NonNull MoveGestureDetector moveGestureDetector) {
+
+        }
+    };
+
+    public void setMylocationButton() {
+        mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(10.0).build());
+        LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
+        locationComponentPlugin.setEnabled(true);
+        locationComponentPlugin.setPulsingEnabled(true);
+        locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
+        getGestures(mapView).addOnMoveListener(onMoveListener);
+
+        mylocationButton.setOnClickListener(viewButton -> {
+
+            locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
+            getGestures(mapView).addOnMoveListener(onMoveListener);
+
+        });
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -281,13 +325,38 @@ public class FragmentMapNavigation extends Fragment {
         maneuverView = view.findViewById(R.id.maneuverView);
         soundButton = view.findViewById(R.id.soundButton);
 
-        navigationButton.setOnClickListener(navigationMode->{
-            ChangeModeNavigation();
+        setMylocationButton();
+
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
+        AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
+        PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
+        addOnMapClickListener(mapView.getMapboxMap(), new OnMapClickListener() {
+            @Override
+            public boolean onMapClick(@NonNull Point point) {
+
+
+                pointAnnotationManager.deleteAll();
+
+                PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions().withTextAnchor(TextAnchor.CENTER).withIconImage(resizedBitmap)
+                        .withPoint(point);
+
+                pointAnnotationManager.create(pointAnnotationOptions);
+
+                navigationButton.setOnClickListener(navigationMode->{
+                    ChangeModeNavigation(point);
+                });
+
+
+                cardView.setVisibility(View.VISIBLE);
+                return true;
+            }
         });
 
     }
 
-    private void ChangeModeNavigation(){
+    private void ChangeModeNavigation(Point point){
+
         navigationButton.hide();
         mylocationButton.hide();
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
@@ -342,6 +411,7 @@ public class FragmentMapNavigation extends Fragment {
             mapboxNavigation.startTripSession();
         }
 
+        fetchRoute(point);
 
         LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
         getGestures(mapView).addOnMoveListener(onMoveListenerInNavigation);
@@ -361,32 +431,12 @@ public class FragmentMapNavigation extends Fragment {
                         return null;
                     }
                 });
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
-                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
-                AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
-                PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
-                addOnMapClickListener(mapView.getMapboxMap(), new OnMapClickListener() {
-                    @Override
-                    public boolean onMapClick(@NonNull Point point) {
 
-
-                        pointAnnotationManager.deleteAll();
-
-                        PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions().withTextAnchor(TextAnchor.CENTER).withIconImage(resizedBitmap)
-                                .withPoint(point);
-                        pointAnnotationManager.create(pointAnnotationOptions);
-
-
-                        fetchRoute(point);
-                        cardView.setVisibility(View.VISIBLE);
-                        return true;
-                    }
-                });
 
                 mylocationNavigationButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        focusLocation = true;
+                        focusLocationNavigationMode = true;
                         getGestures(mapView).addOnMoveListener(onMoveListenerInNavigation);
                         mylocationNavigationButton.hide();
                     }
@@ -415,7 +465,6 @@ public class FragmentMapNavigation extends Fragment {
                     public void onRoutesReady(@NonNull List<NavigationRoute> list, @NonNull RouterOrigin routerOrigin) {
                         mapboxNavigation.setNavigationRoutes(list);
                         mylocationNavigationButton.performClick();
-
                     }
 
                     @Override
