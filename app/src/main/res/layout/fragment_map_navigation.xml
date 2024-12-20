@@ -17,7 +17,7 @@
         android:id="@+id/tripProgressCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:cardElevation="8dp"
         app:cardUseCompatPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"

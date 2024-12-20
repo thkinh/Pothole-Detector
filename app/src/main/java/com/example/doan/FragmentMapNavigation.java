@@ -133,6 +133,9 @@ public class FragmentMapNavigation extends Fragment {
     private FloatingActionButton navigationButton;
     private FloatingActionButton directionButton;
     private MapboxSoundButton soundButton;
+
+
+
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
         public void onNewRawLocation(@NonNull Location location) {
@@ -376,6 +379,7 @@ public class FragmentMapNavigation extends Fragment {
     }
 
     private void ChangeModeNavigation(Point point){
+        cardView.setVisibility(View.VISIBLE);
         soundButton.setVisibility(View.VISIBLE);
         navigationButton.hide();
         mylocationButton.hide();
@@ -471,7 +475,9 @@ public class FragmentMapNavigation extends Fragment {
     private static final String ROUTE_SOURCE_ID = "route-source-id";
     @SuppressLint("MissingPermission")
     private void DisplayDirectionOnMap(Point destination) {
-        cardView.setVisibility(View.VISIBLE);
+
+
+        mylocationButton.hide();
 
         LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(getContext());
 

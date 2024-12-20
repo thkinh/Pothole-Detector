@@ -193,7 +193,6 @@ public class FragmentMap extends Fragment
     //Các thành phần trên map Mapbox
     private static final String ROUTE_LAYER_ID = "route-layer-id";
     private static final String ROUTE_SOURCE_ID = "route-source-id";
-    private static final String ICON_LAYER_ID = "icon-layer-id";
     private static final String ICON_SOURCE_ID = "icon-source-id";
 
 
