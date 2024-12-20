@@ -282,7 +282,7 @@ public class FragmentMapNavigation extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_map_navigation, container, false);
+        View view = inflater.inflate(R.layout.fragment_map_navigation_demo, container, false);
         return view;
     }
 
@@ -324,7 +324,7 @@ public class FragmentMapNavigation extends Fragment {
         mylocationButton.setOnClickListener(viewButton -> {
             locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
             getGestures(mapView).addOnMoveListener(onMoveListener);
-
+            mylocationButton.hide();
         });
     }
 
@@ -335,13 +335,14 @@ public class FragmentMapNavigation extends Fragment {
         cardView = view.findViewById(R.id.tripProgressCard);
         imageView = view.findViewById(R.id.stop);
         mylocationButton = view.findViewById(R.id.mylocationButton);
+        mylocationButton.hide();
         navigationButton = view.findViewById(R.id.navigationButton);
         mylocationNavigationButton = view.findViewById(R.id.mylocationnavigationButton);
         mylocationNavigationButton.hide();
         maneuverView = view.findViewById(R.id.maneuverView);
         directionButton = view.findViewById(R.id.directionButton);
         soundButton = view.findViewById(R.id.soundButton);
-        soundButton.setVisibility(View.INVISIBLE);
+
 
         setMylocationButton();
 
@@ -406,19 +407,23 @@ public class FragmentMapNavigation extends Fragment {
         mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver);
         mapboxNavigation.registerRouteProgressObserver(routeProgressObserver);
 
+        imageView.setOnClickListener(view -> {
+            mapboxNavigation.onDestroy();
+            mapboxNavigation.unregisterRoutesObserver(routesObserver);
+            mapboxNavigation.unregisterLocationObserver(locationObserver);
+
+
+        });
 
         soundButton.unmute();
-        soundButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isVoiceInstructionsMuted = !isVoiceInstructionsMuted;
-                if (isVoiceInstructionsMuted) {
-                    soundButton.muteAndExtend(1500L);
-                    mapboxVoiceInstructionsPlayer.volume(new SpeechVolume(0f));
-                } else {
-                    soundButton.unmuteAndExtend(1500L);
-                    mapboxVoiceInstructionsPlayer.volume(new SpeechVolume(1f));
-                }
+        soundButton.setOnClickListener(view ->  {
+            isVoiceInstructionsMuted = !isVoiceInstructionsMuted;
+            if (isVoiceInstructionsMuted) {
+                soundButton.muteAndExtend(1500L);
+                mapboxVoiceInstructionsPlayer.volume(new SpeechVolume(0f));
+            } else {
+                soundButton.unmuteAndExtend(1500L);
+                mapboxVoiceInstructionsPlayer.volume(new SpeechVolume(1f));
             }
         });
 
@@ -475,9 +480,6 @@ public class FragmentMapNavigation extends Fragment {
     private static final String ROUTE_SOURCE_ID = "route-source-id";
     @SuppressLint("MissingPermission")
     private void DisplayDirectionOnMap(Point destination) {
-
-
-        mylocationButton.hide();
 
         LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(getContext());
 

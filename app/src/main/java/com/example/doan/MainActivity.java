@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements OnMapFragmentInte
             if (item.getItemId() == R.id.btn_home) {
                 replaceFragment(new FragmentDashboard());
             } else if (item.getItemId() == R.id.btn_map) {
-                replaceFragment(new FragmentMapNavigation());
+                replaceFragment(new FragmentMap());
             } else if (item.getItemId() == R.id.btn_setting) {
                 replaceFragment(new FragmentSetting());
             }

@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -158,6 +159,7 @@ import com.mapbox.turf.TurfMisc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import kotlin.Unit;
@@ -180,6 +182,9 @@ public class FragmentMap extends Fragment
     private FloatingActionButton navigationButton;
     private FloatingActionButton mylocationButton;
     private FloatingActionButton mylocationNavigationButton;
+    private FloatingActionButton directionButton;
+    private MapboxSoundButton soundButton;
+
     private PlaceAutocomplete placeAutocomplete;
     private PlaceAutocompleteUiAdapter placeAutocompleteUiAdapter;
     private SearchResultsView searchResultsView;
@@ -316,7 +321,7 @@ public class FragmentMap extends Fragment
         getGestures(mapView).addOnMoveListener(onMoveListener);
 
         mylocationButton.setOnClickListener(viewButton -> {
-
+            mylocationButton.hide();
             locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
             getGestures(mapView).addOnMoveListener(onMoveListener);
 
@@ -417,8 +422,6 @@ public class FragmentMap extends Fragment
                     .withIconImage(resizedBitmap)
                     .withPoint(potholePoint);
             pointPotholeAnnotationManager.create(pointAnnotationOptions);
-
-//            Toast.makeText(getContext(), "Pothole", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -440,15 +443,14 @@ public class FragmentMap extends Fragment
                     .withPoint(pointDestination);
             pointAnnotationManager.create(pointAnnotationOptions);
 
-            if (pointDestination != null) {
-                // Gọi hàm getRoute với point
-                getRoute(pointDestination);
+            navigationButton.setOnClickListener(view->{
+                searchET.setVisibility(View.GONE);
+                directionButton.hide();
                 setclickNavigationOnMap(pointDestination);
-            }else{
-                Toast.makeText(getContext(), "Vui lòng chọn địa chỉ cần đến", Toast.LENGTH_SHORT).show();
-            }
-
-
+            });
+            directionButton.setOnClickListener(view->{
+                getRoute(pointDestination);
+            });
             return false;
         });
     }
@@ -474,13 +476,18 @@ public class FragmentMap extends Fragment
         view = inflater.inflate(R.layout.fragment_map, container, false);
         mapView = (MapView) view.findViewById(R.id.mapbox);
         mylocationButton = (FloatingActionButton) view.findViewById(R.id.mylocationButton);
+        mylocationButton.hide();
         mylocationNavigationButton = (FloatingActionButton) view.findViewById(R.id.mylocationNavigationButton);
+        mylocationNavigationButton.hide();
         navigationButton = (FloatingActionButton) view.findViewById(R.id.navigationButton);
         searchET = (TextInputEditText) view.findViewById(R.id.searchET);
         searchResultsView = (SearchResultsView) view.findViewById(R.id.search_results_view);
         cardView = view.findViewById(R.id.tripProgressCard);
         imageView = view.findViewById(R.id.stop);
         maneuverView = view.findViewById(R.id.maneuverView);
+        directionButton = view.findViewById(R.id.directionButton);
+        soundButton = view.findViewById(R.id.soundButton);
+
         return view;
     }
 
@@ -738,98 +745,99 @@ public class FragmentMap extends Fragment
 
 
     public void setclickNavigationOnMap(Point destination){
-        navigationButton.setOnClickListener(butotn ->{
-            mylocationButton.setVisibility(View.INVISIBLE);
-            searchET.setVisibility(View.INVISIBLE);
-            navigationButton.hide();
-            mylocationButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    focusLocationNavigationMode = true;
-                    getGestures(mapView).addOnMoveListener(onMoveListener);
-                    mylocationButton.hide();
-                }
-            });
+        cardView.setVisibility(View.VISIBLE);
+//            soundButton.setVisibility(View.VISIBLE);
+        navigationButton.hide();
+        mylocationButton.hide();
+//            directionButton.hide();
+        maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
+        routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(getContext()).build());
 
-            maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
-            routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(getContext()).build());
+        MapboxRouteLineOptions options = new MapboxRouteLineOptions.Builder(getContext()).withRouteLineResources(new RouteLineResources.Builder().build())
+                .withRouteLineBelowLayerId(LocationComponentConstants.LOCATION_INDICATOR_LAYER).build();
 
-            MapboxRouteLineOptions options = new MapboxRouteLineOptions.Builder(getContext()).withRouteLineResources(new RouteLineResources.Builder().build())
-                    .withRouteLineBelowLayerId(LocationComponentConstants.LOCATION_INDICATOR_LAYER).build();
+        routeLineView = new MapboxRouteLineView(options);
+        routeLineApi = new MapboxRouteLineApi(options);
 
-            routeLineView = new MapboxRouteLineView(options);
-            routeLineApi = new MapboxRouteLineApi(options);
+        speechApi = new MapboxSpeechApi(getContext(), getString(R.string.mapbox_access_token), Locale.US.toLanguageTag());
+        mapboxVoiceInstructionsPlayer = new MapboxVoiceInstructionsPlayer(getContext(), Locale.US.toLanguageTag());
 
-            NavigationOptions navigationOptions = new NavigationOptions
-                    .Builder(getContext())
-                    .accessToken(getString(R.string.mapbox_access_token))
-                    .build();
-            MapboxNavigationApp.setup(navigationOptions);
-            mapboxNavigation = new MapboxNavigation(navigationOptions);
+        NavigationOptions navigationOptions = new NavigationOptions.Builder(getContext()).accessToken(getString(R.string.mapbox_access_token)).build();
 
-            mapboxNavigation.registerRoutesObserver(routesObserver);
-            mapboxNavigation.registerLocationObserver(locationObserver);
-            mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver);
-            mapboxNavigation.registerRouteProgressObserver(routeProgressObserver);
+        MapboxNavigationApp.setup(navigationOptions);
+        mapboxNavigation = new MapboxNavigation(navigationOptions);
 
-            MapboxSoundButton soundButton = view.findViewById(R.id.soundButton);
-            soundButton.unmute();
-            soundButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    isVoiceInstructionsMuted = !isVoiceInstructionsMuted;
-                    if (isVoiceInstructionsMuted) {
-                        soundButton.muteAndExtend(1500L);
-                        mapboxVoiceInstructionsPlayer.volume(new SpeechVolume(0f));
-                    } else {
-                        soundButton.unmuteAndExtend(1500L);
-                        mapboxVoiceInstructionsPlayer.volume(new SpeechVolume(1f));
-                    }
-                }
-            });
+        mapboxNavigation.registerRoutesObserver(routesObserver);
+        mapboxNavigation.registerLocationObserver(locationObserver);
+        mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver);
+        mapboxNavigation.registerRouteProgressObserver(routeProgressObserver);
 
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        imageView.setOnClickListener(view -> {
+            mapboxNavigation.onDestroy();
+            mapboxNavigation.unregisterRoutesObserver(routesObserver);
+            mapboxNavigation.unregisterLocationObserver(locationObserver);
 
+
+        });
+
+        soundButton.setVisibility(View.VISIBLE);
+        soundButton.unmute();
+        soundButton.setOnClickListener(view -> {
+            isVoiceInstructionsMuted = !isVoiceInstructionsMuted;
+            if (isVoiceInstructionsMuted) {
+                soundButton.muteAndExtend(1500L);
+                mapboxVoiceInstructionsPlayer.volume(new SpeechVolume(0f));
             } else {
-                mapboxNavigation.startTripSession();
+                soundButton.unmuteAndExtend(1500L);
+                mapboxVoiceInstructionsPlayer.volume(new SpeechVolume(1f));
             }
+        });
 
-            imageView.setOnClickListener(button->{
-                mapboxNavigation.stopTripSession();
-                mapboxNavigation.unregisterRoutesObserver(routesObserver);
-                mapboxNavigation.unregisterLocationObserver(locationObserver);
-            });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                activityResultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
 
-            LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
-            getGestures(mapView).addOnMoveListener(onMoveListenerNavigation);
-            mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                @Override
-                public void onStyleLoaded(@NonNull Style style) {
-                    mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(20.0).build());
-                    locationComponentPlugin.setEnabled(true);
-                    locationComponentPlugin.setLocationProvider(navigationLocationProvider);
-                    getGestures(mapView).addOnMoveListener(onMoveListenerNavigation);
-                    locationComponentPlugin.updateSettings(new Function1<LocationComponentSettings, Unit>() {
-                        @Override
-                        public Unit invoke(LocationComponentSettings locationComponentSettings) {
-                            locationComponentSettings.setEnabled(true);
-                            locationComponentSettings.setPulsingEnabled(true);
-                            return null;
-                        }
-                    });
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            activityResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            activityResultLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION);
+        } else {
+            mapboxNavigation.startTripSession();
+        }
 
-                }
-            });
-//            navigationRoute(destination);
-            mylocationNavigationButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    focusLocationNavigationMode = true;
-                    getGestures(mapView).addOnMoveListener(onMoveListenerNavigation);
-                    mylocationNavigationButton.hide();
-                }
-            });
+        navigationRoute(destination);
+
+        LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
+        getGestures(mapView).addOnMoveListener(onMoveListenerNavigation);
+        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
+                mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(20.0).build());
+                locationComponentPlugin.setEnabled(true);
+                locationComponentPlugin.setLocationProvider(navigationLocationProvider);
+                getLocationComponent(mapView).removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
+                getGestures(mapView).addOnMoveListener(onMoveListenerNavigation);
+                locationComponentPlugin.updateSettings(new Function1<LocationComponentSettings, Unit>() {
+                    @Override
+                    public Unit invoke(LocationComponentSettings locationComponentSettings) {
+                        locationComponentSettings.setEnabled(true);
+                        locationComponentSettings.setPulsingEnabled(true);
+                        return null;
+                    }
+                });
+
+                mylocationNavigationButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        focusLocationNavigationMode = true;
+                        getGestures(mapView).addOnMoveListener(onMoveListenerNavigation);
+                        getLocationComponent(mapView).removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
+                        mylocationNavigationButton.hide();
+                    }
+                });
+            }
         });
     }
 
