@@ -14,6 +14,16 @@
         app:mapbox_cameraZoom="2.0" >
 
         </com.mapbox.maps.MapView>
+
+    <include
+        android:id="@+id/searchStartETandDestination"
+        layout="@layout/ui_map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_below="@id/maneuverView"
+        android:visibility="gone"/>
+
     <com.mapbox.navigation.ui.maneuver.view.MapboxManeuverView
         android:id="@+id/maneuverView"
         android:layout_width="match_parent"
@@ -41,7 +51,7 @@
             app:boxStrokeWidthFocused="0sp"
             app:boxStrokeWidth="0sp"
             app:startIconDrawable="@drawable/ic_search_map"
-            android:layout_below="@id/maneuverView"
+            android:layout_below="@id/searchStartETandDestination"
             style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -118,7 +128,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_location_navigation"
-            android:layout_above="@id/setRoute"
             android:layout_margin="16dp"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -127,7 +136,6 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_my_location_button"
             android:layout_margin="16dp"
-            android:layout_above="@id/setRoute"
             android:layout_toRightOf="@id/mylocationNavigationButton"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -136,7 +144,6 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_direction_map_button"
             android:layout_margin="16dp"
-            android:layout_above="@id/setRoute"
 
             android:layout_toRightOf="@id/mylocationButton"/>
 
@@ -147,7 +154,6 @@
             android:src="@drawable/ic_map_start"
             android:id="@+id/navigationButton"
             android:layout_alignParentEnd="true"
-            android:layout_above="@id/setRoute"
             android:layout_margin="16dp"/>
     </LinearLayout>
 </RelativeLayout>

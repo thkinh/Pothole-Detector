@@ -329,6 +329,7 @@ public class FragmentMap extends Fragment
     }
 
     public void setSearchET() {
+
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -366,6 +367,7 @@ public class FragmentMap extends Fragment
             }
         });
 
+        PointAnnotationManager pointAnnotationManager = null;
         placeAutocompleteUiAdapter.addSearchListener(new PlaceAutocompleteUiAdapter.SearchListener() {
             @Override
             public void onSuggestionsShown(@NonNull List<PlaceAutocompleteSuggestion> list) {
@@ -375,8 +377,30 @@ public class FragmentMap extends Fragment
             @Override
             public void onSuggestionSelected(@NonNull PlaceAutocompleteSuggestion placeAutocompleteSuggestion) {
                 ignoreNextQueryUpdate = true;
+//                focusLocationNavigationMode=false;
                 searchET.setText(placeAutocompleteSuggestion.getName());
                 searchResultsView.setVisibility(View.GONE);
+
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
+                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
+                AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
+
+                pointAnnotationManager.deleteAll();
+                PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions().withTextAnchor(TextAnchor.CENTER).withIconImage(resizedBitmap)
+                        .withPoint(placeAutocompleteSuggestion.getCoordinate());
+                pointAnnotationManager.create(pointAnnotationOptions);
+                updateCamera(placeAutocompleteSuggestion.getCoordinate(), 0.0);
+
+
+                navigationButton.setOnClickListener(view->{
+                    searchET.setVisibility(View.GONE);
+                    directionButton.hide();
+                    setclickNavigationOnMap(placeAutocompleteSuggestion.getCoordinate());
+                });
+                directionButton.setOnClickListener(view->{
+
+                    getRoute(placeAutocompleteSuggestion.getCoordinate());
+                });
             }
 
             @Override
@@ -425,12 +449,10 @@ public class FragmentMap extends Fragment
         }
     }
 
+    PointAnnotationManager pointAnnotationManager;
     private void setclickOnMap(){
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
-        AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
-        PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
-        ViewAnnotationManager viewAnnotationManager = mapView.getViewAnnotationManager();
 
         addOnMapClickListener(mapView.getMapboxMap(), pointDestination -> {
             // Xóa tất cả các annotation
@@ -449,7 +471,13 @@ public class FragmentMap extends Fragment
                 setclickNavigationOnMap(pointDestination);
             });
             directionButton.setOnClickListener(view->{
-                getRoute(pointDestination);
+                Log.d("Check ", "Point destination: " + pointDestination.toString());
+
+                if(pointDestination!=null){
+                    getRoute(pointDestination);
+                }else {
+                    searchET.setVisibility(View.GONE);
+                }
             });
             return false;
         });
@@ -469,7 +497,7 @@ public class FragmentMap extends Fragment
         createPointPothole();
     }
 
-
+    AnnotationPlugin annotationPlugin;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -487,6 +515,9 @@ public class FragmentMap extends Fragment
         maneuverView = view.findViewById(R.id.maneuverView);
         directionButton = view.findViewById(R.id.directionButton);
         soundButton = view.findViewById(R.id.soundButton);
+
+        annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
+        pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
 
         return view;
     }
