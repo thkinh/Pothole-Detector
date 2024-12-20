@@ -2,8 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <com.mapbox.maps.MapView
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.mapbox.maps.MapView
         android:id="@+id/mapbox"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,8 +16,8 @@
         app:mapbox_cameraTargetLng="-98.0"
         app:mapbox_cameraZoom="2.0" >
 
-    </com.mapbox.maps.MapView>
-
+        </com.mapbox.maps.MapView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <com.mapbox.navigation.ui.maneuver.view.MapboxManeuverView
         android:id="@+id/maneuverView"
         android:layout_width="match_parent"
@@ -144,5 +147,15 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="12dp"
             app:srcCompat="@android:drawable/ic_delete" />
+
     </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/mylocationNavigationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_direction_map_button"
+        android:layout_marginBottom="40dp"
+        android:layout_marginStart="10dp"/>
 </RelativeLayout>

@@ -179,6 +179,7 @@ public class FragmentMap extends Fragment
     //Các thành phần của layout
     private FloatingActionButton navigationButton;
     private FloatingActionButton mylocationButton;
+    private FloatingActionButton mylocationNavigationButton;
     private PlaceAutocomplete placeAutocomplete;
     private PlaceAutocompleteUiAdapter placeAutocompleteUiAdapter;
     private SearchResultsView searchResultsView;
@@ -195,11 +196,6 @@ public class FragmentMap extends Fragment
     private static final String ICON_LAYER_ID = "icon-layer-id";
     private static final String ICON_SOURCE_ID = "icon-source-id";
 
-
-
-    public FragmentMap() {
-        super(R.layout.fragment_map);
-    }
 
     // Hàm kiểm tra điểm có nằm trên LineString hay không
     public static boolean booleanPointOnLine(Point point, LineString lineString) {
@@ -428,8 +424,6 @@ public class FragmentMap extends Fragment
     }
 
     private void setclickOnMap(){
-
-
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
         AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
@@ -461,15 +455,6 @@ public class FragmentMap extends Fragment
     }
 
 
-    private OnMapFragmentInteractionListener listener;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if(context instanceof OnMapFragmentInteractionListener){
-            listener = (OnMapFragmentInteractionListener) context;
-        }
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -490,7 +475,7 @@ public class FragmentMap extends Fragment
         view = inflater.inflate(R.layout.fragment_map, container, false);
         mapView = (MapView) view.findViewById(R.id.mapbox);
         mylocationButton = (FloatingActionButton) view.findViewById(R.id.mylocationButton);
-
+        mylocationNavigationButton = (FloatingActionButton) view.findViewById(R.id.mylocationNavigationButton);
         navigationButton = (FloatingActionButton) view.findViewById(R.id.navigationButton);
         searchET = (TextInputEditText) view.findViewById(R.id.searchET);
         searchResultsView = (SearchResultsView) view.findViewById(R.id.search_results_view);
@@ -525,7 +510,6 @@ public class FragmentMap extends Fragment
                 setSearchET();
 
                 setclickOnMap();
-
 
             }
         });
@@ -611,6 +595,7 @@ public class FragmentMap extends Fragment
     private MapboxRouteLineView routeLineView;
     private MapboxRouteLineApi routeLineApi;
     boolean focusLocation = true;
+
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
         public void onNewRawLocation(@NonNull Location location) {
@@ -641,6 +626,27 @@ public class FragmentMap extends Fragment
         }
     };
 
+
+    private final OnMoveListener onMoveListenerNavigation = new OnMoveListener() {
+        @Override
+        public void onMoveBegin(@NonNull MoveGestureDetector moveGestureDetector) {
+            focusLocation = false;
+            getGestures(mapView).removeOnMoveListener(this);
+            mylocationButton.hide();
+            mylocationNavigationButton.show();
+
+        }
+
+        @Override
+        public boolean onMove(@NonNull MoveGestureDetector moveGestureDetector) {
+            return false;
+        }
+
+        @Override
+        public void onMoveEnd(@NonNull MoveGestureDetector moveGestureDetector) {
+
+        }
+    };
 
     private MapboxNavigation mapboxNavigation;
 
@@ -731,19 +737,20 @@ public class FragmentMap extends Fragment
         }
     };
 
-    public void setclickNavigationOnMap(Point destination){
 
+    public void setclickNavigationOnMap(Point destination){
         navigationButton.setOnClickListener(butotn ->{
+            mylocationButton.setVisibility(View.INVISIBLE);
             searchET.setVisibility(View.INVISIBLE);
             navigationButton.hide();
             mylocationButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        focusLocation = true;
-                        getGestures(mapView).addOnMoveListener(onMoveListener);
-                        mylocationButton.hide();
-                    }
-                });
+                @Override
+                public void onClick(View view) {
+                    focusLocation = true;
+                    getGestures(mapView).addOnMoveListener(onMoveListener);
+                    mylocationButton.hide();
+                }
+            });
 
 
             maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
@@ -797,14 +804,14 @@ public class FragmentMap extends Fragment
             });
 //
             LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
-            getGestures(mapView).addOnMoveListener(onMoveListener);
+            getGestures(mapView).addOnMoveListener(onMoveListenerNavigation);
             mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
                 @Override
                 public void onStyleLoaded(@NonNull Style style) {
                     mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(20.0).build());
                     locationComponentPlugin.setEnabled(true);
                     locationComponentPlugin.setLocationProvider(navigationLocationProvider);
-                    getGestures(mapView).addOnMoveListener(onMoveListener);
+                    getGestures(mapView).addOnMoveListener(onMoveListenerNavigation);
                     locationComponentPlugin.updateSettings(new Function1<LocationComponentSettings, Unit>() {
                         @Override
                         public Unit invoke(LocationComponentSettings locationComponentSettings) {
@@ -816,8 +823,16 @@ public class FragmentMap extends Fragment
 
                 }
             });
+//            navigationRoute(destination);
+            mylocationNavigationButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    focusLocation = true;
+                    getGestures(mapView).addOnMoveListener(onMoveListenerNavigation);
+                    mylocationNavigationButton.hide();
+                }
+            });
         });
-
     }
 
     @SuppressLint("MissingPermission")
@@ -839,7 +854,7 @@ public class FragmentMap extends Fragment
                     @Override
                     public void onRoutesReady(@NonNull List<NavigationRoute> list, @NonNull RouterOrigin routerOrigin) {
                         mapboxNavigation.setNavigationRoutes(list);
-                        mylocationButton.performClick();
+                        mylocationNavigationButton.performClick();
 
                     }
 

@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.doan.databinding.AtMainBinding;
 import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
 
+import java.util.NavigableMap;
+
 
 public class MainActivity extends AppCompatActivity implements OnMapFragmentInteractionListener {
 
@@ -29,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements OnMapFragmentInte
             if (item.getItemId() == R.id.btn_home) {
                 replaceFragment(new FragmentDashboard());
             } else if (item.getItemId() == R.id.btn_map) {
-                replaceFragment(new FragmentMap());
+                replaceFragment(new FragmentMapNavigation());
             } else if (item.getItemId() == R.id.btn_setting) {
                 replaceFragment(new FragmentSetting());
             }

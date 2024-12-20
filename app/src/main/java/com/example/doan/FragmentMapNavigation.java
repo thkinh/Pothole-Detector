@@ -114,6 +114,9 @@ public class FragmentMapNavigation extends Fragment {
     private CardView cardView;
     private ImageView imageView;
     private FloatingActionButton mylocationButton;
+    private FloatingActionButton mylocationNavigationButton;
+    private FloatingActionButton navigationButton;
+    private MapboxSoundButton soundButton;
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
         public void onNewRawLocation(@NonNull Location location) {
@@ -280,16 +283,17 @@ public class FragmentMapNavigation extends Fragment {
         cardView = view.findViewById(R.id.tripProgressCard);
         imageView = view.findViewById(R.id.stop);
         mylocationButton = view.findViewById(R.id.mylocationButton);
+        navigationButton = view.findViewById(R.id.navigationButton);
+        mylocationNavigationButton = view.findViewById(R.id.mylocationNavigationButton);
         mylocationButton.hide();
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onMapButtonClicked(new FragmentMap());
-            }
-        });
-
         maneuverView = view.findViewById(R.id.maneuverView);
+        soundButton = view.findViewById(R.id.soundButton);
 
+        ChangeModeNavigation();
+
+    }
+
+    private void ChangeModeNavigation(){
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
         routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(getContext()).build());
 
@@ -312,7 +316,7 @@ public class FragmentMapNavigation extends Fragment {
         mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver);
         mapboxNavigation.registerRouteProgressObserver(routeProgressObserver);
 
-        MapboxSoundButton soundButton = view.findViewById(R.id.soundButton);
+
         soundButton.unmute();
         soundButton.setOnClickListener(new View.OnClickListener() {
             @Override
