@@ -182,7 +182,7 @@ public class FragmentMapNavigation extends Fragment {
             focusLocationNavigationMode = false;
             getGestures(mapView).removeOnMoveListener(this);
             mylocationNavigationButton.show();
-
+            mylocationButton.hide();
         }
 
         @Override
