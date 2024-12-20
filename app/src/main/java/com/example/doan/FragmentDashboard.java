@@ -10,6 +10,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -46,6 +48,7 @@ import java.util.concurrent.Executor;
 public class FragmentDashboard extends Fragment {
 
     private PieChart pieChart;
+    private ImageButton btNotify;
 
     // For Firebase Auth and Google Sign In
     private ImageView ivImage;
@@ -64,6 +67,7 @@ public class FragmentDashboard extends Fragment {
 
     Activity context;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -75,6 +79,7 @@ public class FragmentDashboard extends Fragment {
         ivImage = view.findViewById(R.id.avt);
         tvName = view.findViewById(R.id.txt_name);
         btLogout = view.findViewById(R.id.ic_power);
+        btNotify = view.findViewById(R.id.ic_notify);
         btnUser = view.findViewById(R.id.switch_to_user);
         btnRoute = view.findViewById(R.id.switch_to_route);
         btnRoute.setTextColor(getResources().getColor(R.color.gray));
@@ -160,6 +165,18 @@ public class FragmentDashboard extends Fragment {
             }
         });
 //----------------------------End of user and route---------------------
+
+//----------------------------button notify-----------------------------
+        btNotify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+                ft.replace(R.id.mainlayout, new FragmentNotify());
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+        });
+//----------------------------button notify-----------------------------
 
 //Bấm vô chữ "trong 7 ngay...." hoặc "muc đo nguy hiem" sẽ chuyen sang fragment statitics
         TextView newRecentlyTxt = view.findViewById(R.id.txt_recently);

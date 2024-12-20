@@ -20,11 +20,6 @@ import com.jjoe64.graphview.series.DataPoint;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentStatistic#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragmentStatistic extends Fragment {
 
     private PieChart pieChart;
