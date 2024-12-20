@@ -1,5 +1,6 @@
 package com.example.doan;
 
+import static com.mapbox.core.constants.Constants.PRECISION_6;
 import static com.mapbox.maps.plugin.animation.CameraAnimationsUtils.getCamera;
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.addOnMapClickListener;
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.getGestures;
@@ -15,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,16 +40,25 @@ import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.android.gestures.MoveGestureDetector;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
+import com.mapbox.api.directions.v5.MapboxDirections;
 import com.mapbox.api.directions.v5.models.Bearing;
+import com.mapbox.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.api.directions.v5.models.RouteOptions;
 import com.mapbox.api.directions.v5.models.VoiceInstructions;
 import com.mapbox.bindgen.Expected;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.maps.CameraOptions;
 import com.mapbox.maps.EdgeInsets;
 import com.mapbox.maps.MapView;
 import com.mapbox.maps.Style;
+import com.mapbox.maps.extension.style.layers.LayerUtils;
+import com.mapbox.maps.extension.style.layers.generated.LineLayer;
 import com.mapbox.maps.extension.style.layers.properties.generated.TextAnchor;
+import com.mapbox.maps.extension.style.sources.SourceUtils;
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource;
 import com.mapbox.maps.plugin.animation.MapAnimationOptions;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
 import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
@@ -106,6 +117,9 @@ import java.util.Objects;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FragmentMapNavigation extends Fragment {
     MapView mapView;
@@ -117,6 +131,7 @@ public class FragmentMapNavigation extends Fragment {
     private FloatingActionButton mylocationNavigationButton;
     private FloatingActionButton mylocationButton;
     private FloatingActionButton navigationButton;
+    private FloatingActionButton directionButton;
     private MapboxSoundButton soundButton;
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
@@ -161,7 +176,7 @@ public class FragmentMapNavigation extends Fragment {
     private final OnMoveListener onMoveListenerInNavigation = new OnMoveListener() {
         @Override
         public void onMoveBegin(@NonNull MoveGestureDetector moveGestureDetector) {
-            focusLocationNavigationMode = false;
+
             getGestures(mapView).removeOnMoveListener(this);
             mylocationNavigationButton.show();
 
@@ -323,6 +338,7 @@ public class FragmentMapNavigation extends Fragment {
         mylocationNavigationButton = view.findViewById(R.id.mylocationnavigationButton);
         mylocationNavigationButton.hide();
         maneuverView = view.findViewById(R.id.maneuverView);
+        directionButton = view.findViewById(R.id.directionButton);
         soundButton = view.findViewById(R.id.soundButton);
 
         setMylocationButton();
@@ -347,11 +363,15 @@ public class FragmentMapNavigation extends Fragment {
                     ChangeModeNavigation(point);
                 });
 
+                directionButton.setOnClickListener(directionButton->{
+                    DisplayDirectionOnMap(point);
+                });
 
-                cardView.setVisibility(View.VISIBLE);
+
                 return true;
             }
         });
+
 
     }
 
@@ -359,6 +379,7 @@ public class FragmentMapNavigation extends Fragment {
 
         navigationButton.hide();
         mylocationButton.hide();
+        directionButton.hide();
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
         routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(getContext()).build());
 
@@ -441,6 +462,76 @@ public class FragmentMapNavigation extends Fragment {
                         mylocationNavigationButton.hide();
                     }
                 });
+            }
+        });
+    }
+
+
+    private static final String ROUTE_LAYER_ID = "route-layer-id";
+    private static final String ROUTE_SOURCE_ID = "route-source-id";
+    @SuppressLint("MissingPermission")
+    private void DisplayDirectionOnMap(Point destination) {
+        cardView.setVisibility(View.VISIBLE);
+
+        LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(getContext());
+
+        locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
+            @Override
+            public void onSuccess(LocationEngineResult result) {
+                Location location = result.getLastLocation();
+
+                Point origin = Point.fromLngLat(location.getLongitude(), location.getLatitude());
+                MapboxDirections.Builder builder = MapboxDirections.builder();
+                RouteOptions routeOptions = RouteOptions.builder()
+                        .profile(DirectionsCriteria.PROFILE_DRIVING_TRAFFIC)
+                        .geometries(DirectionsCriteria.GEOMETRY_POLYLINE6)
+                        .coordinatesList(Arrays.asList(origin, destination))
+                        .waypointsPerRoute(true)
+                        .alternatives(true)
+                        .build();
+
+                builder.routeOptions(routeOptions);
+                builder.accessToken(getString(R.string.mapbox_access_token));
+
+                builder.build().enqueueCall(new Callback<DirectionsResponse>() {
+                    @Override
+                    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                        // You can get the generic HTTP info about the response
+                        DirectionsResponse directionsResponse = response.body();
+                        DirectionsRoute currentRoute = directionsResponse.routes().get(0);
+
+                        LineString lineString = LineString.fromPolyline(currentRoute.geometry(), PRECISION_6);
+
+                        Feature routeFeature = Feature.fromGeometry(lineString);
+                        // Make a toast which displays the route's distance
+
+
+                        Toast.makeText(getContext(), String.format("Route distance: %.2f meters", currentRoute.distance()), Toast.LENGTH_SHORT).show();
+                        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, style -> {
+
+                            GeoJsonSource.Builder lineRoute = new GeoJsonSource.Builder(ROUTE_SOURCE_ID).feature(routeFeature);
+
+                            SourceUtils.addSource(style, lineRoute.build());
+
+                            LineLayer routeLayer = new LineLayer(ROUTE_LAYER_ID, ROUTE_SOURCE_ID)
+                                    .lineColor("#3b9ddd")
+                                    .lineWidth(8D);
+                            LayerUtils.addLayer(style, routeLayer);
+
+
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+
             }
         });
     }
