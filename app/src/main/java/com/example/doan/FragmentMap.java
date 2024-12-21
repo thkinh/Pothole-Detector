@@ -346,7 +346,7 @@ public class FragmentMap extends Fragment
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                Toast.makeText(getContext(), "setSearchET beforeTextChanged", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -376,7 +376,9 @@ public class FragmentMap extends Fragment
 
             @Override
             public void afterTextChanged(Editable editable) {
+                Toast.makeText(getContext(), "setSearchET afterTextChanged", Toast.LENGTH_SHORT).show();
                 searchResultsView.setVisibility(View.GONE);
+
             }
         });
 
@@ -439,19 +441,19 @@ public class FragmentMap extends Fragment
     }
 
 
-    private boolean ignoreNextQueryUpdateTwoPointLayout = false;
-    public void setSearchTwoPointLayout(PointAnnotationManager pointAnnotationManager,Bitmap resizedBitmap,TextInputEditText searchStartOrDestinationET, Button directionTwoPointButton, Point point) {
+    private boolean ignoreNextQueryUpdateStart = false;
+    public void setSearchStartET(PointAnnotationManager pointAnnotationManager,Bitmap resizedBitmap,Point point) {
 
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                Toast.makeText(getContext(), "setSearchStartET beforeTextChanged", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (ignoreNextQueryUpdateTwoPointLayout) {
-                    ignoreNextQueryUpdateTwoPointLayout = false;
+                if (ignoreNextQueryUpdateStart) {
+                    ignoreNextQueryUpdateStart = false;
                 } else {
                     placeAutocompleteUiAdapter.search(charSequence.toString(), new Continuation<Unit>() {
                         @NonNull
@@ -475,7 +477,8 @@ public class FragmentMap extends Fragment
 
             @Override
             public void afterTextChanged(Editable editable) {
-                searchResultsView.setVisibility(View.GONE);
+                Toast.makeText(getContext(), "setSearchStartET afterTextChanged", Toast.LENGTH_SHORT).show();
+                setSearchDestinationET(pointAnnotationManager,resizedBitmap,point);
             }
         });
 
@@ -488,7 +491,7 @@ public class FragmentMap extends Fragment
             @Override
             public void onSuggestionSelected(@NonNull PlaceAutocompleteSuggestion placeAutocompleteSuggestion) {
                 ignoreNextQueryUpdate = true;
-                searchStartOrDestinationET.setText(placeAutocompleteSuggestion.getName());
+                searchStartET.setText(placeAutocompleteSuggestion.getName());
                 searchResultsView.setVisibility(View.GONE);
 
                 MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
@@ -517,11 +520,11 @@ public class FragmentMap extends Fragment
                 });
                 Toast.makeText(getContext(), String.format("Show layout search 2 point", placeAutocompleteSuggestion.getCoordinate()), Toast.LENGTH_SHORT).show();
 
-                directionTwoPointButton.setOnClickListener(view->{
-                    getDirectionWithMyLocationPoint(placeAutocompleteSuggestion.getCoordinate());
-                    searcuETLayout.setVisibility(View.GONE);
-                    layoutStartDestination.setVisibility(View.VISIBLE);
-                });
+//                directionTwoPointButton.setOnClickListener(view->{
+//                    getDirectionWithMyLocationPoint(placeAutocompleteSuggestion.getCoordinate());
+//                    searcuETLayout.setVisibility(View.GONE);
+//                    layoutStartDestination.setVisibility(View.VISIBLE);
+//                });
             }
 
             @Override
@@ -538,11 +541,12 @@ public class FragmentMap extends Fragment
     }
 
     private boolean ignoreNextQueryUpdateDestination= false;
-    public void setSearchDestinationET(PointAnnotationManager pointAnnotationManager,Bitmap resizedBitmap,TextInputEditText searchStartOrDestinationET, Button directionTwoPointButton, Point point) {
+    public void setSearchDestinationET(PointAnnotationManager pointAnnotationManager,Bitmap resizedBitmap, Point point) {
 
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Toast.makeText(getContext(), "setSearchDestinationET beforeTextChanged", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -573,6 +577,8 @@ public class FragmentMap extends Fragment
 
             @Override
             public void afterTextChanged(Editable editable) {
+                Toast.makeText(getContext(), "setSearchDestinationET afterTextChanged", Toast.LENGTH_SHORT).show();
+
                 searchResultsView.setVisibility(View.GONE);
             }
         });
@@ -586,7 +592,7 @@ public class FragmentMap extends Fragment
             @Override
             public void onSuggestionSelected(@NonNull PlaceAutocompleteSuggestion placeAutocompleteSuggestion) {
                 ignoreNextQueryUpdate = true;
-                searchStartOrDestinationET.setText(placeAutocompleteSuggestion.getName());
+                searchDestinationET.setText(placeAutocompleteSuggestion.getName());
                 searchResultsView.setVisibility(View.GONE);
 
                 MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
@@ -615,11 +621,11 @@ public class FragmentMap extends Fragment
                 });
                 Toast.makeText(getContext(), String.format("Show layout search 2 point", placeAutocompleteSuggestion.getCoordinate()), Toast.LENGTH_SHORT).show();
 
-                directionTwoPointButton.setOnClickListener(view->{
-                    getDirectionWithMyLocationPoint(placeAutocompleteSuggestion.getCoordinate());
-                    searcuETLayout.setVisibility(View.GONE);
-                    layoutStartDestination.setVisibility(View.VISIBLE);
-                });
+//                directionTwoPointButton.setOnClickListener(view->{
+//                    getDirectionWithMyLocationPoint(placeAutocompleteSuggestion.getCoordinate());
+//                    searcuETLayout.setVisibility(View.GONE);
+//                    layoutStartDestination.setVisibility(View.VISIBLE);
+//                });
             }
 
             @Override
@@ -634,7 +640,6 @@ public class FragmentMap extends Fragment
             }
         });
     }
-
 
     //Tạo các điểm pothole cố định trên map
     private void createPointPothole(){
@@ -696,10 +701,16 @@ public class FragmentMap extends Fragment
                 searcuETLayout.setVisibility(View.GONE);
                 layoutStartDestination.setVisibility(View.VISIBLE);
             });
+
+            searchStartET.setText("Vị trí của tôi");
+            searchDestinationET.setText(pointDestination.coordinates().toString());
             return false;
         });
     }
 
+    private String getPlaceByPoint(Point point){
+        return null;
+    }
 
 
     @Override
@@ -781,11 +792,16 @@ public class FragmentMap extends Fragment
                     searcuETLayout.setVisibility(View.GONE);
                     directionButton.setVisibility(View.GONE);
                     searchStartET.setText("Vị Trí của bạn");
-                    setSearchTwoPointLayout(pointAnnotationManager,resizedBitmap,searchStartET,findRouteButton,null);
+
+                    /* Khi vùa mới hiện cardview để nhập dữ liệu đầu là điểm đầu và cuối
+                    *  2 trường hợp
+                    *  khi nhập dữ liệu điểm đầu trước sau đó sẽ lắng nghe xem dữ liệu điểm cuối có chưa nếu có mới thể kích hoạt nút button được
+                    *  khi nhập dữ liệu điểm cuối trước có thể kích hoạt nút button liền được */
+                    setSearchStartET(pointAnnotationManager,resizedBitmap,null);
                 });
 
+                setSearchET(pointAnnotationManager,resizedBitmap,searchET);
 
-                setSearchET(pointAnnotationManager,resizedBitmap,searchDestinationET);
             }
         });
 
