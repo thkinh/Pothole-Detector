@@ -322,8 +322,6 @@ public class FragmentMap extends Fragment
         }
     }
 
-
-
     public void setMylocationButton() {
 
         mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(10.0).build());
@@ -421,7 +419,7 @@ public class FragmentMap extends Fragment
                 Toast.makeText(getContext(), String.format("Show layout search 2 point", placeAutocompleteSuggestion.getCoordinate()), Toast.LENGTH_SHORT).show();
 
                 directionButton.setOnClickListener(view->{
-                    getRoute(placeAutocompleteSuggestion.getCoordinate());
+                    getDirectionWithMyLocationPoint(placeAutocompleteSuggestion.getCoordinate());
                     searcuETLayout.setVisibility(View.GONE);
                     layoutStartDestination.setVisibility(View.VISIBLE);
                 });
@@ -520,7 +518,105 @@ public class FragmentMap extends Fragment
                 Toast.makeText(getContext(), String.format("Show layout search 2 point", placeAutocompleteSuggestion.getCoordinate()), Toast.LENGTH_SHORT).show();
 
                 directionTwoPointButton.setOnClickListener(view->{
-                    getRoute(placeAutocompleteSuggestion.getCoordinate());
+                    getDirectionWithMyLocationPoint(placeAutocompleteSuggestion.getCoordinate());
+                    searcuETLayout.setVisibility(View.GONE);
+                    layoutStartDestination.setVisibility(View.VISIBLE);
+                });
+            }
+
+            @Override
+            public void onPopulateQueryClick(@NonNull PlaceAutocompleteSuggestion placeAutocompleteSuggestion) {
+
+
+            }
+
+            @Override
+            public void onError(@NonNull Exception e) {
+                Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private boolean ignoreNextQueryUpdateDestination= false;
+    public void setSearchDestinationET(PointAnnotationManager pointAnnotationManager,Bitmap resizedBitmap,TextInputEditText searchStartOrDestinationET, Button directionTwoPointButton, Point point) {
+
+        searchET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (ignoreNextQueryUpdateDestination) {
+                    ignoreNextQueryUpdateDestination = false;
+                } else {
+                    placeAutocompleteUiAdapter.search(charSequence.toString(), new Continuation<Unit>() {
+                        @NonNull
+                        @Override
+                        public CoroutineContext getContext() {
+                            return EmptyCoroutineContext.INSTANCE;
+                        }
+
+                        @Override
+                        public void resumeWith(@NonNull Object o) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    searchResultsView.setVisibility(View.VISIBLE);
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                searchResultsView.setVisibility(View.GONE);
+            }
+        });
+
+        placeAutocompleteUiAdapter.addSearchListener(new PlaceAutocompleteUiAdapter.SearchListener() {
+            @Override
+            public void onSuggestionsShown(@NonNull List<PlaceAutocompleteSuggestion> list) {
+
+            }
+
+            @Override
+            public void onSuggestionSelected(@NonNull PlaceAutocompleteSuggestion placeAutocompleteSuggestion) {
+                ignoreNextQueryUpdate = true;
+                searchStartOrDestinationET.setText(placeAutocompleteSuggestion.getName());
+                searchResultsView.setVisibility(View.GONE);
+
+                MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
+
+                CameraOptions cameraOptions = new CameraOptions.Builder().center(placeAutocompleteSuggestion.getCoordinate()).zoom(13.0)
+                        .padding(new EdgeInsets(1000.0, 0.0, 0.0, 0.0)).build();
+
+                getCamera(mapView).easeTo(cameraOptions, animationOptions);
+
+                LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
+                locationComponentPlugin.removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
+
+                pointAnnotationManager.deleteAll();
+
+                // Tạo annotation mới tại vị trí click
+                PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
+                        .withTextAnchor(TextAnchor.CENTER)
+                        .withIconImage(resizedBitmap)
+                        .withPoint(placeAutocompleteSuggestion.getCoordinate());
+                pointAnnotationManager.create(pointAnnotationOptions);
+
+                navigationButton.setOnClickListener(view->{
+                    searcuETLayout.setVisibility(View.GONE);
+                    directionButton.hide();
+                    setclickNavigationOnMap(placeAutocompleteSuggestion.getCoordinate());
+                });
+                Toast.makeText(getContext(), String.format("Show layout search 2 point", placeAutocompleteSuggestion.getCoordinate()), Toast.LENGTH_SHORT).show();
+
+                directionTwoPointButton.setOnClickListener(view->{
+                    getDirectionWithMyLocationPoint(placeAutocompleteSuggestion.getCoordinate());
                     searcuETLayout.setVisibility(View.GONE);
                     layoutStartDestination.setVisibility(View.VISIBLE);
                 });
@@ -540,7 +636,6 @@ public class FragmentMap extends Fragment
     }
 
 
-    LatLng LatLng;
     //Tạo các điểm pothole cố định trên map
     private void createPointPothole(){
 
@@ -559,17 +654,6 @@ public class FragmentMap extends Fragment
 
             }
         });
-            Point pothole2 = Point.fromLngLat( 106.8041,10.87015);
-//        Point pothole3 = Point.fromLngLat( 106.8049,10.86918);
-//        Point pothole4 = Point.fromLngLat( 106.8024,10.86771);
-//        Point pothole5 = Point.fromLngLat( 106.8024,10.86672);
-//        Point pothole6 = Point.fromLngLat( 106.7993,10.86475);
-//        potholeList.add(pothole2);
-//        potholeList.add(pothole3);
-//        potholeList.add(pothole4);
-//        potholeList.add(pothole5);
-//        potholeList.add(pothole6);
-
     }
 
     private PointAnnotationManager pointPotholeAnnotationManager ;
@@ -608,7 +692,7 @@ public class FragmentMap extends Fragment
                 setclickNavigationOnMap(pointDestination);
             });
             directionButton.setOnClickListener(direction->{
-                getRoute(pointDestination);
+                getDirectionWithMyLocationPoint(pointDestination);
                 searcuETLayout.setVisibility(View.GONE);
                 layoutStartDestination.setVisibility(View.VISIBLE);
             });
@@ -707,9 +791,9 @@ public class FragmentMap extends Fragment
 
     }
 
-    @SuppressLint("MissingPermission")
-    private void getRoute(Point destination) {
 
+    @SuppressLint("MissingPermission")
+    private void getDirectionWithMyLocationPoint(Point destination) {
         LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(getContext());
 
         locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
@@ -718,58 +802,63 @@ public class FragmentMap extends Fragment
                 Location location = result.getLastLocation();
 
                 Point origin = Point.fromLngLat(location.getLongitude(), location.getLatitude());
-                MapboxDirections.Builder builder = MapboxDirections.builder();
-                RouteOptions routeOptions = RouteOptions.builder()
-                        .profile(DirectionsCriteria.PROFILE_DRIVING_TRAFFIC)
-                        .geometries(DirectionsCriteria.GEOMETRY_POLYLINE6)
-                        .coordinatesList(Arrays.asList(origin, destination))
-                        .waypointsPerRoute(true)
-                        .alternatives(true)
-                        .build();
 
-                builder.routeOptions(routeOptions);
-                builder.accessToken(getString(R.string.mapbox_access_token));
-
-                builder.build().enqueueCall(new Callback<DirectionsResponse>() {
-                    @Override
-                    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-                        // You can get the generic HTTP info about the response
-                        DirectionsResponse directionsResponse = response.body();
-                        DirectionsRoute currentRoute = directionsResponse.routes().get(0);
-
-                        LineString lineString = LineString.fromPolyline(currentRoute.geometry(),PRECISION_6);
-
-                        //Các điểm hình thành lên linestring
-                        List<Point> pointList = lineString.coordinates();
-                        Feature routeFeature = Feature.fromGeometry(lineString);
-                        // Make a toast which displays the route's distance
-
-
-                        Toast.makeText(getContext(), String.format("Route distance: %.2f meters", currentRoute.distance()), Toast.LENGTH_SHORT).show();
-                        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS,style -> {
-
-                            GeoJsonSource.Builder lineRoute = new GeoJsonSource.Builder(ROUTE_SOURCE_ID).feature(routeFeature);
-
-                            SourceUtils.addSource(style,lineRoute.build());
-
-                            LineLayer routeLayer = new LineLayer(ROUTE_LAYER_ID, ROUTE_SOURCE_ID)
-                                    .lineColor("#3b9ddd")
-                                    .lineWidth(8D);
-                            LayerUtils.addLayer(style,routeLayer);
-
-
-                        });
-                    }
-
-                    @Override
-                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-
-                    }
-                });
+                getRouteTwoPoint(origin,destination);
             }
 
             @Override
             public void onFailure(@NonNull Exception exception) {
+
+            }
+        });
+    }
+
+    private void getRouteTwoPoint(Point origin ,Point destination) {
+        MapboxDirections.Builder builder = MapboxDirections.builder();
+        RouteOptions routeOptions = RouteOptions.builder()
+                .profile(DirectionsCriteria.PROFILE_DRIVING_TRAFFIC)
+                .geometries(DirectionsCriteria.GEOMETRY_POLYLINE6)
+                .coordinatesList(Arrays.asList(origin, destination))
+                .waypointsPerRoute(true)
+                .alternatives(true)
+                .build();
+
+        builder.routeOptions(routeOptions);
+        builder.accessToken(getString(R.string.mapbox_access_token));
+
+        builder.build().enqueueCall(new Callback<DirectionsResponse>() {
+            @Override
+            public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                // You can get the generic HTTP info about the response
+                DirectionsResponse directionsResponse = response.body();
+                DirectionsRoute currentRoute = directionsResponse.routes().get(0);
+
+                LineString lineString = LineString.fromPolyline(currentRoute.geometry(),PRECISION_6);
+
+                //Các điểm hình thành lên linestring
+                List<Point> pointList = lineString.coordinates();
+                Feature routeFeature = Feature.fromGeometry(lineString);
+                // Make a toast which displays the route's distance
+
+
+                Toast.makeText(getContext(), String.format("Route distance: %.2f meters", currentRoute.distance()), Toast.LENGTH_SHORT).show();
+                mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS,style -> {
+
+                    GeoJsonSource.Builder lineRoute = new GeoJsonSource.Builder(ROUTE_SOURCE_ID).feature(routeFeature);
+
+                    SourceUtils.addSource(style,lineRoute.build());
+
+                    LineLayer routeLayer = new LineLayer(ROUTE_LAYER_ID, ROUTE_SOURCE_ID)
+                            .lineColor("#3b9ddd")
+                            .lineWidth(8D);
+                    LayerUtils.addLayer(style,routeLayer);
+
+
+                });
+            }
+
+            @Override
+            public void onFailure(Call<DirectionsResponse> call, Throwable t) {
 
             }
         });
