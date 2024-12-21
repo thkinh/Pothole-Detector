@@ -343,7 +343,7 @@ public class FragmentMap extends Fragment
 
 
     private boolean ignoreNextQueryUpdate = false;
-    public void setSearchET(PointAnnotationManager pointAnnotationManager,Bitmap resizedBitmap) {
+    public void setSearchET(PointAnnotationManager pointAnnotationManager,Bitmap resizedBitmap,TextInputEditText searchET) {
 
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
@@ -378,7 +378,7 @@ public class FragmentMap extends Fragment
 
             @Override
             public void afterTextChanged(Editable editable) {
-
+                searchResultsView.setVisibility(View.GONE);
             }
         });
 
@@ -447,10 +447,7 @@ public class FragmentMap extends Fragment
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (point == null){
-                    Toast.makeText(getContext(), "point is null", Toast.LENGTH_SHORT).show();
-                    searchStartOrDestinationET.setText("Vị trí của bạn");
-                }
+
             }
 
             @Override
@@ -688,12 +685,12 @@ public class FragmentMap extends Fragment
                     layoutStartDestination.setVisibility(View.VISIBLE);
                     searcuETLayout.setVisibility(View.GONE);
                     directionButton.setVisibility(View.GONE);
-
+                    searchStartET.setText("Vị Trí của bạn");
                     setSearchTwoPointLayout(pointAnnotationManager,resizedBitmap,searchStartET,findRouteButton,null);
                 });
 
 
-                setSearchET(pointAnnotationManager,resizedBitmap);
+                setSearchET(pointAnnotationManager,resizedBitmap,searchDestinationET);
             }
         });
 
