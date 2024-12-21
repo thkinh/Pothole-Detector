@@ -440,11 +440,12 @@ public class FragmentMap extends Fragment
         });
     }
 
-
+    Point originSearch;
+    Point destinationSearch;
     private boolean ignoreNextQueryUpdateStart = false;
     public void setSearchStartET(PointAnnotationManager pointAnnotationManager,Bitmap resizedBitmap,Point point) {
 
-        searchET.addTextChangedListener(new TextWatcher() {
+        searchStartET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 Toast.makeText(getContext(), "setSearchStartET beforeTextChanged", Toast.LENGTH_SHORT).show();
@@ -518,13 +519,8 @@ public class FragmentMap extends Fragment
                     directionButton.hide();
                     setclickNavigationOnMap(placeAutocompleteSuggestion.getCoordinate());
                 });
-                Toast.makeText(getContext(), String.format("Show layout search 2 point", placeAutocompleteSuggestion.getCoordinate()), Toast.LENGTH_SHORT).show();
-
-//                directionTwoPointButton.setOnClickListener(view->{
-//                    getDirectionWithMyLocationPoint(placeAutocompleteSuggestion.getCoordinate());
-//                    searcuETLayout.setVisibility(View.GONE);
-//                    layoutStartDestination.setVisibility(View.VISIBLE);
-//                });
+                originSearch=Point.fromLngLat(placeAutocompleteSuggestion.getCoordinate().longitude(),placeAutocompleteSuggestion.getCoordinate().latitude());
+                searchResultsView.setVisibility(View.GONE);
             }
 
             @Override
@@ -543,7 +539,7 @@ public class FragmentMap extends Fragment
     private boolean ignoreNextQueryUpdateDestination= false;
     public void setSearchDestinationET(PointAnnotationManager pointAnnotationManager,Bitmap resizedBitmap, Point point) {
 
-        searchET.addTextChangedListener(new TextWatcher() {
+        searchDestinationET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 Toast.makeText(getContext(), "setSearchDestinationET beforeTextChanged", Toast.LENGTH_SHORT).show();
@@ -614,18 +610,8 @@ public class FragmentMap extends Fragment
                         .withPoint(placeAutocompleteSuggestion.getCoordinate());
                 pointAnnotationManager.create(pointAnnotationOptions);
 
-                navigationButton.setOnClickListener(view->{
-                    searcuETLayout.setVisibility(View.GONE);
-                    directionButton.hide();
-                    setclickNavigationOnMap(placeAutocompleteSuggestion.getCoordinate());
-                });
-                Toast.makeText(getContext(), String.format("Show layout search 2 point", placeAutocompleteSuggestion.getCoordinate()), Toast.LENGTH_SHORT).show();
-
-//                directionTwoPointButton.setOnClickListener(view->{
-//                    getDirectionWithMyLocationPoint(placeAutocompleteSuggestion.getCoordinate());
-//                    searcuETLayout.setVisibility(View.GONE);
-//                    layoutStartDestination.setVisibility(View.VISIBLE);
-//                });
+                destinationSearch=Point.fromLngLat(placeAutocompleteSuggestion.getCoordinate().longitude(),placeAutocompleteSuggestion.getCoordinate().latitude());
+                searchResultsView.setVisibility(View.GONE);
             }
 
             @Override
@@ -704,10 +690,37 @@ public class FragmentMap extends Fragment
 
             searchStartET.setText("Vị trí của tôi");
             searchDestinationET.setText(pointDestination.coordinates().toString());
+            getMylocation();
+            destinationSearch=pointDestination;
+            findRouteButton.setOnClickListener(button->{
+                if(originSearch!=null && destinationSearch!= null){
+                    getRouteTwoPoint(originSearch,destinationSearch);
+                }
+            });
+
             return false;
         });
     }
 
+    @SuppressLint("MissingPermission")
+    private void getMylocation() {
+        LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(getContext());
+
+        locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
+            @Override
+            public void onSuccess(LocationEngineResult result) {
+                Location location = result.getLastLocation();
+
+                originSearch = Point.fromLngLat(location.getLongitude(), location.getLatitude());
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+
+            }
+        });
+    }
     private String getPlaceByPoint(Point point){
         return null;
     }
@@ -798,17 +811,30 @@ public class FragmentMap extends Fragment
                     *  khi nhập dữ liệu điểm đầu trước sau đó sẽ lắng nghe xem dữ liệu điểm cuối có chưa nếu có mới thể kích hoạt nút button được
                     *  khi nhập dữ liệu điểm cuối trước có thể kích hoạt nút button liền được */
                     setSearchStartET(pointAnnotationManager,resizedBitmap,null);
+
+                    setSearchDestinationET(pointAnnotationManager,resizedBitmap,null);
+
+                    searchDestinationET.setOnClickListener(search->{
+                        searchDestinationET.clearComposingText();
+                    });
+                    searchStartET.setOnClickListener(search->{
+                        searchStartET.clearComposingText();
+                        Toast.makeText(getContext(), "set search null", Toast.LENGTH_SHORT).show();
+                    });
+
+                    findRouteButton.setOnClickListener(button->{
+                        if(originSearch!=null && destinationSearch!= null){
+                            getRouteTwoPoint(originSearch,destinationSearch);
+                        }
+                    });
+
+
                 });
 
                 searchET.setOnClickListener(search->{
-                    searchET.setText("");
+                    searchET.clearComposingText();
                 });
-                searchDestinationET.setOnClickListener(search->{
-                    searchDestinationET.setText("");
-                });
-                searchStartET.setOnClickListener(search->{
-                    searchStartET.setText("");
-                });
+
 
                 setSearchET(pointAnnotationManager,resizedBitmap,searchET);
 
@@ -816,7 +842,6 @@ public class FragmentMap extends Fragment
         });
 
     }
-
 
     @SuppressLint("MissingPermission")
     private void getDirectionWithMyLocationPoint(Point destination) {
