@@ -40,7 +40,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.doan.api.auth.PotholeManager;
 import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
+import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -180,7 +182,6 @@ public class FragmentMap extends Fragment
     private View view;
     private PermissionsManager permissionsManager;
 
-    private List<Point> potholeList ;
     //Các thành phần của layout
     private FloatingActionButton navigationButton;
     private FloatingActionButton mylocationButton;
@@ -210,7 +211,6 @@ public class FragmentMap extends Fragment
     private static final String ROUTE_LAYER_ID = "route-layer-id";
     private static final String ROUTE_SOURCE_ID = "route-source-id";
 
-    private View ui_map;
 
 
     // Hàm kiểm tra điểm có nằm trên LineString hay không
@@ -540,38 +540,51 @@ public class FragmentMap extends Fragment
     }
 
 
-
-
     LatLng LatLng;
     //Tạo các điểm pothole cố định trên map
     private void createPointPothole(){
 
-        potholeList = new ArrayList<>();
-        Point pothole2 = Point.fromLngLat( 106.8041,10.87015);
-        Point pothole3 = Point.fromLngLat( 106.8049,10.86918);
-        Point pothole4 = Point.fromLngLat( 106.8024,10.86771);
-        Point pothole5 = Point.fromLngLat( 106.8024,10.86672);
-        Point pothole6 = Point.fromLngLat( 106.7993,10.86475);
-        potholeList.add(pothole2);
-        potholeList.add(pothole3);
-        potholeList.add(pothole4);
-        potholeList.add(pothole5);
-        potholeList.add(pothole6);
+//        potholeList = new ArrayList<>();
+        AppUser appUser = new AppUser();
+        appUser.setUsername("thinh1");
+        PotholeManager potholeManager= PotholeManager.getInstance();
+        potholeManager.getPotholes(appUser, new PotholeManager.GetPotholeCallBack() {
+            @Override
+            public void onSuccess(List<Pothole> potholes) {
+                addPotholeToMap(potholes);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+
+            }
+        });
+            Point pothole2 = Point.fromLngLat( 106.8041,10.87015);
+//        Point pothole3 = Point.fromLngLat( 106.8049,10.86918);
+//        Point pothole4 = Point.fromLngLat( 106.8024,10.86771);
+//        Point pothole5 = Point.fromLngLat( 106.8024,10.86672);
+//        Point pothole6 = Point.fromLngLat( 106.7993,10.86475);
+//        potholeList.add(pothole2);
+//        potholeList.add(pothole3);
+//        potholeList.add(pothole4);
+//        potholeList.add(pothole5);
+//        potholeList.add(pothole6);
+
     }
 
     private PointAnnotationManager pointPotholeAnnotationManager ;
     //Quản lí các điểm pothole trên map
-    public void addPotholeToMap(){
+    public void addPotholeToMap(List<Pothole> potholeList){
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_pothole_waning_map);
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
         AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
         pointPotholeAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
 
-        for ( Point potholePoint : potholeList) {
+        for ( Pothole potholePoint : potholeList) {
             PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                     .withTextAnchor(TextAnchor.CENTER)
                     .withIconImage(resizedBitmap)
-                    .withPoint(potholePoint);
+                    .withPoint(Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude()));
             pointPotholeAnnotationManager.create(pointAnnotationOptions);
         }
     }
@@ -599,8 +612,6 @@ public class FragmentMap extends Fragment
                 searcuETLayout.setVisibility(View.GONE);
                 layoutStartDestination.setVisibility(View.VISIBLE);
             });
-
-            setSearchTwoPointLayout(pointAnnotationManager,resizedBitmap,searchStartET,findRouteButton,pointDestination);
             return false;
         });
     }
@@ -674,7 +685,7 @@ public class FragmentMap extends Fragment
             @Override
             public void onStyleLoaded(@NonNull Style style) {
 
-                addPotholeToMap();
+                createPointPothole();
 
                 setMylocationButton();
 
@@ -730,12 +741,6 @@ public class FragmentMap extends Fragment
 
                         //Các điểm hình thành lên linestring
                         List<Point> pointList = lineString.coordinates();
-                        for (Point potholePoint : potholeList) {
-                            // Tìm điểm gần nhất trên LineString
-                            boolean check= booleanPointOnLine(potholePoint,lineString);
-                            // In ra thông tin về điểm pothole gần nhất
-                            Log.d("On line", "Pothole at: " + potholePoint.coordinates() + " on line: " +check) ;
-                        }
                         Feature routeFeature = Feature.fromGeometry(lineString);
                         // Make a toast which displays the route's distance
 
