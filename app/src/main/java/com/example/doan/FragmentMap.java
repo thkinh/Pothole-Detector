@@ -328,12 +328,12 @@ public class FragmentMap extends Fragment
         });
     }
 
-    public void setSearchET() {
+    public void setSearchET(PointAnnotationManager pointAnnotationManager,Bitmap resizedBitmap) {
 
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                ignoreNextQueryUpdate = false;
             }
 
             @Override
@@ -367,7 +367,6 @@ public class FragmentMap extends Fragment
             }
         });
 
-        PointAnnotationManager pointAnnotationManager = null;
         placeAutocompleteUiAdapter.addSearchListener(new PlaceAutocompleteUiAdapter.SearchListener() {
             @Override
             public void onSuggestionsShown(@NonNull List<PlaceAutocompleteSuggestion> list) {
@@ -377,19 +376,15 @@ public class FragmentMap extends Fragment
             @Override
             public void onSuggestionSelected(@NonNull PlaceAutocompleteSuggestion placeAutocompleteSuggestion) {
                 ignoreNextQueryUpdate = true;
-//                focusLocationNavigationMode=false;
                 searchET.setText(placeAutocompleteSuggestion.getName());
                 searchResultsView.setVisibility(View.GONE);
 
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
-                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
-                AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
+                MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
 
-                pointAnnotationManager.deleteAll();
-                PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions().withTextAnchor(TextAnchor.CENTER).withIconImage(resizedBitmap)
-                        .withPoint(placeAutocompleteSuggestion.getCoordinate());
-                pointAnnotationManager.create(pointAnnotationOptions);
-                updateCamera(placeAutocompleteSuggestion.getCoordinate(), 0.0);
+                CameraOptions cameraOptions = new CameraOptions.Builder().center(placeAutocompleteSuggestion.getCoordinate()).zoom(18.0)
+                        .padding(new EdgeInsets(1000.0, 0.0, 0.0, 0.0)).build();
+
+                getCamera(mapView).easeTo(cameraOptions, animationOptions);
 
 
                 navigationButton.setOnClickListener(view->{
@@ -449,10 +444,11 @@ public class FragmentMap extends Fragment
         }
     }
 
-    PointAnnotationManager pointAnnotationManager;
     private void setclickOnMap(){
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
+        AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
+        PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
 
         addOnMapClickListener(mapView.getMapboxMap(), pointDestination -> {
             // Xóa tất cả các annotation
@@ -481,6 +477,8 @@ public class FragmentMap extends Fragment
             });
             return false;
         });
+
+        setSearchET(pointAnnotationManager,resizedBitmap);
     }
 
 
@@ -505,7 +503,6 @@ public class FragmentMap extends Fragment
     }
 
 
-    AnnotationPlugin annotationPlugin;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -523,10 +520,6 @@ public class FragmentMap extends Fragment
         maneuverView = view.findViewById(R.id.maneuverView);
         directionButton = view.findViewById(R.id.directionButton);
         soundButton = view.findViewById(R.id.soundButton);
-
-        annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
-        pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
-
         return view;
     }
 
@@ -551,8 +544,6 @@ public class FragmentMap extends Fragment
                 addPotholeToMap();
 
                 setMylocationButton();
-
-                setSearchET();
 
                 setclickOnMap();
 
@@ -641,6 +632,16 @@ public class FragmentMap extends Fragment
     private MapboxRouteLineApi routeLineApi;
     boolean focusLocationNavigationMode = true;
 
+
+
+    private void updateCamera(Point point, Double bearing) {
+        MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
+        CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(18.0).bearing(bearing).pitch(45.0)
+                .padding(new EdgeInsets(1000.0, 0.0, 0.0, 0.0)).build();
+
+        getCamera(mapView).easeTo(cameraOptions, animationOptions);
+    }
+
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
         public void onNewRawLocation(@NonNull Location location) {
@@ -694,14 +695,6 @@ public class FragmentMap extends Fragment
     };
 
     private MapboxNavigation mapboxNavigation;
-
-    private void updateCamera(Point point, Double bearing) {
-        MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
-        CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(18.0).bearing(bearing).pitch(45.0)
-                .padding(new EdgeInsets(1000.0, 0.0, 0.0, 0.0)).build();
-
-        getCamera(mapView).easeTo(cameraOptions, animationOptions);
-    }
 
     private final ActivityResultLauncher<String> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
         @Override
