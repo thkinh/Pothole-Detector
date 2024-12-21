@@ -800,6 +800,16 @@ public class FragmentMap extends Fragment
                     setSearchStartET(pointAnnotationManager,resizedBitmap,null);
                 });
 
+                searchET.setOnClickListener(search->{
+                    searchET.setText("");
+                });
+                searchDestinationET.setOnClickListener(search->{
+                    searchDestinationET.setText("");
+                });
+                searchStartET.setOnClickListener(search->{
+                    searchStartET.setText("");
+                });
+
                 setSearchET(pointAnnotationManager,resizedBitmap,searchET);
 
             }
