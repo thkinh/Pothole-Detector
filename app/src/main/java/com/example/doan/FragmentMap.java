@@ -24,7 +24,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -190,15 +192,23 @@ public class FragmentMap extends Fragment
     private SearchResultsView searchResultsView;
     private TextInputEditText searchET;
 
+    private TextInputEditText searchStartET;
+    private TextInputEditText searchDestinationET;
+    private Button findRouteButton;
+
+
+
     private MapboxManeuverView maneuverView;
     private CardView cardView;
     private ImageView imageView;
 
-    private boolean ignoreNextQueryUpdate = false;
+    private LinearLayout layoutStartDestination;
+
     //Các thành phần trên map Mapbox
     private static final String ROUTE_LAYER_ID = "route-layer-id";
     private static final String ROUTE_SOURCE_ID = "route-source-id";
-    private static final String ICON_SOURCE_ID = "icon-source-id";
+
+    private View ui_map;
 
 
     // Hàm kiểm tra điểm có nằm trên LineString hay không
@@ -312,7 +322,9 @@ public class FragmentMap extends Fragment
 
 
 
-    public void setMylocationButton() {
+    public void setMylocationButton(View view) {
+
+
         mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(10.0).build());
         LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
         locationComponentPlugin.setEnabled(true);
@@ -328,7 +340,8 @@ public class FragmentMap extends Fragment
         });
     }
 
-    public void setSearchET(PointAnnotationManager pointAnnotationManager,Bitmap resizedBitmap) {
+    private boolean ignoreNextQueryUpdate = false;
+    public void setSearchET(PointAnnotationManager pointAnnotationManager,Bitmap resizedBitmap,View view) {
 
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
@@ -403,9 +416,12 @@ public class FragmentMap extends Fragment
                     directionButton.hide();
                     setclickNavigationOnMap(placeAutocompleteSuggestion.getCoordinate());
                 });
-                directionButton.setOnClickListener(view->{
+                Toast.makeText(getContext(), String.format("Show layout search 2 point", placeAutocompleteSuggestion.getCoordinate()), Toast.LENGTH_SHORT).show();
 
+                directionButton.setOnClickListener(view->{
                     getRoute(placeAutocompleteSuggestion.getCoordinate());
+                    searchET.setVisibility(View.GONE);
+                    layoutStartDestination.setVisibility(View.VISIBLE);
                 });
             }
 
@@ -456,7 +472,7 @@ public class FragmentMap extends Fragment
         }
     }
 
-    private void setclickOnMap(){
+    private void setclickOnMap(View view){
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_location_pin);
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
         AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
@@ -473,24 +489,20 @@ public class FragmentMap extends Fragment
                     .withPoint(pointDestination);
             pointAnnotationManager.create(pointAnnotationOptions);
 
-            navigationButton.setOnClickListener(view->{
+            navigationButton.setOnClickListener(navigation->{
                 searchET.setVisibility(View.GONE);
                 directionButton.hide();
                 setclickNavigationOnMap(pointDestination);
             });
-            directionButton.setOnClickListener(view->{
-                Log.d("Check ", "Point destination: " + pointDestination.toString());
-
-                if(pointDestination!=null){
-                    getRoute(pointDestination);
-                }else {
-                    searchET.setVisibility(View.GONE);
-                }
+            directionButton.setOnClickListener(direction->{
+                getRoute(pointDestination);
+                searchET.setVisibility(View.GONE);
+                layoutStartDestination.setVisibility(View.VISIBLE);
             });
             return false;
         });
 
-        setSearchET(pointAnnotationManager,resizedBitmap);
+        setSearchET(pointAnnotationManager,resizedBitmap,view);
     }
 
 
@@ -532,6 +544,10 @@ public class FragmentMap extends Fragment
         maneuverView = view.findViewById(R.id.maneuverView);
         directionButton = view.findViewById(R.id.directionButton);
         soundButton = view.findViewById(R.id.soundButton);
+        searchStartET= view.findViewById(R.id.searchStartET);
+        searchDestinationET=view.findViewById(R.id.searchDestinationET);
+        findRouteButton = view.findViewById(R.id.findRouteButton);
+        layoutStartDestination=view.findViewById(R.id.searchStartETandDestination);
         return view;
     }
 
@@ -555,9 +571,16 @@ public class FragmentMap extends Fragment
 
                 addPotholeToMap();
 
-                setMylocationButton();
+                setMylocationButton(view);
 
-                setclickOnMap();
+                setclickOnMap(view);
+
+                directionButton.setOnClickListener(direction->{
+                    Toast.makeText(getContext(), "Không có dữ liệu", Toast.LENGTH_SHORT).show();
+                    layoutStartDestination.setVisibility(View.VISIBLE);
+                    searchET.setVisibility(View.GONE);
+                    directionButton.setVisibility(View.GONE);
+                });
 
             }
         });
@@ -612,7 +635,6 @@ public class FragmentMap extends Fragment
                         mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS,style -> {
 
                             GeoJsonSource.Builder lineRoute = new GeoJsonSource.Builder(ROUTE_SOURCE_ID).feature(routeFeature);
-                            GeoJsonSource.Builder pointRoute = new GeoJsonSource.Builder(ICON_SOURCE_ID).feature(routeFeature);
 
                             SourceUtils.addSource(style,lineRoute.build());
 
@@ -784,13 +806,15 @@ public class FragmentMap extends Fragment
                     return new Object();
                 }
             });
+
         }
     };
 
 
     public void setclickNavigationOnMap(Point destination){
         cardView.setVisibility(View.VISIBLE);
-//            soundButton.setVisibility(View.VISIBLE);
+        layoutStartDestination.setVisibility(View.GONE);
+        soundButton.setVisibility(View.VISIBLE);
         navigationButton.hide();
         mylocationButton.hide();
 //            directionButton.hide();

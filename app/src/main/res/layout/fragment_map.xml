@@ -15,14 +15,87 @@
 
         </com.mapbox.maps.MapView>
 
-    <include
+
+
+    <LinearLayout
         android:id="@+id/searchStartETandDestination"
-        layout="@layout/ui_map"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
         android:layout_below="@id/maneuverView"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:background="@color/color_2"
+        android:layout_marginTop="30sp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:elevation="4dp"
+            android:hint="@string/search_edittext"
+            android:id="@+id/searchStartLayout"
+            app:boxCornerRadiusBottomEnd="20sp"
+            app:boxCornerRadiusBottomStart="20sp"
+            app:boxCornerRadiusTopEnd="20sp"
+            app:boxCornerRadiusTopStart="20sp"
+            app:boxStrokeWidthFocused="0sp"
+            app:boxStrokeWidth="0sp"
+            app:startIconDrawable="@drawable/ic_location_from"
+            android:layout_below="@id/maneuverView"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:id="@+id/searchStartET"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- CardView chứa ô nhập liệu cho điểm đến -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10sp"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            android:elevation="4dp"
+            android:hint="@string/search_edittext"
+            android:id="@+id/searchDestinationLayout"
+            app:boxCornerRadiusBottomEnd="20sp"
+            app:boxCornerRadiusBottomStart="20sp"
+            app:boxCornerRadiusTopEnd="20sp"
+            app:boxCornerRadiusTopStart="20sp"
+            app:boxStrokeWidthFocused="0sp"
+            app:boxStrokeWidth="0sp"
+            app:startIconDrawable="@drawable/ic_location_des"
+            android:layout_below="@id/maneuverView"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:id="@+id/searchDestinationET"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Nút tìm kiếm tuyến đường -->
+        <Button
+            android:id="@+id/findRouteButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/color_1"
+            android:text="@string/btn_findRoute"
+            android:textColor="@color/color_word"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:layout_marginTop="10dp"
+            android:padding="8dp"
+            android:layout_margin="10dp"/>
+
+    </LinearLayout>
+
 
     <com.mapbox.navigation.ui.maneuver.view.MapboxManeuverView
         android:id="@+id/maneuverView"
@@ -85,7 +158,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/maneuverView"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/maneuverView"/>
+        android:layout_below="@id/search_results_view"/>
 
 
     <androidx.cardview.widget.CardView
@@ -120,7 +193,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/tripProgressCard"
         android:layout_centerHorizontal="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
