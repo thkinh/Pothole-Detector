@@ -333,7 +333,7 @@ public class FragmentMap extends Fragment
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                ignoreNextQueryUpdate = false;
+
             }
 
             @Override
@@ -381,11 +381,13 @@ public class FragmentMap extends Fragment
 
                 MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
 
-                CameraOptions cameraOptions = new CameraOptions.Builder().center(placeAutocompleteSuggestion.getCoordinate()).zoom(18.0)
+                CameraOptions cameraOptions = new CameraOptions.Builder().center(placeAutocompleteSuggestion.getCoordinate()).zoom(13.0)
                         .padding(new EdgeInsets(1000.0, 0.0, 0.0, 0.0)).build();
 
                 getCamera(mapView).easeTo(cameraOptions, animationOptions);
 
+                LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
+                locationComponentPlugin.removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
 
                 navigationButton.setOnClickListener(view->{
                     searchET.setVisibility(View.GONE);
@@ -400,6 +402,7 @@ public class FragmentMap extends Fragment
 
             @Override
             public void onPopulateQueryClick(@NonNull PlaceAutocompleteSuggestion placeAutocompleteSuggestion) {
+
 
             }
 
@@ -636,7 +639,7 @@ public class FragmentMap extends Fragment
 
     private void updateCamera(Point point, Double bearing) {
         MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
-        CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(18.0).bearing(bearing).pitch(45.0)
+        CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(15.0).bearing(bearing).pitch(45.0)
                 .padding(new EdgeInsets(1000.0, 0.0, 0.0, 0.0)).build();
 
         getCamera(mapView).easeTo(cameraOptions, animationOptions);
