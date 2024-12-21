@@ -495,7 +495,15 @@ public class FragmentMap extends Fragment
             permissionsManager.requestLocationPermissions(getActivity());
         }
         createPointPothole();
+        Runnable runnable = new Runnable(){
+            public void run() {
+                //some code here
+            }
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
+
 
     AnnotationPlugin annotationPlugin;
     @Nullable

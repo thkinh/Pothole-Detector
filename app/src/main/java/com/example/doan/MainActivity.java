@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements OnMapFragmentInte
 
     AtMainBinding binding;
     private FragmentManager fragmentManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
