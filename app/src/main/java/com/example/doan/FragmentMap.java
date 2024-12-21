@@ -389,6 +389,15 @@ public class FragmentMap extends Fragment
                 LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
                 locationComponentPlugin.removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
 
+                pointAnnotationManager.deleteAll();
+
+                // Tạo annotation mới tại vị trí click
+                PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
+                        .withTextAnchor(TextAnchor.CENTER)
+                        .withIconImage(resizedBitmap)
+                        .withPoint(placeAutocompleteSuggestion.getCoordinate());
+                pointAnnotationManager.create(pointAnnotationOptions);
+
                 navigationButton.setOnClickListener(view->{
                     searchET.setVisibility(View.GONE);
                     directionButton.hide();
