@@ -1013,7 +1013,6 @@ public class FragmentMap extends Fragment
         }
     };
 
-
     public void setclickNavigationOnMap(Point destination){
         cardView.setVisibility(View.VISIBLE);
         layoutStartDestination.setVisibility(View.GONE);
@@ -1132,14 +1131,11 @@ public class FragmentMap extends Fragment
                     public void onRoutesReady(@NonNull List<NavigationRoute> list, @NonNull RouterOrigin routerOrigin) {
                         mapboxNavigation.setNavigationRoutes(list);
                         mylocationNavigationButton.performClick();
-
                     }
-
                     @Override
                     public void onFailure(@NonNull List<RouterFailure> list, @NonNull RouteOptions routeOptions) {
                         Toast.makeText(getContext(), "Route request failed", Toast.LENGTH_SHORT).show();
                     }
-
                     @Override
                     public void onCanceled(@NonNull RouteOptions routeOptions, @NonNull RouterOrigin routerOrigin) {
 

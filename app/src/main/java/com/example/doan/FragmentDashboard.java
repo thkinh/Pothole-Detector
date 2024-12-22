@@ -3,6 +3,7 @@ package com.example.doan;
 import androidx.credentials.CredentialManager;
 import androidx.annotation.NonNull;
 
+import com.example.doan.feature.UserPreferences;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -53,7 +54,6 @@ public class FragmentDashboard extends Fragment {
     private ImageButton btLogout;
     private FirebaseAuth mAuth;
     private GoogleSignInClient googleSignInClient;
-
     // For Switching between User and Route in the middle CardView
     private Button btnUser;
     private Button btnRoute;
@@ -192,6 +192,10 @@ public class FragmentDashboard extends Fragment {
     }
 
     private void logout() {
+        //Dang xuat cua thang thinh
+        UserPreferences userPreferences = new UserPreferences(this.context);
+        userPreferences.clearUserData();
+
         // Đăng xuất Firebase
         mAuth.signOut();
 
