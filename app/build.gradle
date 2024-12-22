@@ -31,6 +31,7 @@ android {
     buildFeatures {
         viewBinding = true
         compose true
+        mlModelBinding true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -62,6 +63,8 @@ dependencies {
     implementation libs.ui.graphics
     implementation libs.ui.tooling.preview
     implementation libs.material3
+    implementation libs.tensorflow.lite.support
+    implementation libs.tensorflow.lite.metadata
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
@@ -72,7 +75,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:18.1.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
 
-    // Maps SDK for Android
 
     implementation 'com.github.dangiashish:Google-Direction-Api:1.6'
 
@@ -88,6 +90,7 @@ dependencies {
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
 
 
     androidTestImplementation platform(libs.compose.bom)
@@ -99,11 +102,9 @@ dependencies {
     implementation 'com.mapbox.maps:android:10.15.0'
     //Search
     implementation "com.mapbox.search:mapbox-search-android-ui:1.0.0-rc.6"
-    //Mapbox for java
-//    implementation 'com.mapbox.maps:android:11.8.1'
-//    implementation('com.mapbox.maps:android:11.8.1') {
-//        exclude group: 'com.google.android.gms', module: 'play-services-cronet'
-//    }
+
+    //AI_Model
+    implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly-SNAPSHOT'
     //Java language
     implementation "androidx.fragment:fragment:1.8.5"
 }

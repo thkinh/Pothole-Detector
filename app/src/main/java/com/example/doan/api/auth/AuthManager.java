@@ -4,6 +4,8 @@ import android.util.Log;
 import com.example.doan.api.RetrofitInstance;
 import com.example.doan.model.AppUser;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -11,30 +13,31 @@ import retrofit2.Response;
 public class AuthManager {
     private static AuthManager instance;
     private final AuthService authService;
-    private AppUser globalUserAccount;
+    private AppUser globalUserAccount = null;
 
     private AuthManager() {
         this.authService = RetrofitInstance.getInstance().create(AuthService.class);
     }
-    public static synchronized AuthManager getInstance() {
-        if (instance == null) {
-            instance = new AuthManager();
+        public static synchronized AuthManager getInstance() {
+            if (instance == null) {
+                instance = new AuthManager();
+            }
+            return instance;
         }
-        return instance;
-    }
-
     public AppUser getAccount()
     {
         return globalUserAccount;
     }
-
+    public void setGlobalAccount(AppUser userFound) {
+        this.globalUserAccount = userFound;
+    }
     public AppUser simpleGETCALL() {
         Call<AppUser> call = authService.simpleGETbyID(1);
         call.enqueue(new Callback<AppUser>() {
             @Override
             public void onResponse(Call<AppUser> call, Response<AppUser> response) {
                 //Checking for the response
-                if (response.code() != 200){
+                if (response.code() == 200){
                     Log.e("HTTP_RESPONSE", "Niceeeee");
                 }
                     globalUserAccount = new AppUser(
@@ -50,57 +53,6 @@ public class AuthManager {
         });
         return globalUserAccount;
     }
-
-    public void signIn(String email, String password, SignInCallback callback) {
-        Call<AppUser> call = authService.signIn(email);
-        call.enqueue(new Callback<AppUser>() {
-            @Override
-            public void onResponse(Call<AppUser> call, Response<AppUser> response) {
-                if (response.code() == 200) {
-                    Log.d("HTTP_Response", "200");
-                    AppUser appUser = new AppUser(
-                            response.body().getUsername(),
-                            response.body().getEmail(),
-                            response.body().getPassword());
-                    // Check if the passwords match
-                    if (appUser.getPassword().equals(password)) {
-                        callback.onSuccess(appUser);
-                    } else {
-                        callback.onFailure("Incorrect password");
-                    }
-                } else {
-                    callback.onFailure("Sign-in failed: " + response.message());
-                }
-            }
-            @Override
-            public void onFailure(Call<AppUser> call, Throwable t) {
-                callback.onFailure("API call failed: " + t.getMessage());
-            }
-        });
-    }
-
-    public void getVerify(String email,  GetVerifyCallback callback){
-        String trueEmail = "\"" + email + "\"";
-        Call<Integer> call = authService.getVerifyCode(trueEmail);
-        call.enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-                if (response.isSuccessful()){
-                    Log.d("HTTP_Response", "200");
-                    callback.onSuccess(response.body());
-                }
-                else {
-                    Log.e("API error: ", response.message());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Integer> call, Throwable t) {
-                callback.onFailure("API call failed: " + t.getMessage());
-            }
-        });
-    }
-
     public void signUp(AppUser appUser, SignUpCallback callback) {
         Call<AppUser> appUserCall = authService.add(appUser);
         appUserCall.enqueue(new Callback<AppUser>() {
@@ -118,15 +70,142 @@ public class AuthManager {
                     callback.onFailure(response.message());
                 }
             }
-
             @Override
             public void onFailure(Call<AppUser> call, Throwable t) {
                 callback.onFailure("API call failed: " + t.getMessage());
             }
         });
     }
+    public void signIn(String email, String password, SignInCallback callback) {
+        Call<AppUser> call = authService.SIRequest(email, password);
+        call.enqueue(new Callback<AppUser>() {
+            @Override
+            public void onResponse(Call<AppUser> call, Response<AppUser> response) {
+                if (response.code() == 200) {
+                    Log.d("HTTP_Response", "200");
+                    AppUser appUser = new AppUser(
+                            response.body().getUsername(),
+                            response.body().getEmail(),
+                            response.body().getPassword());
+                    appUser.setId(response.body().getId());
+                    callback.onSuccess(appUser);
+                }
+                else if (response.code() == 501) {
+                    Log.d("HTTP Response", "501");
+                    Log.e("HTTP message", "Incorrect password");
+                    callback.onFailure("Incorrect password");
+                }
+                else {
+                    callback.onFailure("Sign-in failed: " + response.message());
+                    Log.e("API", response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<AppUser> call, Throwable t) {
+                callback.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
+    public void getVerify(String email,  GetVerifyCallback callback){
+        String trueEmail = "\"" + email + "\"";
+        Call<Integer> call = authService.getVerifyCode(trueEmail);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.isSuccessful()){
+                    Log.d("HTTP_Response", "200");
+                    callback.onSuccess(response.body());
+                }
+                else {
+                    Log.e("API error: ", "errorCode: " +response.body());
+                    callback.onFailure("Your email has a problem");
+                }
+            }
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                callback.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
+    public void confirmOTP(String email, String verifyCode, ConfirmOTPCallback callback) {
+        String trueEmail = "\"" + email + "\"";
+        Call<String> call = authService.confirmCode(trueEmail, verifyCode);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
+                        callback.onSuccess("OTP Confirmed");
+                    }
+                    else {
+                        callback.onFailure("Unexpected response code: " + response.code());
+                    }
+                } else {
+                    callback.onFailure("API call failed with error: " + response.body());
+                }
+            }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+    public void confirmPassword(String email, String password, ConfirmPasswordCallBack callBack){
+        Call<AppUser> appUserCall = authService.confirmPass(email, password);
+        appUserCall.enqueue(new Callback<AppUser>() {
+            @Override
+            public void onResponse(Call<AppUser> call, Response<AppUser> response) {
+                if (response.isSuccessful()){
+                    AppUser user = response.body();
+                    callBack.onSuccess(user);
+                }
+                else {
+                    callBack.onFailure("Update password failed: "+response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AppUser> call, Throwable t) {
+                callBack.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getALL(GetALLCallBack callBack){
+        Call<List<AppUser>> call = authService.getALLUser();
+        call.enqueue(new Callback<List<AppUser>>() {
+            @Override
+            public void onResponse(Call<List<AppUser>> call, Response<List<AppUser>> response) {
+                if (response.isSuccessful()){
+                    callBack.onSuccess(response.body());
+                }
+                else {
+                    callBack.onFailure(response.body().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<List<AppUser>> call, Throwable t) {
+                callBack.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
 
 
+    public  interface GetALLCallBack{
+        void onSuccess(List<AppUser> fetchedUsers);
+        void onFailure(String errorMessage);
+    }
+
+    public interface ConfirmPasswordCallBack{
+        void onSuccess(AppUser user);
+        void onFailure(String errorMessage);
+    }
+
+    public interface ConfirmOTPCallback{
+        void onSuccess(String message);
+        void onFailure(String errorMessage);
+    }
 
     public interface GetVerifyCallback{
         void onSuccess(Integer id);

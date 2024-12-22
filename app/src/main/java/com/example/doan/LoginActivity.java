@@ -4,6 +4,7 @@ package com.example.doan;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.example.doan.api.auth.AuthManager;
+import com.example.doan.feature.UserPreferences;
 import com.example.doan.model.AppUser;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -100,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
     private void handleLogin() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
-
         if (TextUtils.isEmpty(email)) {
             emailEditText.setError("Please enter your email");
             return;
@@ -109,26 +110,27 @@ public class LoginActivity extends AppCompatActivity {
             passwordEditText.setError("Please enter your password");
             return;
         }
-
         authManager.signIn(email, password, new AuthManager.SignInCallback() {
             @Override
             public void onSuccess(AppUser user) {
                 // Login successful
                 runOnUiThread(() ->{
-                    //TODO: ADD this user just found as the global account
-                    //  authManager.getAccount();
-                   Toast.makeText(LoginActivity.this, "Welcome "+ user.getUsername(), Toast.LENGTH_SHORT).show();
-                   navigateToDashboard();
+                    Intent intent = new Intent(LoginActivity.this, DemoActivity.class);
+                    startActivity(intent);
+                    finish();
                 });
+                //navigateToDashboard();
+                UserPreferences userPreferences = new UserPreferences(LoginActivity.this);
+                authManager.setGlobalAccount(user);
+                userPreferences.saveUser(user);
+                Toast.makeText(LoginActivity.this, "Welcome "+ authManager.getAccount().getUsername(), Toast.LENGTH_SHORT).show();
             }
-
             @Override
             public void onFailure(String errorMessage) {
                 // Login failed
                 runOnUiThread(() -> Toast.makeText(LoginActivity.this,
                         errorMessage,
                         Toast.LENGTH_SHORT).show());
-                //Log.e("FAILED: ", errorMessage);
             }
         });
     }
@@ -141,7 +143,6 @@ public class LoginActivity extends AppCompatActivity {
 
     // Initialize sign in intent and then Start activity for result
     private void googlesignIn() {
-
         Intent signInIntent = gsc1.getSignInIntent();
         startActivityForResult(signInIntent, 1000);
     }
@@ -182,11 +183,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     }
-    /*private void navigateToSecondActivity2() {
-        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-        startActivity(intent);
-        finish();
-    }*/
     private void displayToast(String s) {
         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
     }

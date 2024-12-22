@@ -53,10 +53,10 @@ public class SignupActivity extends AppCompatActivity {
 
         if (ValidateInput(username, email, password, confirmPassword))
         {
+            signupButton.setEnabled(false);
             Date date_created = new Date(System.currentTimeMillis());
             AppUser appUser = new AppUser(username, email, password);
             //appUser.setDate_created(date_created);
-
             authManager.signUp(appUser, new AuthManager.SignUpCallback() {
                 @Override
                 public void onSuccess(AppUser user) {
@@ -68,17 +68,13 @@ public class SignupActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onFailure(String errorMessage) {
+                    signupButton.setEnabled(true);
                     runOnUiThread(() -> Toast.makeText(SignupActivity.this,
                             errorMessage,
                             Toast.LENGTH_SHORT).show());
                 }
             });
         }
-        else
-        {
-            Toast.makeText(SignupActivity.this, "Something was wrong with the inputs bro!", Toast.LENGTH_SHORT).show();
-        }
-
     }
 
     private boolean ValidateInput(String username, String email, String password, String confirm_pass)

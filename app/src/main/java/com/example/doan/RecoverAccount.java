@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.doan.api.auth.AuthManager;
+import com.example.doan.model.AppUser;
 
 public class RecoverAccount extends androidx.appcompat.app.AppCompatActivity {
     private EditText editTextEmail;
@@ -26,21 +27,22 @@ public class RecoverAccount extends androidx.appcompat.app.AppCompatActivity {
         cofirmButton = findViewById(R.id.btn_confirm);
         askSignup = findViewById(R.id.txt_askSignUp_scrRAccount);
 
-        // Thiết lập sự kiện nhấn cho nút Signup
         cofirmButton.setOnClickListener(v -> handleSendEmail());
 
         authManager = AuthManager.getInstance();
     }
 
-    // Hàm xử lý đăng ký
     private void handleSendEmail() {
         String email = editTextEmail.getText().toString().trim();
-        // Kiểm tra thông tin hợp lệ
         if (TextUtils.isEmpty(email) || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             editTextEmail.setError("Enter a valid email");
             return;
         }
-
+        runOnUiThread(()->{
+            editTextEmail.setEnabled(false);
+            cofirmButton.setEnabled(false);
+            cofirmButton.setText("Please wait...");
+        });
         authManager.getVerify(email, new AuthManager.GetVerifyCallback() {
             @Override
             public void onSuccess(Integer id) {
@@ -48,13 +50,18 @@ public class RecoverAccount extends androidx.appcompat.app.AppCompatActivity {
                     Toast.makeText(RecoverAccount.this, "Your id is " + id, Toast.LENGTH_SHORT).show();
                     navigateToOPTScreen();
                 });
+                AppUser user = new AppUser();
+                user.setEmail(email);
+                authManager.setGlobalAccount(user);
             }
-
             @Override
             public void onFailure(String errorMessage) {
-                runOnUiThread(() -> Toast.makeText(RecoverAccount.this,
-                        errorMessage,
-                        Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> {Toast.makeText(RecoverAccount.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    cofirmButton.setText("Finish");
+                    editTextEmail.setEnabled(true);
+                    cofirmButton.setEnabled(true);
+                });
+
             }
         });
     }
@@ -63,5 +70,6 @@ public class RecoverAccount extends androidx.appcompat.app.AppCompatActivity {
     private void navigateToOPTScreen() {
         Intent intent = new Intent(RecoverAccount.this, OTPActive2.class);
         startActivity(intent);
+        finish();
     }
 }
