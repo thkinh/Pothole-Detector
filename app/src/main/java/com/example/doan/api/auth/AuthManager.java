@@ -24,13 +24,11 @@ public class AuthManager {
             }
             return instance;
         }
-
     public AppUser getAccount()
     {
         return globalUserAccount;
     }
-
-    public void setGlobalAccount(AppUser userFound){
+    public void setGlobalAccount(AppUser userFound) {
         this.globalUserAccount = userFound;
     }
     public AppUser simpleGETCALL() {
@@ -89,6 +87,7 @@ public class AuthManager {
                             response.body().getUsername(),
                             response.body().getEmail(),
                             response.body().getPassword());
+                    appUser.setId(response.body().getId());
                     callback.onSuccess(appUser);
                 }
                 else if (response.code() == 501) {

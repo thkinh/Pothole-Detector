@@ -18,6 +18,7 @@ public class DemoActivity extends AppCompatActivity {
 
     private Button button_get;
     private Button button_add;
+    private Button btn_getALL;
     private PotholeManager potholeManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +28,12 @@ public class DemoActivity extends AppCompatActivity {
 
         button_get = findViewById(R.id.btn_getPotholes);
         button_add = findViewById(R.id.add_ph);
+        btn_getALL = findViewById(R.id.get_globalPotholes);
 
         button_get.setOnClickListener(view -> handleGet());
         button_add.setOnClickListener(view -> handleAdd());
+        btn_getALL.setOnClickListener(view -> handle_getALL());
+
         potholeManager = PotholeManager.getInstance();
     }
 
@@ -59,8 +63,11 @@ public class DemoActivity extends AppCompatActivity {
 
     private void handleAdd(){
         Pothole pothole = new Pothole();
-        pothole.setAppUser(AuthManager.getInstance().getAccount());
+        AppUser currentUser = AuthManager.getInstance().getAccount();
+        pothole.setAppUser(currentUser);
         pothole.setSeverity("Normal");
+
+
         Pothole.Location location = new Pothole.Location();
         location.setLatitude(0.0);  location.setLongitude(0.0);
         location.setCity("None");   location.setCountry("None");
@@ -68,7 +75,7 @@ public class DemoActivity extends AppCompatActivity {
 
         potholeManager.addPothole(pothole, new PotholeManager.AddPotholeCallBack() {
             @Override
-            public void onSuccess(String message) {
+            public void onSuccess(Pothole message) {
                 runOnUiThread(()->{
                     Toast.makeText(DemoActivity.this, "Hell yeah " , Toast.LENGTH_SHORT).show();
                 });
