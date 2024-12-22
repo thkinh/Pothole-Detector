@@ -600,16 +600,17 @@ public class FragmentMap extends Fragment
             }
         });
     }
-
+    List<Pothole> potholesList;
     private PointAnnotationManager pointPotholeAnnotationManager ;
     //Quản lí các điểm pothole trên map
     public void addPotholeToMap(List<Pothole> potholeList){
+        potholesList= potholeList;
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_pothole_waning_map);
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
         AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
         pointPotholeAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
 
-        for ( Pothole potholePoint : potholeList) {
+        for ( Pothole potholePoint : potholesList) {
             PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                     .withTextAnchor(TextAnchor.CENTER)
                     .withIconImage(resizedBitmap)
@@ -876,6 +877,11 @@ public class FragmentMap extends Fragment
         });
     }
 
+    private void getListPotholeOnLineRoute(LineString linestring){
+        for ( Pothole potholePoint : potholesList) {
+
+        }
+    }
     private void getRouteTwoPoint(Point origin ,Point destination) {
         MapboxDirections.Builder builder = MapboxDirections.builder();
         RouteOptions routeOptions = RouteOptions.builder()
