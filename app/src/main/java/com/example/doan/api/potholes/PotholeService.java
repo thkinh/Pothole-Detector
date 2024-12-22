@@ -17,4 +17,7 @@ public interface PotholeService {
     @POST("pothole/add")
     Call<String> addPothole(@Body Pothole pothole);
 
+    @GET("pothole/get/ALL")
+    Call<List<Pothole>> getALLPotholes();
+
 }

@@ -81,6 +81,21 @@ public class DemoActivity extends AppCompatActivity {
                 Log.e("FAILED: ", errorMessage);
             }
         });
+    }
 
+    private void handle_getALL(){
+        potholeManager.getALLPotholes(new PotholeManager.GetPotholeCallBack() {
+            @Override
+            public void onSuccess(List<Pothole> potholes) {
+                Toast.makeText(DemoActivity.this, "Fetched " + potholes.size(), Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onFailure(String errorMessage) {
+                runOnUiThread(() -> Toast.makeText(DemoActivity.this,
+                        errorMessage,
+                        Toast.LENGTH_SHORT).show());
+                Log.e("FAILED: ", errorMessage);
+            }
+        });
     }
 }

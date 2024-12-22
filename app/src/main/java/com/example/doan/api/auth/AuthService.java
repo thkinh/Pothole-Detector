@@ -1,6 +1,8 @@
 package com.example.doan.api.auth;
 import com.example.doan.model.AppUser;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -20,6 +22,9 @@ public interface AuthService{
 
     @GET("user/getByEmail")
     Call<AppUser> signIn(@Query("email") String email);
+
+    @GET("user/get/ALL")
+    Call<List<AppUser>> getALLUser();
 
     @POST("user/password/getVerify")
     Call<Integer> getVerifyCode(@Query("email") String email);

@@ -18,9 +18,10 @@ public class OTPActive2 extends AppCompatActivity {
 
     private EditText editTextOTP;
     private AuthManager authManager;
+    private Button cofirmButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Button cofirmButton;
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.at_otp_code);
@@ -36,6 +37,7 @@ public class OTPActive2 extends AppCompatActivity {
             editTextOTP.setError("Enter a valid otp");
             return;
         }
+        cofirmButton.setEnabled(false);
         authManager.confirmOTP(authManager.getAccount().getEmail(), otp, new AuthManager.ConfirmOTPCallback() {
             @Override
             public void onSuccess(String message) {
@@ -46,6 +48,7 @@ public class OTPActive2 extends AppCompatActivity {
             }
             @Override
             public void onFailure(String errorMessage) {
+                cofirmButton.setEnabled(true);
                 Log.e("What?", errorMessage);
                 Toast.makeText(OTPActive2.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show(); // Added Toast for feedback
             }

@@ -19,11 +19,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
     private EditText editText_newPassword, editText_confirmPassword;
     private AuthManager authManager;
+    private Button btn_finish;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_forgotpasswordscreen);
-        Button btn_finish;
+
         btn_finish = findViewById(R.id.btn_finish);
         editText_newPassword = findViewById(R.id.editText_newPassword);
         editText_confirmPassword = findViewById(R.id.editText_cfPassword);
@@ -37,6 +38,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         String newPass = editText_newPassword.getText().toString().trim();
         if (validateInput(newPass)){
             String email = authManager.getAccount().getEmail();
+            btn_finish.setEnabled(false);
             authManager.confirmPassword(email, newPass, new AuthManager.ConfirmPasswordCallBack() {
                 @Override
                 public void onSuccess(AppUser user) {
@@ -50,6 +52,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onFailure(String errorMessage) {
+                    btn_finish.setEnabled(true);
                     runOnUiThread(() -> Toast.makeText(ForgotPasswordActivity.this,
                             errorMessage,
                             Toast.LENGTH_SHORT).show());

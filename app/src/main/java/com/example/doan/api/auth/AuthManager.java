@@ -4,6 +4,8 @@ import android.util.Log;
 import com.example.doan.api.RetrofitInstance;
 import com.example.doan.model.AppUser;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -169,6 +171,31 @@ public class AuthManager {
                 callBack.onFailure("API call failed: " + t.getMessage());
             }
         });
+    }
+
+    public void getALL(GetALLCallBack callBack){
+        Call<List<AppUser>> call = authService.getALLUser();
+        call.enqueue(new Callback<List<AppUser>>() {
+            @Override
+            public void onResponse(Call<List<AppUser>> call, Response<List<AppUser>> response) {
+                if (response.isSuccessful()){
+                    callBack.onSuccess(response.body());
+                }
+                else {
+                    callBack.onFailure(response.body().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<List<AppUser>> call, Throwable t) {
+                callBack.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+
+    public  interface GetALLCallBack{
+        void onSuccess(List<AppUser> fetchedUsers);
+        void onFailure(String errorMessage);
     }
 
     public interface ConfirmPasswordCallBack{
