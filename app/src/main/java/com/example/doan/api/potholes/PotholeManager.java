@@ -66,6 +66,26 @@ public class PotholeManager {
         });
     }
 
+    public void getALLPotholes(GetPotholeCallBack callBack){
+        Call<List<Pothole>> call = potholeService.getALLPotholes();
+        call.enqueue(new Callback<List<Pothole>>() {
+            @Override
+            public void onResponse(Call<List<Pothole>> call, Response<List<Pothole>> response) {
+                if (response.isSuccessful()){
+                    callBack.onSuccess(response.body());
+                }
+                else {
+                    callBack.onFailure(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Pothole>> call, Throwable t) {
+                callBack.onFailure(t.getMessage());
+            }
+        });
+    }
+
     public interface GetPotholeCallBack{
         void onSuccess(List<Pothole> potholes);
         void onFailure(String errorMessage);
