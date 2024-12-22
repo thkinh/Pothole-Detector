@@ -52,6 +52,17 @@
     <string name="txt_popupNote">Để đặt lại mật khẩu cho tài khoản, vui lòng nhập email được liên kết với tài khoản của bạn.</string>
     <string name="txt_optNote">Vui lòng nhập mã <b>OTP</b> đã được gửi về email của bạn để xác nhận.</string>
 
+    <!-- String potholes details <HTAT> -->
+    <string name="txt_title_details">Thông tin chi tiết của  ổ gà</string>
+    <string name="txt_location">Vị trí:</string>
+    <string name="txt_date">Ngày phát hiện:</string>
+    <string name="txt_severity">Mức độ nghiêm trọng:</string>
+    <string name="txt_image">Hình ảnh:</string>
+    <string name="txt_preview_image">Preview Image</string>
+
+    <string name="btn_image">Thêm hình ảnh</string>
+    <string name="btn_saving">Lưu thông tin</string>
+    <string name="btn_navigation">Start</string>
 
     <string name="editText_newPassword">Enter new password</string>
     <string name="editText_cfPassword">Retype new password</string>
@@ -62,6 +73,7 @@
 
     <string name="or">OR</string>
     <string name="language_ENG">ENG</string>
+    <string name="language_VIE">VIE</string>
     <!-- Kết thức phần khai báo String cho Authentication UI <HTAT> -->
 
     <string name="test"> test</string>
