@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -781,6 +782,30 @@ public class FragmentMap extends Fragment
                 });
 
 
+
+                searchStartET.setOnKeyListener(new View.OnKeyListener() {
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        // If the event is a key-down event on the "enter" button
+                        if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                                (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                            searchResultsView.setVisibility(View.GONE);
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+
+                searchDestinationET.setOnKeyListener(new View.OnKeyListener() {
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        // If the event is a key-down event on the "enter" button
+                        if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                                (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                            searchResultsView.setVisibility(View.GONE);
+                            return true;
+                        }
+                        return false;
+                    }
+                });
 
                 setSearchET(pointAnnotationManager,resizedBitmap,searchET);
                 searchStartET.addTextChangedListener(new TextWatcher() {
