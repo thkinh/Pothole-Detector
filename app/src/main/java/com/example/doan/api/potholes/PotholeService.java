@@ -1,4 +1,4 @@
-package com.example.doan.api.auth;
+package com.example.doan.api.potholes;
 
 import com.example.doan.model.Pothole;
 
