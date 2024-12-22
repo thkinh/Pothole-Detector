@@ -530,7 +530,9 @@ public class FragmentMap extends Fragment
                 LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
                 locationComponentPlugin.removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
 
-                pointAnnotationManager.deleteAll();
+                if(FirstSearchOrigin==false){
+                    pointAnnotationManager.deleteAll();
+                }
 
                 // Tạo annotation mới tại vị trí click
                 PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
