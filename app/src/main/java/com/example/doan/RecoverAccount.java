@@ -8,6 +8,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
+
 import com.example.doan.api.auth.AuthManager;
 import com.example.doan.model.AppUser;
 
@@ -21,7 +23,7 @@ public class RecoverAccount extends androidx.appcompat.app.AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_recoveraccount);
-
+        EdgeToEdge.enable(this);
         // Ánh xạ các view từ layout
         editTextEmail = findViewById(R.id.editText_recoverAccount);
         cofirmButton = findViewById(R.id.btn_confirm);
