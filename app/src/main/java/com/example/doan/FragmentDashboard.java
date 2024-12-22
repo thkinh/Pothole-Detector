@@ -3,6 +3,7 @@ package com.example.doan;
 import androidx.credentials.CredentialManager;
 import androidx.annotation.NonNull;
 
+import com.example.doan.feature.UserPreferences;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -53,7 +54,6 @@ public class FragmentDashboard extends Fragment {
     private ImageButton btLogout;
     private FirebaseAuth mAuth;
     private GoogleSignInClient googleSignInClient;
-
     // For Switching between User and Route in the middle CardView
     private Button btnUser;
     private Button btnRoute;
@@ -65,8 +65,7 @@ public class FragmentDashboard extends Fragment {
     Activity context;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         context = getActivity();
@@ -132,6 +131,14 @@ public class FragmentDashboard extends Fragment {
         btLogout.setOnClickListener(v -> logout());
 //----------------------------End of google sign in---------------------
 
+        ImageButton notifyButton = view.findViewById(R.id.ic_notify);
+        notifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), NotificationActivity.class);
+                startActivity(intent);
+            }
+        });
 
 //----------------------------Start of user and route---------------------
         btnUser.setOnClickListener(new View.OnClickListener() {
@@ -192,6 +199,10 @@ public class FragmentDashboard extends Fragment {
     }
 
     private void logout() {
+        //Dang xuat cua thang thinh
+        UserPreferences userPreferences = new UserPreferences(this.context);
+        userPreferences.clearUserData();
+
         // Đăng xuất Firebase
         mAuth.signOut();
 

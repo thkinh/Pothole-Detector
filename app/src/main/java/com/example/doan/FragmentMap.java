@@ -257,14 +257,11 @@ public class FragmentMap extends Fragment
         double dot = (x0 - x1) * dx + (y0 - y1) * dy;
         double lengthSquared = dx * dx + dy * dy;
         double param = -1.0;
-
         // Tính toán điểm gần nhất trên đoạn thẳng
         if (lengthSquared != 0) { // Tránh chia cho 0
             param = dot / lengthSquared;
         }
-
         double nearestX, nearestY;
-
         if (param < 0) {
             nearestX = x1;
             nearestY = y1;
@@ -275,7 +272,6 @@ public class FragmentMap extends Fragment
             nearestX = x1 + param * dx;
             nearestY = y1 + param * dy;
         }
-
         // Tính khoảng cách giữa điểm và điểm gần nhất trên đoạn thẳng
         double dx2 = x0 - nearestX;
         double dy2 = y0 - nearestY;
@@ -600,16 +596,17 @@ public class FragmentMap extends Fragment
             }
         });
     }
-
+    List<Pothole> potholesList;
     private PointAnnotationManager pointPotholeAnnotationManager ;
     //Quản lí các điểm pothole trên map
     public void addPotholeToMap(List<Pothole> potholeList){
+        potholesList= potholeList;
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_pothole_waning_map);
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
         AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
         pointPotholeAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
 
-        for ( Pothole potholePoint : potholeList) {
+        for ( Pothole potholePoint : potholesList) {
             PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                     .withTextAnchor(TextAnchor.CENTER)
                     .withIconImage(resizedBitmap)
@@ -876,6 +873,11 @@ public class FragmentMap extends Fragment
         });
     }
 
+    private void getListPotholeOnLineRoute(LineString linestring){
+        for ( Pothole potholePoint : potholesList) {
+
+        }
+    }
     private void getRouteTwoPoint(Point origin ,Point destination) {
         MapboxDirections.Builder builder = MapboxDirections.builder();
         RouteOptions routeOptions = RouteOptions.builder()
@@ -1076,7 +1078,6 @@ public class FragmentMap extends Fragment
         }
     };
 
-
     public void setclickNavigationOnMap(Point destination){
         cardView.setVisibility(View.VISIBLE);
         layoutStartDestination.setVisibility(View.GONE);
@@ -1195,14 +1196,11 @@ public class FragmentMap extends Fragment
                     public void onRoutesReady(@NonNull List<NavigationRoute> list, @NonNull RouterOrigin routerOrigin) {
                         mapboxNavigation.setNavigationRoutes(list);
                         mylocationNavigationButton.performClick();
-
                     }
-
                     @Override
                     public void onFailure(@NonNull List<RouterFailure> list, @NonNull RouteOptions routeOptions) {
                         Toast.makeText(getContext(), "Route request failed", Toast.LENGTH_SHORT).show();
                     }
-
                     @Override
                     public void onCanceled(@NonNull RouteOptions routeOptions, @NonNull RouterOrigin routerOrigin) {
 

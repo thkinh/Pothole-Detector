@@ -12,10 +12,56 @@
         app:mapbox_cameraTargetLat="39.5"
         app:mapbox_cameraTargetLng="-98.0"
         app:mapbox_cameraZoom="2.0" >
-
         </com.mapbox.maps.MapView>
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/maneuverView"
+        android:layout_marginLeft="20dp"
+        android:visibility="gone"
+        android:layout_marginRight="20dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="16dp">
 
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="@color/warning"
+
+            android:gravity="center_vertical"
+            >
+
+            <!-- Km TextView -->
+            <TextView
+                android:id="@+id/distancePothole"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="500m"
+                android:textSize="25dp"
+                android:layout_marginStart="10dp"
+                android:textColor="@android:color/white"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="sans-serif-medium"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_warning_navigation"/>
+            <!-- Tiêu đề ổ gà Warning -->
+            <TextView
+                android:id="@+id/tvWarningTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ổ gà "
+                android:textSize="25dp"
+                android:textColor="@android:color/white"
+                android:fontFamily="sans-serif-medium"
+                android:paddingStart="20dp"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
     <LinearLayout
         android:id="@+id/searchStartETandDestination"

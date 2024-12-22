@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.doan.api.auth.AuthManager;
@@ -29,6 +30,7 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_signupscreen);
+        EdgeToEdge.enable(this);
         // Ánh xạ các view từ layout
         usernameEditText = findViewById(R.id.editText_username_scrSignup);
         emailEditText = findViewById(R.id.editText_Email_scrSignup);
@@ -53,7 +55,10 @@ public class SignupActivity extends AppCompatActivity {
 
         if (ValidateInput(username, email, password, confirmPassword))
         {
-            signupButton.setEnabled(false);
+            runOnUiThread(()->{
+                signupButton.setEnabled(false);
+                signupButton.setText("Please wait...");
+            });
             Date date_created = new Date(System.currentTimeMillis());
             AppUser appUser = new AppUser(username, email, password);
             //appUser.setDate_created(date_created);
@@ -68,10 +73,13 @@ public class SignupActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onFailure(String errorMessage) {
-                    signupButton.setEnabled(true);
-                    runOnUiThread(() -> Toast.makeText(SignupActivity.this,
-                            errorMessage,
-                            Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> {
+                        signupButton.setEnabled(true);
+                        signupButton.setText("Sign Up");
+                        Toast.makeText(SignupActivity.this,
+                                errorMessage,
+                                Toast.LENGTH_SHORT).show();
+                    });
                 }
             });
         }
