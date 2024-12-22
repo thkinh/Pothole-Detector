@@ -59,10 +59,15 @@
     <string name="txt_severity">Mức độ nghiêm trọng:</string>
     <string name="txt_image">Hình ảnh:</string>
     <string name="txt_preview_image">Preview Image</string>
+    <string name="txt_detect">Phát hiện ổ gà!</string>
+    <string name="txt_notification">Thông báo</string>
+
 
     <string name="btn_image">Thêm hình ảnh</string>
     <string name="btn_saving">Lưu thông tin</string>
     <string name="btn_navigation">Start</string>
+    <string name="btn_all">Tất cả</string>
+    <string name="btn_unread">Chưa đọc</string>
 
     <string name="editText_newPassword">Enter new password</string>
     <string name="editText_cfPassword">Retype new password</string>
