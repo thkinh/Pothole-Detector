@@ -70,7 +70,6 @@ public class Pothole {
         private Double longitude;
         private String country;
         private String city;
-
         public Double getLatitude() {
             return latitude;
         }

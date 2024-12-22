@@ -1,4 +1,4 @@
-package com.example.doan.api.auth;
+package com.example.doan.api.potholes;
 
 import com.example.doan.model.Pothole;
 
@@ -13,7 +13,6 @@ import retrofit2.http.Query;
 public interface PotholeService {
     @GET("pothole/get")
     Call<List<Pothole>> getPotholes(@Query("user") String username);
-
 
     @POST("pothole/add")
     Call<String> addPothole(@Body Pothole pothole);

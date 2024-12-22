@@ -8,15 +8,25 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface AuthService{
-    @POST("user/add")
-    Call<AppUser> add(@Body AppUser client);
+
+    @GET("user/SIRequest")
+    Call<AppUser> SIRequest(@Query("email")String email, @Query("password")String password);
 
     @GET("user/get")
     Call<AppUser> simpleGETbyID(@Query("id")Integer id);
+
+    @POST("user/add")
+    Call<AppUser> add(@Body AppUser client);
 
     @GET("user/getByEmail")
     Call<AppUser> signIn(@Query("email") String email);
 
     @POST("user/password/getVerify")
     Call<Integer> getVerifyCode(@Query("email") String email);
+
+    @POST("user/password/OTPConfirm")
+    Call<String> confirmCode(@Query("email") String email, @Query("code") String verifyCode);
+
+    @POST("user/password/confirm")
+    Call<AppUser> confirmPass(@Query("email") String email, @Query("password") String password);
 }

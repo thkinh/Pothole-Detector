@@ -89,7 +89,7 @@
                         android:background="@drawable/rounded_textbox"
                         android:gravity="center_vertical"
                         android:hint="@string/editText_opt"
-                        android:inputType="number"
+                        android:inputType="text"
                         android:minWidth="48dp"
                         android:minHeight="48dp"
                         android:padding="10dp"
