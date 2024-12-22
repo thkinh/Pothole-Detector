@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.example.doan.api.auth.AuthManager;
+import com.example.doan.feature.UserPreferences;
 import com.example.doan.model.AppUser;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -101,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
     private void handleLogin() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
-
         if (TextUtils.isEmpty(email)) {
             emailEditText.setError("Please enter your email");
             return;
@@ -110,7 +110,6 @@ public class LoginActivity extends AppCompatActivity {
             passwordEditText.setError("Please enter your password");
             return;
         }
-
         authManager.signIn(email, password, new AuthManager.SignInCallback() {
             @Override
             public void onSuccess(AppUser user) {
@@ -121,7 +120,9 @@ public class LoginActivity extends AppCompatActivity {
                     finish();
                 });
                 //navigateToDashboard();
+                UserPreferences userPreferences = new UserPreferences(LoginActivity.this);
                 authManager.setGlobalAccount(user);
+                userPreferences.saveUser(user);
                 Toast.makeText(LoginActivity.this, "Welcome "+ authManager.getAccount().getUsername(), Toast.LENGTH_SHORT).show();
             }
             @Override
@@ -142,7 +143,6 @@ public class LoginActivity extends AppCompatActivity {
 
     // Initialize sign in intent and then Start activity for result
     private void googlesignIn() {
-
         Intent signInIntent = gsc1.getSignInIntent();
         startActivityForResult(signInIntent, 1000);
     }
