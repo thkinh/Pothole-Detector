@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements OnMapFragmentInte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = AtMainBinding.inflate(getLayoutInflater());
         EdgeToEdge.enable(this);
         setContentView(binding.getRoot());

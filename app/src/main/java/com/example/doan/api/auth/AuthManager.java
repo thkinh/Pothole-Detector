@@ -68,7 +68,11 @@ public class AuthManager {
                             response.body().getPassword());
                     callback.onSuccess(appUser);
                 }
+                if (response.code() == 502){
+                    callback.onFailure("This email already exists");
+                }
                 else {
+                    Log.e("HTTP_Response", response.raw().toString());
                     callback.onFailure(response.message());
                 }
             }

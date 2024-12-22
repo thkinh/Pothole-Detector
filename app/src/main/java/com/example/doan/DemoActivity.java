@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.doan.api.auth.AuthManager;
@@ -24,7 +25,7 @@ public class DemoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_demoapipotholes);
-
+        EdgeToEdge.enable(this);
 
         button_get = findViewById(R.id.btn_getPotholes);
         button_add = findViewById(R.id.add_ph);

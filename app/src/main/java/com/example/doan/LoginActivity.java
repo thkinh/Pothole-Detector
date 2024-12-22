@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_loginscreen);
-
+        EdgeToEdge.enable(this);
         // Ánh xạ các view từ layout
         emailEditText = findViewById(R.id.editText_Email_srcLogin);
         passwordEditText = findViewById(R.id.editText_Password_scrLogin);
@@ -110,6 +111,10 @@ public class LoginActivity extends AppCompatActivity {
             passwordEditText.setError("Please enter your password");
             return;
         }
+        runOnUiThread(()->{
+            loginButton.setEnabled(false);
+            loginButton.setText("\uF251");
+        });
         authManager.signIn(email, password, new AuthManager.SignInCallback() {
             @Override
             public void onSuccess(AppUser user) {
@@ -128,9 +133,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(String errorMessage) {
                 // Login failed
-                runOnUiThread(() -> Toast.makeText(LoginActivity.this,
-                        errorMessage,
-                        Toast.LENGTH_SHORT).show());
+                runOnUiThread(() ->{
+                    Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    loginButton.setText("Login");
+                    loginButton.setEnabled(true);
+                });
             }
         });
     }
