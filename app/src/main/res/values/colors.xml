@@ -18,6 +18,9 @@
     <color name="color_word">#E1FEFF</color>
     <color name="bgr_textbox">#B1D2E3</color>
 
+    <color name="selected_tab_color">#0F5996</color>
+    <color name="unselected_tab_color">#FF808080</color>
+
     <color name="red">#FF0000</color>
     <color name="orange">#FFA500</color>
     <color name="yellow">#FFFF00</color>

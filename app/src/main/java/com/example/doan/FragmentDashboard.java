@@ -65,8 +65,7 @@ public class FragmentDashboard extends Fragment {
     Activity context;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         context = getActivity();
@@ -132,6 +131,14 @@ public class FragmentDashboard extends Fragment {
         btLogout.setOnClickListener(v -> logout());
 //----------------------------End of google sign in---------------------
 
+        ImageButton notifyButton = view.findViewById(R.id.ic_notify);
+        notifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), NotificationActivity.class);
+                startActivity(intent);
+            }
+        });
 
 //----------------------------Start of user and route---------------------
         btnUser.setOnClickListener(new View.OnClickListener() {

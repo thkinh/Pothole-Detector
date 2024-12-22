@@ -54,6 +54,9 @@
             </intent-filter>
         </activity>
 
+        <!-- Khai báo NotificationActivity -->
+        <activity android:name=".NotificationActivity" />
+
         <activity
             android:name=".LoginActivity"
             android:exported="true" />

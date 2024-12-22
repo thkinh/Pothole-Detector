@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="34dp"
+    android:padding="12dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <!-- Icon -->
+    <ImageView
+        android:id="@+id/notification_icon"
+        android:layout_width="40dp"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_pothole_pin"
+        android:layout_alignParentStart="true" />
+
+    <!-- Tiêu đề -->
+    <TextView
+        android:id="@+id/notification_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/notification_icon"
+        android:layout_marginStart="8dp"
+        android:text="@string/txt_detect"
+        android:textColor="@color/black"
+        android:textSize="26sp"
+        android:layout_centerVertical="true" />
+
+    <!-- Thông tin vị trí -->
+
+    <!-- Thời gian -->
+</RelativeLayout>
