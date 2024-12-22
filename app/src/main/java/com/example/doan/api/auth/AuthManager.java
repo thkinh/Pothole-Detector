@@ -18,12 +18,14 @@ public class AuthManager {
     private AuthManager() {
         this.authService = RetrofitInstance.getInstance().create(AuthService.class);
     }
-        public static synchronized AuthManager getInstance() {
-            if (instance == null) {
-                instance = new AuthManager();
-            }
-            return instance;
+
+    public static synchronized AuthManager getInstance() {
+        if (instance == null) {
+            instance = new AuthManager();
         }
+        return instance;
+    }
+
     public AppUser getAccount()
     {
         return globalUserAccount;

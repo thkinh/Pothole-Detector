@@ -49,6 +49,7 @@ public class SplashScreen extends AppCompatActivity {
             Toast.makeText(this, "Welcome back "+authManager.getAccount().getUsername(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+            finish();
         } else {
             Toast.makeText(this, "Welcome to our app ", Toast.LENGTH_SHORT).show();
         }
