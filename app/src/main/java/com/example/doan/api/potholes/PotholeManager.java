@@ -5,9 +5,8 @@ import android.util.Log;
 import com.example.doan.api.RetrofitInstance;
 import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;
-import com.example.doan.api.auth.PotholeService;
 import java.util.List;
-
+import com.example.doan.api.potholes.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -18,7 +17,7 @@ public class PotholeManager {
 
     private PotholeManager(){
         this.potholeService = RetrofitInstance.getInstance().create(PotholeService.class);
-    };
+    }
 
     public static synchronized PotholeManager getInstance() {
         if (instance == null) {
