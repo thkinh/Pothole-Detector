@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.doan.api.auth.AuthManager;
+import com.example.doan.model.AppUser;
 
 public class RecoverAccount extends androidx.appcompat.app.AppCompatActivity {
     private EditText editTextEmail;
@@ -35,12 +36,10 @@ public class RecoverAccount extends androidx.appcompat.app.AppCompatActivity {
     // Hàm xử lý đăng ký
     private void handleSendEmail() {
         String email = editTextEmail.getText().toString().trim();
-        // Kiểm tra thông tin hợp lệ
         if (TextUtils.isEmpty(email) || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             editTextEmail.setError("Enter a valid email");
             return;
         }
-
         authManager.getVerify(email, new AuthManager.GetVerifyCallback() {
             @Override
             public void onSuccess(Integer id) {
@@ -48,8 +47,10 @@ public class RecoverAccount extends androidx.appcompat.app.AppCompatActivity {
                     Toast.makeText(RecoverAccount.this, "Your id is " + id, Toast.LENGTH_SHORT).show();
                     navigateToOPTScreen();
                 });
+                AppUser user = new AppUser();
+                user.setEmail(email);
+                authManager.setGlobalAccount(user);
             }
-
             @Override
             public void onFailure(String errorMessage) {
                 runOnUiThread(() -> Toast.makeText(RecoverAccount.this,
@@ -63,5 +64,6 @@ public class RecoverAccount extends androidx.appcompat.app.AppCompatActivity {
     private void navigateToOPTScreen() {
         Intent intent = new Intent(RecoverAccount.this, OTPActive2.class);
         startActivity(intent);
+        finish();
     }
 }

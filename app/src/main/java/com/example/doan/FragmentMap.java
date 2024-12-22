@@ -40,7 +40,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.doan.api.auth.PotholeManager;
+import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
 import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;

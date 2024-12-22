@@ -115,20 +115,20 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(AppUser user) {
                 // Login successful
                 runOnUiThread(() ->{
-                    //TODO: ADD this user just found as the global account
-                    //  authManager.getAccount();
                    Toast.makeText(LoginActivity.this, "Welcome "+ user.getUsername(), Toast.LENGTH_SHORT).show();
-                   navigateToDashboard();
                 });
+                Intent intent = new Intent(LoginActivity.this, DemoActivity.class);
+                startActivity(intent);
+                finish();
+                //navigateToDashboard();
+                authManager.setGlobalAccount(user);
             }
-
             @Override
             public void onFailure(String errorMessage) {
                 // Login failed
                 runOnUiThread(() -> Toast.makeText(LoginActivity.this,
                         errorMessage,
                         Toast.LENGTH_SHORT).show());
-                //Log.e("FAILED: ", errorMessage);
             }
         });
     }
@@ -182,11 +182,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     }
-    /*private void navigateToSecondActivity2() {
-        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-        startActivity(intent);
-        finish();
-    }*/
     private void displayToast(String s) {
         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
     }

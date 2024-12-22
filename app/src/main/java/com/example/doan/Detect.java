@@ -31,13 +31,11 @@ public class Detect extends AppCompatActivity
         });
 
         btn_startDetect.setOnClickListener(view -> {
-            if (!isDetecting)
-            {
+            if (!isDetecting) {
                 loadSensorDataFragment();
                 isDetecting = true;
             }
-            else
-            {
+            else {
                 removeSensorDataFragment();
                 isDetecting = false;
             }
@@ -81,6 +79,4 @@ public class Detect extends AppCompatActivity
             transaction.commit();
         }
     }
-
-
 }
