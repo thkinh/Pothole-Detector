@@ -18,12 +18,14 @@ public class AuthManager {
     private AuthManager() {
         this.authService = RetrofitInstance.getInstance().create(AuthService.class);
     }
-        public static synchronized AuthManager getInstance() {
-            if (instance == null) {
-                instance = new AuthManager();
-            }
-            return instance;
+
+    public static synchronized AuthManager getInstance() {
+        if (instance == null) {
+            instance = new AuthManager();
         }
+        return instance;
+    }
+
     public AppUser getAccount()
     {
         return globalUserAccount;
@@ -66,7 +68,11 @@ public class AuthManager {
                             response.body().getPassword());
                     callback.onSuccess(appUser);
                 }
+                if (response.code() == 502){
+                    callback.onFailure("This email already exists");
+                }
                 else {
+                    Log.e("HTTP_Response", response.raw().toString());
                     callback.onFailure(response.message());
                 }
             }
