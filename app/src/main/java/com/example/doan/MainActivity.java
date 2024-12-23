@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.doan.databinding.AtMainBinding;
 import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
-//import com.example.doan.map.FragmentMap;
+import com.example.doan.setting.FragmentSetting;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapFragmentInteractionListener {
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements OnMapFragmentInte
             if (item.getItemId() == R.id.btn_home) {
                 replaceFragment(new FragmentDashboard());
             } else if (item.getItemId() == R.id.btn_map) {
-                replaceFragment(new com.example.doan.FragmentMap());
+                replaceFragment(new com.example.doan.Mapbox());
             } else if (item.getItemId() == R.id.btn_setting) {
                 replaceFragment(new FragmentSetting());
             }

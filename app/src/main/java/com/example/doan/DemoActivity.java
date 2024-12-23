@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.doan.api.auth.AuthManager;
@@ -13,6 +14,8 @@ import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;
 
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
 public class DemoActivity extends AppCompatActivity {
@@ -88,18 +91,7 @@ public class DemoActivity extends AppCompatActivity {
     }
 
     private void handleAdd(){
-        Pothole pothole = new Pothole(0, "Normal", "None", new Pothole.Location(), AuthManager.getInstance().getAccount(), 0);
-        AppUser currentUser = AuthManager.getInstance().getAccount();
-        pothole.setAppUser(AuthManager.getInstance().getAccount());
-        pothole.setAppUser(currentUser);
-        pothole.setSeverity("Normal");
-
-
-        Pothole.Location location = new Pothole.Location();
-        location.setLatitude(0.0);  location.setLongitude(0.0);
-        location.setCity("None");   location.setCountry("None");
-        pothole.setLocation(location);
-
+        Pothole pothole = createPothole();
         potholeManager.addPothole(pothole, new PotholeManager.AddPotholeCallBack() {
             @Override
             public void onSuccess(Pothole message) {
@@ -115,6 +107,23 @@ public class DemoActivity extends AppCompatActivity {
                 Log.e("FAILED: ", errorMessage);
             }
         });
+    }
+
+    @NonNull
+    private Pothole createPothole() {
+        Date date = new Date(Calendar.getInstance().getTime().getTime());
+        Pothole pothole = new Pothole(0,date, "None", new Pothole.Location(), AuthManager.getInstance().getAccount(), 0);
+        AppUser currentUser = AuthManager.getInstance().getAccount();
+        pothole.setAppUser(AuthManager.getInstance().getAccount());
+        pothole.setAppUser(currentUser);
+        pothole.setSeverity("Normal");
+        Pothole.Location location = new Pothole.Location();
+        location.setLatitude(0.0);
+        location.setLongitude(0.0);
+        location.setCity("None");
+        location.setCountry("None");
+        pothole.setLocation(location);
+        return pothole;
     }
 
     private void handle_getALL(){
