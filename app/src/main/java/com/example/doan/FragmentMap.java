@@ -1235,7 +1235,6 @@ public class FragmentMap extends Fragment
                     }
                     @Override
                     public void onCanceled(@NonNull RouteOptions routeOptions, @NonNull RouterOrigin routerOrigin) {
-
                     }
                 });
             }
@@ -1261,7 +1260,4 @@ public class FragmentMap extends Fragment
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c; // Khoảng cách tính bằng km
     }
-
-
-
 }
