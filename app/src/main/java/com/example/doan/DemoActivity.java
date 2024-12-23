@@ -88,8 +88,8 @@ public class DemoActivity extends AppCompatActivity {
     }
 
     private void handleAdd(){
-        Pothole pothole = new Pothole();
-        AppUser currentUser = AuthManager.getInstance().getAccount();
+        Pothole pothole = new Pothole(0, "Normal", "None", new Pothole.Location(), AuthManager.getInstance().getAccount(), 0);
+        pothole.setAppUser(AuthManager.getInstance().getAccount());
         pothole.setAppUser(currentUser);
         pothole.setSeverity("Normal");
 

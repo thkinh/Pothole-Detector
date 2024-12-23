@@ -52,7 +52,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/column_chart"
                 android:layout_width="385dp"
-                android:layout_height="260dp"
+                android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 app:cardCornerRadius="15dp"
@@ -74,13 +74,23 @@
                         android:textSize="10sp">
                     </TextView>
 
-                    <com.jjoe64.graphview.GraphView
-                        android:id="@+id/graph"
-                        android:layout_width="250dip"
-                        android:layout_height="220dip"
+                    <HorizontalScrollView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_below="@id/txt_recently"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp" />
+                        android:layout_marginTop="10dp"
+                        android:contentDescription="graph">
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+                            <com.github.mikephil.charting.charts.BarChart
+                                android:id="@+id/graph"
+                                android:layout_width="500dip"
+                                android:layout_height="500dip"
+                                />
+                        </RelativeLayout>
+                    </HorizontalScrollView>
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 

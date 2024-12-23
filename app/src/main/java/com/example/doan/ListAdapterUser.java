@@ -28,7 +28,7 @@ public class ListAdapterUser extends ArrayAdapter<ListDataUser> {
         }
 
         ImageView listImage = view.findViewById(R.id.img_avatar);
-        TextView listName = view.findViewById(R.id.txt_routename);
+        TextView listName = view.findViewById(R.id.txt_username);
         TextView listDate = view.findViewById(R.id.txt_date);
 
         listImage.setImageResource(listData.image);

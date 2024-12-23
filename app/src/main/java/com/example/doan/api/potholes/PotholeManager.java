@@ -56,16 +56,15 @@ public class PotholeManager {
         call.enqueue(new Callback<List<Pothole>>() {
             @Override
             public void onResponse(Call<List<Pothole>> call, Response<List<Pothole>> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful() && response.body() != null){
                     callBack.onSuccess(response.body());
-                }
-                else {
-                    callBack.onFailure(response.message());
+                } else {
+                    callBack.onFailure("Failed to fetch potholes: " + response.message());
                 }
             }
             @Override
             public void onFailure(Call<List<Pothole>> call, Throwable t) {
-                callBack.onFailure(t.getMessage());
+                callBack.onFailure("API call failed: " + t.getMessage());
             }
         });
     }

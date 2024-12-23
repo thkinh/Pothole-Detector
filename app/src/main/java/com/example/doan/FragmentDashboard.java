@@ -3,6 +3,17 @@ package com.example.doan;
 import androidx.credentials.CredentialManager;
 import androidx.annotation.NonNull;
 
+import com.example.doan.api.auth.AuthManager;
+import com.example.doan.api.potholes.PotholeManager;
+import com.example.doan.model.AppUser;
+import com.example.doan.model.Pothole;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.example.doan.feature.UserPreferences;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -11,8 +22,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +42,7 @@ import com.bumptech.glide.Glide;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.PieChart;
@@ -42,11 +57,17 @@ import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 public class FragmentDashboard extends Fragment {
 
+    // For Fetching Data
     private PieChart pieChart;
+    private ImageButton btNotify;
+    private TextView totalDistance;
 
     // For Firebase Auth and Google Sign In
     private ImageView ivImage;
@@ -64,6 +85,7 @@ public class FragmentDashboard extends Fragment {
 
     Activity context;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
@@ -74,9 +96,11 @@ public class FragmentDashboard extends Fragment {
         ivImage = view.findViewById(R.id.avt);
         tvName = view.findViewById(R.id.txt_name);
         btLogout = view.findViewById(R.id.ic_power);
+        btNotify = view.findViewById(R.id.ic_notify);
         btnUser = view.findViewById(R.id.switch_to_user);
         btnRoute = view.findViewById(R.id.switch_to_route);
         btnRoute.setTextColor(getResources().getColor(R.color.gray));
+        totalDistance = view.findViewById(R.id.total_distance);
 
         // Add this block to ensure FragmentUser is displayed first
         FragmentTransaction ft = getParentFragmentManager().beginTransaction();
@@ -86,24 +110,11 @@ public class FragmentDashboard extends Fragment {
         btnUser.setTextColor(getResources().getColor(R.color.white));
 
 //--------------------------Start of statistics--------------------------
-        // Set up the graph
-        GraphView graph = view.findViewById(R.id.graph);
-        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(getDataPoint());
-        graph.addSeries(series);
-        series.setSpacing(10);
+        // Set up the graph and chart
+        BarChart graph = view.findViewById(R.id.graph);
+        PieChart pieChart = view.findViewById(R.id.piechart);
+        fetchPotholeData(graph, pieChart);
 
-        // Set up the chart
-        pieChart = view.findViewById(R.id.piechart);
-        ArrayList<PieEntry> yValues = new ArrayList<>();
-        yValues.add(new PieEntry(34f));
-        yValues.add(new PieEntry(23f));
-        yValues.add(new PieEntry(14f));
-        PieDataSet dataSet = new PieDataSet(yValues, null);
-        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        PieData data = new PieData(dataSet);
-        data.setValueTextSize(2f);
-        data.setValueTextColor(R.color.black);
-        pieChart.setData(data);
 //---------------------End of statistics---------------------
 
 
@@ -195,6 +206,18 @@ public class FragmentDashboard extends Fragment {
         }
 //Bấm vô chữ "trong 7 ngay...." hoặc "muc đo nguy hiem" sẽ chuyen sang fragment statitics
 
+//----------------------------Start of fetch data---------------------
+        AppUser currentUser = AuthManager.getInstance().getAccount();
+        if (currentUser != null && currentUser.getDistanceTraveled() != null
+                && currentUser.getUsername() != null) {
+            totalDistance.setText(String.valueOf(currentUser.getDistanceTraveled()));
+            tvName.setText(String.valueOf(currentUser.getUsername()));
+        } else {
+            totalDistance.setText("0");
+            tvName.setText("User");
+        }
+//----------------------------End of fetch data---------------------
+
         return view;
     }
 
@@ -224,16 +247,99 @@ public class FragmentDashboard extends Fragment {
         requireActivity().finish();
     }
 
-//------------------Cái này cho cái biểu đồ cột---------------------
-    private DataPoint[] getDataPoint() {
-        return new DataPoint[]{
-                new DataPoint(0, 1),
-                new DataPoint(1, 5),
-                new DataPoint(2, 3),
-                new DataPoint(3, 2),
-                new DataPoint(4, 6)
-        };
-    }
-//------------------Cái này cho cái biểu đồ cột---------------------
+//------------------Cái này cho cái biểu đồ cột và tròn---------------------
+private void fetchPotholeData(BarChart graph, PieChart pieChart) {
+    PotholeManager.getInstance().getALLPotholes(new PotholeManager.GetPotholeCallBack() {
+        @Override
+        public void onSuccess(List<Pothole> potholes) {
+            updateGraphView(graph, potholes);
+            updatePieChart(pieChart, potholes);
+            updateTotalPotholes(potholes);
+        }
 
+        @Override
+        public void onFailure(String errorMessage) {
+            Toast.makeText(getContext(), "Failed to fetch pothole data: " + errorMessage, Toast.LENGTH_SHORT).show();
+        }
+    });
+}
+
+    private void updateGraphView(BarChart graph, List<Pothole> potholes) {
+        Map<String, Integer> potholeCountByDate = new HashMap<>();
+        for (Pothole pothole : potholes) {
+            String dateFound = pothole.getDateFound();
+            if (dateFound != null) {
+                potholeCountByDate.put(dateFound, potholeCountByDate.getOrDefault(dateFound, 0) + 1);
+            }
+        }
+
+        List<BarEntry> entries = new ArrayList<>();
+        List<String> dateLabels = new ArrayList<>();
+        int index = 0;
+        for (Map.Entry<String, Integer> entry : potholeCountByDate.entrySet()) {
+            entries.add(new BarEntry(index++, entry.getValue()));
+            dateLabels.add(entry.getKey());
+        }
+
+        BarDataSet dataSet = new BarDataSet(entries, "Number of Potholes");
+        BarData barData = new BarData(dataSet);
+        graph.setData(barData);
+
+        XAxis xAxis = graph.getXAxis();
+        xAxis.setDrawLabels(false); // Disable x-axis labels
+        xAxis.setDrawGridLines(false); // Optionally disable grid lines
+
+        YAxis leftAxis = graph.getAxisLeft();
+        leftAxis.setDrawLabels(false); // Disable y-axis labels
+        leftAxis.setDrawGridLines(false); // Optionally disable grid lines
+        leftAxis.setAxisMinimum(0f);
+
+        YAxis rightAxis = graph.getAxisRight();
+        rightAxis.setEnabled(false); // Disable right y-axis
+
+        graph.getDescription().setEnabled(false);
+        graph.invalidate(); // Refresh
+    }
+
+    private void updatePieChart(PieChart pieChart, List<Pothole> potholes) {
+        Map<String, Integer> severityCount = new HashMap<>();
+        for (Pothole pothole : potholes) {
+            String severity = pothole.getSeverity();
+            if (severity != null) {
+                severityCount.put(severity, severityCount.getOrDefault(severity, 0) + 1);
+            }
+        }
+
+        List<PieEntry> entries = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : severityCount.entrySet()) {
+            entries.add(new PieEntry(entry.getValue(), entry.getKey()));
+        }
+
+        PieDataSet dataSet = new PieDataSet(entries, "Pothole Severity");
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        dataSet.setDrawValues(false); // Disable value labels
+
+        PieData data = new PieData(dataSet);
+        pieChart.setData(data);
+
+        pieChart.getLegend().setEnabled(false); // Disable legend
+        pieChart.getDescription().setEnabled(false); // Disable description
+        pieChart.invalidate(); // Refresh
+    }
+//------------------Cái này cho cái biểu đồ cột và tròn---------------------
+
+    private void updateTotalPotholes(List<Pothole> potholes) {
+        AppUser currentUser = AuthManager.getInstance().getAccount();
+        if (currentUser != null && currentUser.getId() != null) {
+            int userId = currentUser.getId();
+            long totalPotholes = potholes.stream()
+                    .filter(pothole -> pothole.getUserId() != null)
+                    .filter(pothole -> pothole.getUserId().intValue() == userId)
+                    .count();
+            TextView totalPotholesTextView = getView().findViewById(R.id.total_potholes);
+            if (totalPotholesTextView != null) {
+                totalPotholesTextView.setText(String.valueOf(totalPotholes));
+            }
+        }
+    }
 }

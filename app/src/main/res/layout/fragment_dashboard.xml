@@ -23,6 +23,7 @@
         </TextView>
 
         <ImageButton
+            android:id="@+id/ic_notify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_notify"
@@ -121,6 +122,7 @@
                             </TextView>
 
                             <TextView
+                                android:id="@+id/total_distance"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="420"
@@ -151,6 +153,7 @@
                             </TextView>
 
                             <TextView
+                                android:id="@+id/total_potholes"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="69"
@@ -198,7 +201,7 @@
 
                     </LinearLayout>
 
-                    <RelativeLayout
+                    <!--<RelativeLayout
                         android:id="@+id/history"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -224,7 +227,7 @@
                             android:textColor="@color/white"
                             android:textSize="12sp">
                         </TextView>
-                    </RelativeLayout>
+                    </RelativeLayout>-->
 
                 </LinearLayout>
 
@@ -314,7 +317,7 @@
                             android:textSize="10sp">
                         </TextView>
 
-                        <com.jjoe64.graphview.GraphView
+                        <com.github.mikephil.charting.charts.BarChart
                             android:id="@+id/graph"
                             android:layout_width="150dip"
                             android:layout_height="120dip"

@@ -45,7 +45,9 @@ public class AuthManager {
                     globalUserAccount = new AppUser(
                         response.body().getUsername(),
                         response.body().getEmail(),
-                        response.body().getPassword());
+                        response.body().getPassword(),
+                        response.body().getDistanceTraveled(),
+                        response.body().getId());
                 Log.d("Login Acticity", globalUserAccount.getUsername());
             }
             @Override
@@ -65,7 +67,9 @@ public class AuthManager {
                     AppUser appUser = new AppUser(
                             response.body().getUsername(),
                             response.body().getEmail(),
-                            response.body().getPassword());
+                            response.body().getPassword(),
+                            response.body().getDistanceTraveled(),
+                            response.body().getId());
                     callback.onSuccess(appUser);
                 }
                 if (response.code() == 502){
@@ -92,7 +96,10 @@ public class AuthManager {
                     AppUser appUser = new AppUser(
                             response.body().getUsername(),
                             response.body().getEmail(),
-                            response.body().getPassword());
+                            response.body().getPassword(),
+                            response.body().getDistanceTraveled(),
+                            response.body().getId());
+                    setGlobalAccount(appUser);
                     appUser.setId(response.body().getId());
                     callback.onSuccess(appUser);
                 }
