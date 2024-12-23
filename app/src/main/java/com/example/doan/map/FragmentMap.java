@@ -18,6 +18,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.UserManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -41,6 +42,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.doan.api.auth.AuthManager;
 import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
 import com.example.doan.model.AppUser;
@@ -257,14 +259,11 @@ public class FragmentMap extends Fragment
         double dot = (x0 - x1) * dx + (y0 - y1) * dy;
         double lengthSquared = dx * dx + dy * dy;
         double param = -1.0;
-
         // Tính toán điểm gần nhất trên đoạn thẳng
         if (lengthSquared != 0) { // Tránh chia cho 0
             param = dot / lengthSquared;
         }
-
         double nearestX, nearestY;
-
         if (param < 0) {
             nearestX = x1;
             nearestY = y1;
@@ -275,7 +274,6 @@ public class FragmentMap extends Fragment
             nearestX = x1 + param * dx;
             nearestY = y1 + param * dy;
         }
-
         // Tính khoảng cách giữa điểm và điểm gần nhất trên đoạn thẳng
         double dx2 = x0 - nearestX;
         double dy2 = y0 - nearestY;
@@ -584,11 +582,8 @@ public class FragmentMap extends Fragment
     //Tạo các điểm pothole cố định trên map
     private void createPointPothole(){
 
-//        potholeList = new ArrayList<>();
-        AppUser appUser = new AppUser();
-        appUser.setUsername("thinh1");
         PotholeManager potholeManager= PotholeManager.getInstance();
-        potholeManager.getPotholes(appUser, new PotholeManager.GetPotholeCallBack() {
+        potholeManager.getALLPotholes(new PotholeManager.GetPotholeCallBack() {
             @Override
             public void onSuccess(List<Pothole> potholes) {
                 addPotholeToMap(potholes);
@@ -600,16 +595,17 @@ public class FragmentMap extends Fragment
             }
         });
     }
-
+    List<Pothole> potholesList;
     private PointAnnotationManager pointPotholeAnnotationManager ;
     //Quản lí các điểm pothole trên map
     public void addPotholeToMap(List<Pothole> potholeList){
+        potholesList= potholeList;
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_pothole_waning_map);
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
         AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
         pointPotholeAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
 
-        for ( Pothole potholePoint : potholeList) {
+        for ( Pothole potholePoint : potholesList) {
             PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                     .withTextAnchor(TextAnchor.CENTER)
                     .withIconImage(resizedBitmap)
@@ -854,7 +850,7 @@ public class FragmentMap extends Fragment
         });
 
     }
-
+    Point pointBeforGo;
     @SuppressLint("MissingPermission")
     private void getDirectionWithMyLocationPoint(Point destination) {
         LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(getContext());
@@ -867,6 +863,7 @@ public class FragmentMap extends Fragment
                 Point origin = Point.fromLngLat(location.getLongitude(), location.getLatitude());
 
                 getRouteTwoPoint(origin,destination);
+
             }
 
             @Override
@@ -876,6 +873,18 @@ public class FragmentMap extends Fragment
         });
     }
 
+    List<Pothole> listPotholeOnLine;
+    double distanceRoute;
+    private void getListPotholeOnLineRoute(LineString linestring){
+        for ( Pothole potholePoint : potholesList) {
+            //Nếu nằm điểm đó nằm trên đường route
+            if(booleanPointOnLine(Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude()),linestring)){
+                listPotholeOnLine.add(potholePoint);
+            }
+
+        }
+
+    }
     private void getRouteTwoPoint(Point origin ,Point destination) {
         MapboxDirections.Builder builder = MapboxDirections.builder();
         RouteOptions routeOptions = RouteOptions.builder()
@@ -886,6 +895,9 @@ public class FragmentMap extends Fragment
                 .alternatives(true)
                 .build();
 
+        //lưu vị trí ban đầu trước khi bắt đi xuất phát
+        pointBeforGo = origin;
+        distanceRoute=0;
         builder.routeOptions(routeOptions);
         builder.accessToken(getString(R.string.mapbox_access_token));
 
@@ -897,9 +909,10 @@ public class FragmentMap extends Fragment
                 DirectionsRoute currentRoute = directionsResponse.routes().get(0);
 
                 LineString lineString = LineString.fromPolyline(currentRoute.geometry(),PRECISION_6);
-
+                getListPotholeOnLineRoute(lineString);
                 //Các điểm hình thành lên linestring
-                List<Point> pointList = lineString.coordinates();
+                lineStringBeforeNavigation =lineString;
+                pointListLine = lineString.coordinates();
                 Feature routeFeature = Feature.fromGeometry(lineString);
                 // Make a toast which displays the route's distance
 
@@ -950,11 +963,15 @@ public class FragmentMap extends Fragment
 
         @Override
         public void onNewLocationMatcherResult(@NonNull LocationMatcherResult locationMatcherResult) {
+            //Tính quảng đường đi được từ điểm đầu trước khi bắt đầu đến khi thời điểm hiện tại trong quá trình navigation
             Location location = locationMatcherResult.getEnhancedLocation();
-//            navigationLocationProvider.changePosition(location, locationMatcherResult.getKeyPoints(), null, null);
+            navigationLocationProvider.changePosition(location, locationMatcherResult.getKeyPoints(), null, null);
             if (focusLocationNavigationMode) {
                 updateCamera(Point.fromLngLat(location.getLongitude(), location.getLatitude()), (double) location.getBearing());
             }
+            Point point = Point.fromLngLat(location.getLongitude(),location.getLatitude());
+            distanceRoute=distanceRoute+haversine(pointBeforGo,point);
+
         }
     };
     private final RoutesObserver routesObserver = new RoutesObserver() {
@@ -1076,13 +1093,18 @@ public class FragmentMap extends Fragment
         }
     };
 
+    LineString lineStringBeforeNavigation;
+    List<Point> pointListLine;
+
     public void setclickNavigationOnMap(Point destination){
         cardView.setVisibility(View.VISIBLE);
         layoutStartDestination.setVisibility(View.GONE);
         soundButton.setVisibility(View.VISIBLE);
         navigationButton.hide();
         mylocationButton.hide();
-//            directionButton.hide();
+        //Lấy các điểm để hướng dẫn đi trước khi bắt đầu đi
+        getDirectionWithMyLocationPoint(destination) ;
+
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
         routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(getContext()).build());
 
@@ -1105,12 +1127,18 @@ public class FragmentMap extends Fragment
         mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver);
         mapboxNavigation.registerRouteProgressObserver(routeProgressObserver);
 
+        //Kết thúc quá trình navigation
         imageView.setOnClickListener(view -> {
             mapboxNavigation.onDestroy();
             mapboxNavigation.unregisterRoutesObserver(routesObserver);
             mapboxNavigation.unregisterLocationObserver(locationObserver);
 
+            AppUser appUser = AuthManager.getInstance().getAccount();
 
+            /*TODO
+
+
+            */
         });
 
         soundButton.setVisibility(View.VISIBLE);
@@ -1139,6 +1167,7 @@ public class FragmentMap extends Fragment
         } else {
             mapboxNavigation.startTripSession();
         }
+
 
         navigationRoute(destination);
 
@@ -1174,6 +1203,7 @@ public class FragmentMap extends Fragment
         });
     }
 
+    CardView NotificationWarning;
     @SuppressLint("MissingPermission")
     private void navigationRoute(Point point) {
         LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(getContext());
@@ -1193,6 +1223,10 @@ public class FragmentMap extends Fragment
                     @Override
                     public void onRoutesReady(@NonNull List<NavigationRoute> list, @NonNull RouterOrigin routerOrigin) {
                         mapboxNavigation.setNavigationRoutes(list);
+                        NotificationWarning.setVisibility(View.VISIBLE);
+
+//                        TurfMisc.lineSliceAlong()
+
                         mylocationNavigationButton.performClick();
                     }
                     @Override
@@ -1201,7 +1235,6 @@ public class FragmentMap extends Fragment
                     }
                     @Override
                     public void onCanceled(@NonNull RouteOptions routeOptions, @NonNull RouterOrigin routerOrigin) {
-
                     }
                 });
             }
@@ -1211,5 +1244,20 @@ public class FragmentMap extends Fragment
 
             }
         });
+    }
+    public double haversine(Point pointStart,Point pointEnd) {
+
+        double lat1=pointStart.latitude();
+        double lon1= pointStart.longitude();
+        double lat2=pointEnd.latitude();
+        double lon2=pointEnd.longitude();
+        final int R = 6371; // Bán kính Trái Đất (km)
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // Khoảng cách tính bằng km
     }
 }

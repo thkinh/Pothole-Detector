@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.doan.api.auth.AuthManager;
@@ -19,22 +20,47 @@ public class DemoActivity extends AppCompatActivity {
     private Button button_get;
     private Button button_add;
     private Button btn_getALL;
+    private Button btn_addDistance;
     private PotholeManager potholeManager;
+    private AuthManager authManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_demoapipotholes);
-
+        EdgeToEdge.enable(this);
 
         button_get = findViewById(R.id.btn_getPotholes);
         button_add = findViewById(R.id.add_ph);
         btn_getALL = findViewById(R.id.get_globalPotholes);
+        btn_addDistance =findViewById(R.id.add_distance);
 
         button_get.setOnClickListener(view -> handleGet());
         button_add.setOnClickListener(view -> handleAdd());
         btn_getALL.setOnClickListener(view -> handle_getALL());
+        btn_addDistance.setOnClickListener(view -> handle_addDistance());
 
         potholeManager = PotholeManager.getInstance();
+
+    }
+
+    private void handle_addDistance(){
+        Long distance = 100L;
+        authManager = AuthManager.getInstance();
+        authManager.updateDistance(authManager.getAccount().getId(), distance, new AuthManager.UpdateDistanceCallBack() {
+            @Override
+            public void onSuccess(Integer id) {
+                runOnUiThread(() ->{
+                    Toast.makeText(DemoActivity.this, "Updated for user "+id, Toast.LENGTH_SHORT).show();
+                });
+            }
+            @Override
+            public void onFailure(String errorMessage) {
+                runOnUiThread(() -> Toast.makeText(DemoActivity.this,
+                        errorMessage,
+                        Toast.LENGTH_SHORT).show());
+                Log.e("FAILED: ", errorMessage);
+            }
+        });
     }
 
     //Handle get for this single user
@@ -62,8 +88,9 @@ public class DemoActivity extends AppCompatActivity {
     }
 
     private void handleAdd(){
-        Pothole pothole = new Pothole();
+        Pothole pothole = new Pothole(0, "Normal", "None", new Pothole.Location(), AuthManager.getInstance().getAccount(), 0);
         AppUser currentUser = AuthManager.getInstance().getAccount();
+        pothole.setAppUser(AuthManager.getInstance().getAccount());
         pothole.setAppUser(currentUser);
         pothole.setSeverity("Normal");
 

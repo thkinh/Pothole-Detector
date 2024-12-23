@@ -18,12 +18,14 @@ public class AuthManager {
     private AuthManager() {
         this.authService = RetrofitInstance.getInstance().create(AuthService.class);
     }
-        public static synchronized AuthManager getInstance() {
-            if (instance == null) {
-                instance = new AuthManager();
-            }
-            return instance;
+
+    public static synchronized AuthManager getInstance() {
+        if (instance == null) {
+            instance = new AuthManager();
         }
+        return instance;
+    }
+
     public AppUser getAccount()
     {
         return globalUserAccount;
@@ -43,7 +45,9 @@ public class AuthManager {
                     globalUserAccount = new AppUser(
                         response.body().getUsername(),
                         response.body().getEmail(),
-                        response.body().getPassword());
+                        response.body().getPassword(),
+                        response.body().getDistanceTraveled(),
+                        response.body().getId());
                 Log.d("Login Acticity", globalUserAccount.getUsername());
             }
             @Override
@@ -63,10 +67,16 @@ public class AuthManager {
                     AppUser appUser = new AppUser(
                             response.body().getUsername(),
                             response.body().getEmail(),
-                            response.body().getPassword());
+                            response.body().getPassword(),
+                            response.body().getDistanceTraveled(),
+                            response.body().getId());
                     callback.onSuccess(appUser);
                 }
+                if (response.code() == 502){
+                    callback.onFailure("This email already exists");
+                }
                 else {
+                    Log.e("HTTP_Response", response.raw().toString());
                     callback.onFailure(response.message());
                 }
             }
@@ -86,7 +96,10 @@ public class AuthManager {
                     AppUser appUser = new AppUser(
                             response.body().getUsername(),
                             response.body().getEmail(),
-                            response.body().getPassword());
+                            response.body().getPassword(),
+                            response.body().getDistanceTraveled(),
+                            response.body().getId());
+                    setGlobalAccount(appUser);
                     appUser.setId(response.body().getId());
                     callback.onSuccess(appUser);
                 }
@@ -191,6 +204,30 @@ public class AuthManager {
         });
     }
 
+    public void updateDistance(Integer id, Long distance, UpdateDistanceCallBack callBack){
+        Call<Integer> call = authService.updateDistance(id, distance);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.code() == 200){
+                    callBack.onSuccess(response.body());
+                }
+                else {
+                    Log.e("__HTTP RESPONSE", response.raw().toString());
+                    callBack.onFailure(response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                callBack.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+    public interface UpdateDistanceCallBack{
+        void onSuccess(Integer id);
+        void onFailure(String errorMessage);
+    }
 
     public  interface GetALLCallBack{
         void onSuccess(List<AppUser> fetchedUsers);

@@ -11,8 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.doan.databinding.AtMainBinding;
 import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
-
-import java.util.NavigableMap;
+//import com.example.doan.map.FragmentMap;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapFragmentInteractionListener {
@@ -23,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements OnMapFragmentInte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = AtMainBinding.inflate(getLayoutInflater());
         EdgeToEdge.enable(this);
         setContentView(binding.getRoot());
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements OnMapFragmentInte
             if (item.getItemId() == R.id.btn_home) {
                 replaceFragment(new FragmentDashboard());
             } else if (item.getItemId() == R.id.btn_map) {
-                replaceFragment(new FragmentMap());
+                replaceFragment(new com.example.doan.FragmentMap());
             } else if (item.getItemId() == R.id.btn_setting) {
                 replaceFragment(new FragmentSetting());
             }

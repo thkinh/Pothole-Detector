@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        app:cardCornerRadius="15dp"
+        app:strokeColor="@color/lightpacificblue"
+        app:strokeWidth="3dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/avatar_notify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_centerVertical="true"
+                app:cardCornerRadius="100dp">
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/img_avatar_notify"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/avt_linhxeom">
+                </com.google.android.material.imageview.ShapeableImageView>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/txt_notify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/avatar_notify"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="20dp"
+                android:text="Thông báo"
+                android:textSize="12sp"
+                android:textColor="@color/black">
+            </TextView>
+
+            <TextView
+                android:id="@+id/txt_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/avatar_notify"
+                android:layout_below="@id/txt_notify"
+                android:layout_alignStart="@id/txt_notify"
+                android:text="Đường Võ Văn Ngân ->"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:textColor="@color/black">
+            </TextView>
+
+            <TextView
+                android:id="@+id/txtname_notify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/avatar_notify"
+                android:layout_marginStart="15dp"
+                android:text="@string/username1"
+                android:textSize="12sp"
+                android:textColor="@color/black">
+            </TextView>
+
+            <TextView
+                android:id="@+id/txt_date_notify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:text="@string/latesttime"
+                android:textStyle="bold"
+                android:textColor="@color/gray">
+            </TextView>
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>

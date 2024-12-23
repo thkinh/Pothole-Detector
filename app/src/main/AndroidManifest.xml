@@ -58,11 +58,13 @@
 
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
             android:name=".SignupActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".DetectActivity"
             android:exported="true">
@@ -74,7 +76,8 @@
             android:exported="true" />
         <activity
             android:name=".RecoverAccount"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".DemoActivity"
             android:exported="true">

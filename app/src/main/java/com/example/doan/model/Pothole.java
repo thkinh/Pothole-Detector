@@ -7,15 +7,29 @@ public class Pothole {
 
 
     private Integer id;
-
-//    private Date dateFound;
+    private String dateFound;
 //    private Time timeFound;
     private String severity;
-
     private Location location;
-
-
     private AppUser appUser;
+    private Integer userId;
+
+    public Pothole(Integer id, String dateFound, String severity, Location location, AppUser appUser, Integer userId) {
+        this.id = id;
+        this.dateFound = dateFound;
+        this.severity = severity;
+        this.location = location;
+        this.appUser = appUser;
+        this.userId = userId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public AppUser getAppUser() {
         return appUser;
@@ -33,14 +47,18 @@ public class Pothole {
         this.id = id;
     }
 
-//    public Date getDateFound() {
-//        return dateFound;
-//    }
+    public String getDateFound() {
+        return dateFound;
+    }
 //
-//    public void setDateFound(Date dateFound) {
-//        this.dateFound = dateFound;
-//    }
-//
+    public void setDateFound(String dateFound) {
+        this.dateFound = dateFound;
+   }
+
+
+
+
+    //
 //    public Time getTimeFound() {
 //        return timeFound;
 //    }

@@ -34,4 +34,8 @@ public interface AuthService{
 
     @POST("user/password/confirm")
     Call<AppUser> confirmPass(@Query("email") String email, @Query("password") String password);
+
+    @POST("user/updateDistance")
+    Call<Integer> updateDistance(@Query("id") Integer id, @Query("distance") Long distance);
+
 }

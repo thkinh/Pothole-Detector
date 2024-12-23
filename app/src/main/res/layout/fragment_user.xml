@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".FragmentUser">
 
-     <ListView
+     <androidx.recyclerview.widget.RecyclerView
          android:id="@+id/listuser"
          android:layout_width="351dp"
          android:layout_height="wrap_content"
@@ -16,6 +16,6 @@
          tools:listitem="@layout/item_user"
          android:dividerHeight="15dp"
          android:divider="@color/transparent">
-     </ListView>
+     </androidx.recyclerview.widget.RecyclerView>
 
 </RelativeLayout>
