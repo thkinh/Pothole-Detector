@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
+//import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class RetrofitInstance {
     private static final String BASE_URL = "http://171.249.144.189:8080/api/";

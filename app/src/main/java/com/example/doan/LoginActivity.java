@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(AppUser user) {
                 // Login successful
                 runOnUiThread(() ->{
-                    Intent intent = new Intent(LoginActivity.this, DemoActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 });
