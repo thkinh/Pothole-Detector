@@ -29,7 +29,8 @@
             android:src="@drawable/ic_notify"
             android:layout_toStartOf="@id/ic_power"
             android:backgroundTint="@color/transparent"
-            android:contentDescription="button to navigate to notify">
+            android:contentDescription="button to navigate to notify"
+            android:id="@+id/ic_notify">
         </ImageButton>
 
         <ImageButton

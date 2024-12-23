@@ -12,6 +12,9 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.doan.api.auth.AuthManager;
+import com.example.doan.model.AppUser;
+
+import java.util.List;
 
 public class OTPActive2 extends AppCompatActivity {
 
@@ -31,6 +34,8 @@ public class OTPActive2 extends AppCompatActivity {
         cofirmButton.setOnClickListener(v -> handleSendOTP());
         authManager = AuthManager.getInstance();
     }
+
+
     private void handleSendOTP() {
         String otp = editTextOTP.getText().toString().trim();
         if (TextUtils.isEmpty(otp)) {

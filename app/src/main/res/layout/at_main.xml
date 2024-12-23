@@ -7,14 +7,6 @@
     android:id="@+id/main"
     tools:context=".MainActivity">
 
-    <RelativeLayout
-        android:id="@+id/mainlayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/bottom_navigation"
-        android:layout_marginTop="36dp"
-        android:background="@color/lightpacificblue">
-    </RelativeLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -29,4 +21,14 @@
         app:itemIconTint="@color/nav_color"
         app:itemTextColor="@color/nav_color">
     </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+    <RelativeLayout
+        android:id="@+id/mainlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navigation"
+        android:layout_marginTop="36dp"
+        android:background="@color/lightpacificblue">
+    </RelativeLayout>
+
 </RelativeLayout>

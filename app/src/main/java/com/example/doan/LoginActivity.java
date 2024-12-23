@@ -4,18 +4,21 @@ package com.example.doan;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.example.doan.api.auth.AuthManager;
+import com.example.doan.feature.UserPreferences;
 import com.example.doan.model.AppUser;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -52,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_loginscreen);
-
+        EdgeToEdge.enable(this);
         // Ánh xạ các view từ layout
         emailEditText = findViewById(R.id.editText_Email_srcLogin);
         passwordEditText = findViewById(R.id.editText_Password_scrLogin);
@@ -100,7 +103,6 @@ public class LoginActivity extends AppCompatActivity {
     private void handleLogin() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
-
         if (TextUtils.isEmpty(email)) {
             emailEditText.setError("Please enter your email");
             return;
@@ -109,26 +111,33 @@ public class LoginActivity extends AppCompatActivity {
             passwordEditText.setError("Please enter your password");
             return;
         }
-
+        runOnUiThread(()->{
+            loginButton.setEnabled(false);
+            loginButton.setText("\uF251");
+        });
         authManager.signIn(email, password, new AuthManager.SignInCallback() {
             @Override
             public void onSuccess(AppUser user) {
                 // Login successful
                 runOnUiThread(() ->{
-                   Toast.makeText(LoginActivity.this, "Welcome "+ user.getUsername(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 });
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
                 //navigateToDashboard();
+                UserPreferences userPreferences = new UserPreferences(LoginActivity.this);
                 authManager.setGlobalAccount(user);
+                userPreferences.saveUser(user);
+                Toast.makeText(LoginActivity.this, "Welcome "+ authManager.getAccount().getUsername(), Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onFailure(String errorMessage) {
                 // Login failed
-                runOnUiThread(() -> Toast.makeText(LoginActivity.this,
-                        errorMessage,
-                        Toast.LENGTH_SHORT).show());
+                runOnUiThread(() ->{
+                    Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    loginButton.setText("Login");
+                    loginButton.setEnabled(true);
+                });
             }
         });
     }
@@ -141,7 +150,6 @@ public class LoginActivity extends AppCompatActivity {
 
     // Initialize sign in intent and then Start activity for result
     private void googlesignIn() {
-
         Intent signInIntent = gsc1.getSignInIntent();
         startActivityForResult(signInIntent, 1000);
     }

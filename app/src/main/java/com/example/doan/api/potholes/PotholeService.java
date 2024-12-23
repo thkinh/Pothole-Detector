@@ -7,6 +7,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -15,7 +16,7 @@ public interface PotholeService {
     Call<List<Pothole>> getPotholes(@Query("user") String username);
 
     @POST("pothole/add")
-    Call<String> addPothole(@Body Pothole pothole);
+    Call<Pothole> addPothole(@Body Pothole pothole);
 
     @GET("pothole/get/ALL")
     Call<List<Pothole>> getALLPotholes();

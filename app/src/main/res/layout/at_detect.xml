@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- Fragment Container -->
     <FrameLayout
         android:id="@+id/topFragmentContainer"
@@ -10,33 +10,58 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true" />
 
+
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/ControlDetect"
         android:layout_below="@id/topFragmentContainer">
 
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
 
-        <ImageButton
-            android:id="@+id/current_location"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentEnd="true"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_margin="10dp"
-            android:layout_marginStart="354dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="7dp"
-            android:background="@null"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_go"
-            android:contentDescription="tim duong di den"/>
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            >
+
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/mylocationNavigationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_location_navigation"
+                android:layout_margin="16dp"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/mylocationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_my_location_button"
+                android:layout_margin="16dp"
+                android:layout_toRightOf="@id/mylocationNavigationButton"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/directionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_direction_map_button"
+                android:layout_margin="16dp"
+
+                android:layout_toRightOf="@id/mylocationButton"/>
+
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_map_start"
+                android:id="@+id/navigationButton"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="16dp"/>
+        </LinearLayout>
 
     </RelativeLayout>
 
@@ -76,6 +101,14 @@
         android:background="@null" />
 
 </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/mainlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/ControlDetect"
+        android:layout_marginTop="36dp"
+        android:background="@color/lightpacificblue">
+    </RelativeLayout>
 
 </RelativeLayout>
 

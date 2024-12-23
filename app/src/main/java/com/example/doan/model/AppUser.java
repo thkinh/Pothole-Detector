@@ -1,6 +1,9 @@
 package com.example.doan.model;
 
+import com.google.gson.annotations.JsonAdapter;
+
 public class AppUser {
+
     private Integer id;
     private String username;
     private String email;
@@ -22,10 +25,10 @@ public class AppUser {
     public Integer getId() {
         return id;
     }
+
     public void setId(Integer id) {
         this.id = id;
     }
-
     public String getUsername() {
         return username;
     }

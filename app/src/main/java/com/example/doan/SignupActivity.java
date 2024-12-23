@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.doan.api.auth.AuthManager;
@@ -29,6 +30,7 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_signupscreen);
+        EdgeToEdge.enable(this);
         // Ánh xạ các view từ layout
         usernameEditText = findViewById(R.id.editText_username_scrSignup);
         emailEditText = findViewById(R.id.editText_Email_scrSignup);
@@ -55,10 +57,13 @@ public class SignupActivity extends AppCompatActivity {
 
         if (ValidateInput(username, email, password, confirmPassword))
         {
+            runOnUiThread(()->{
+                signupButton.setEnabled(false);
+                signupButton.setText("Please wait...");
+            });
             Date date_created = new Date(System.currentTimeMillis());
             AppUser appUser = new AppUser(username, email, password, distancetraveled, id);
             //appUser.setDate_created(date_created);
-
             authManager.signUp(appUser, new AuthManager.SignUpCallback() {
                 @Override
                 public void onSuccess(AppUser user) {
@@ -70,17 +75,16 @@ public class SignupActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onFailure(String errorMessage) {
-                    runOnUiThread(() -> Toast.makeText(SignupActivity.this,
-                            errorMessage,
-                            Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> {
+                        signupButton.setEnabled(true);
+                        signupButton.setText("Sign Up");
+                        Toast.makeText(SignupActivity.this,
+                                errorMessage,
+                                Toast.LENGTH_SHORT).show();
+                    });
                 }
             });
         }
-        else
-        {
-            Toast.makeText(SignupActivity.this, "Something was wrong with the inputs bro!", Toast.LENGTH_SHORT).show();
-        }
-
     }
 
     private boolean ValidateInput(String username, String email, String password, String confirm_pass)
