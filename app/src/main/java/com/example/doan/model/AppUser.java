@@ -9,16 +9,15 @@ public class AppUser {
     private String email;
     private String password;
     private String date_created;
-    private Integer distanceTraveled;
+    private Long distanceTraveled;
 
     public AppUser(){}
 
-    public AppUser(String username, String email, String password, Integer distanceTraveled, Integer id){
+    public AppUser(String username, String email, String password, Long distanceTraveled){
         this.username = username;
         this.email =email;
         this.password = password;
         this.distanceTraveled = distanceTraveled;
-        this.id = id;
     }
 
     // Getters and Setters...
@@ -54,11 +53,11 @@ public class AppUser {
         return date_created;
     }
 
-    public Integer getDistanceTraveled() {
+    public Long getDistanceTraveled() {
         return distanceTraveled;
     }
 
-    public void setDistanceTraveled(Integer distanceTraveled) {
+    public void setDistanceTraveled(Long distanceTraveled) {
         this.distanceTraveled = distanceTraveled;
     }
 //    public void setDate_created(Date date_created) {
