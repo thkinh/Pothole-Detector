@@ -30,6 +30,7 @@ public class DetectActivity extends AppCompatActivity
     boolean isDetecting ;
     private SensorManager sensorManager;
     private Sensor accelerometer;
+    private FragmentManager fragmentManager;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -73,6 +74,15 @@ public class DetectActivity extends AppCompatActivity
             transaction.addToBackStack(null);
             transaction.commit();
         });
+        AddFragmentMap();
+    }
+
+
+    public void AddFragmentMap(){
+        fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.mainlayout,new FragmentMap());
+        fragmentTransaction.commit();
     }
 
     private void StartDetect(){
