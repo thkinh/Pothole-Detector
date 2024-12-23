@@ -1,4 +1,4 @@
-package com.example.doan;
+package com.example.doan.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,10 +11,8 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.doan.R;
 import com.example.doan.api.auth.AuthManager;
-import com.example.doan.model.AppUser;
-
-import java.util.List;
 
 public class OTPActive2 extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.doan;
+package com.example.doan.dashboard;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.doan.FragmentSetting;
+import com.example.doan.R;
 import com.example.doan.databinding.AtMainBinding;
 import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
 //import com.example.doan.map.FragmentMap;

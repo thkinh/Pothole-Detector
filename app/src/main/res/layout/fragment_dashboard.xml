@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:background="@color/lightpacificblue"
-    tools:context=".FragmentDashboard">
+    tools:context=".dashboard.FragmentDashboard">
 
     <RelativeLayout
         android:id="@+id/title"

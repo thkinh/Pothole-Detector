@@ -1,4 +1,4 @@
-package com.example.doan;
+package com.example.doan.dashboard;
 
 public class ListDataUser {
     String name, date;

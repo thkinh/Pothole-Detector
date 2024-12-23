@@ -1,4 +1,4 @@
-package com.example.doan;
+package com.example.doan.dashboard;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -14,6 +14,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.doan.R;
 import com.example.doan.adapter.UserDetailAdapter;
 import com.example.doan.model.UserDetail;
 import org.json.JSONArray;
