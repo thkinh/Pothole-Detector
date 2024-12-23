@@ -1,4 +1,4 @@
-package com.example.doan;
+package com.example.doan.map;
 
 
 import static com.mapbox.core.constants.Constants.PRECISION_6;
@@ -10,17 +10,14 @@ import static com.mapbox.navigation.base.extensions.RouteOptionsExtensions.apply
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,24 +25,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.doan.R;
 import com.example.doan.api.potholes.PotholeManager;
-import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
-import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -63,11 +57,8 @@ import com.mapbox.api.directions.v5.MapboxDirections;
 
 import com.mapbox.api.directions.v5.models.Bearing;
 import com.mapbox.api.directions.v5.models.VoiceInstructions;
-import com.mapbox.api.geocoding.v5.models.CarmenContext;
 import com.mapbox.bindgen.Expected;
 import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.FeatureCollection;
-import com.mapbox.geojson.GeoJson;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 
@@ -76,26 +67,13 @@ import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.api.directions.v5.models.RouteOptions;
 
-import com.mapbox.geojson.Point;
-import com.mapbox.geojson.MultiPoint;
-import com.mapbox.geojson.LineString;
-import com.mapbox.geojson.MultiLineString;
-import com.mapbox.geojson.Polygon;
-import com.mapbox.geojson.MultiPolygon;
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.FeatureCollection;
-
-import com.mapbox.geojson.utils.PolylineUtils;
 import com.mapbox.maps.CameraOptions;
 import com.mapbox.maps.EdgeInsets;
 import com.mapbox.maps.MapView;
-import com.mapbox.maps.MapboxMap;
 import com.mapbox.maps.Style;
-import com.mapbox.maps.extension.style.layers.Layer;
+import com.mapbox.maps.ViewAnnotationOptions;
 import com.mapbox.maps.extension.style.layers.LayerUtils;
-import com.mapbox.maps.extension.style.layers.generated.CircleLayer;
 import com.mapbox.maps.extension.style.layers.generated.LineLayer;
-import com.mapbox.maps.extension.style.layers.generated.SymbolLayer;
 import com.mapbox.maps.extension.style.layers.properties.generated.TextAnchor;
 import com.mapbox.maps.extension.style.sources.SourceUtils;
 import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource;
@@ -103,6 +81,8 @@ import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource;
 import com.mapbox.maps.plugin.animation.MapAnimationOptions;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
 import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
+import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener;
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotation;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
@@ -112,13 +92,11 @@ import com.mapbox.maps.plugin.locationcomponent.LocationComponentConstants;
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin;
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener;
 import com.mapbox.maps.plugin.locationcomponent.generated.LocationComponentSettings;
-import com.mapbox.maps.plugin.locationcomponent.utils.BitmapUtils;
 import com.mapbox.maps.viewannotation.ViewAnnotationManager;
 import com.mapbox.navigation.base.formatter.DistanceFormatterOptions;
 import com.mapbox.navigation.base.options.NavigationOptions;
 import com.mapbox.navigation.base.route.NavigationRoute;
 import com.mapbox.navigation.base.route.NavigationRouterCallback;
-import com.mapbox.navigation.base.route.RouterCallback;
 import com.mapbox.navigation.base.route.RouterFailure;
 import com.mapbox.navigation.base.route.RouterOrigin;
 import com.mapbox.navigation.base.trip.model.RouteProgress;
@@ -159,14 +137,15 @@ import com.mapbox.search.autocomplete.PlaceAutocompleteSuggestion;
 import com.mapbox.search.ui.adapter.autocomplete.PlaceAutocompleteUiAdapter;
 import com.mapbox.search.ui.view.CommonSearchViewConfiguration;
 import com.mapbox.search.ui.view.SearchResultsView;
-import com.mapbox.turf.TurfClassification;
-import com.mapbox.turf.TurfMisc;
+import com.mapbox.turf.TurfConstants;
+import com.mapbox.turf.TurfMeasurement;
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import kotlin.Unit;
@@ -220,11 +199,11 @@ public class FragmentMap extends Fragment
 
 
     // Hàm kiểm tra điểm có nằm trên LineString hay không
-    public static boolean booleanPointOnLine(Point point, LineString lineString) {
+    public static boolean booleanPointOnLine(Point point, List<Point> line) {
         // Duyệt qua tất cả các đoạn tuyến trong LineString
-        for (int i = 0; i < lineString.coordinates().size() - 1; i++) {
-            Point start = lineString.coordinates().get(i);
-            Point end = lineString.coordinates().get(i + 1);
+        for (int i = 0; i < line.size() - 1; i++) {
+            Point start = line.get(i);
+            Point end = line.get(i + 1);
 
             // Kiểm tra khoảng cách từ điểm tới đoạn thẳng (tính bằng độ dài khoảng cách)
             if (isPointOnSegment(point, start, end)) {
@@ -415,7 +394,7 @@ public class FragmentMap extends Fragment
                 navigationButton.setOnClickListener(view->{
                     searchETLayout.setVisibility(View.GONE);
                     directionButton.hide();
-                    setclickNavigationOnMap(placeAutocompleteSuggestion.getCoordinate());
+                    setNavigationOnMap(placeAutocompleteSuggestion.getCoordinate());
                 });
                 Toast.makeText(getContext(), String.format("Show layout search 2 point", placeAutocompleteSuggestion.getCoordinate()), Toast.LENGTH_SHORT).show();
 
@@ -542,7 +521,7 @@ public class FragmentMap extends Fragment
                 navigationButton.setOnClickListener(view->{
                     searchETLayout.setVisibility(View.GONE);
                     directionButton.hide();
-                    setclickNavigationOnMap(placeAutocompleteSuggestion.getCoordinate());
+                    setNavigationOnMap(placeAutocompleteSuggestion.getCoordinate());
                 });
 
                 if (FirstSearchOrigin==true){
@@ -580,16 +559,13 @@ public class FragmentMap extends Fragment
 
 
     //Tạo các điểm pothole cố định trên map
-    private void createPointPothole(){
+    private void createPointPothole(PointAnnotationManager pointAnnotationManager) {
 
-//        potholeList = new ArrayList<>();
-        AppUser appUser = new AppUser();
-        appUser.setUsername("thinh1");
         PotholeManager potholeManager= PotholeManager.getInstance();
-        potholeManager.getPotholes(appUser, new PotholeManager.GetPotholeCallBack() {
+        potholeManager.getALLPotholes(new PotholeManager.GetPotholeCallBack() {
             @Override
             public void onSuccess(List<Pothole> potholes) {
-                addPotholeToMap(potholes);
+                addPotholeToMap(potholes,pointAnnotationManager);
             }
 
             @Override
@@ -601,8 +577,10 @@ public class FragmentMap extends Fragment
     List<Pothole> potholesList;
     private PointAnnotationManager pointPotholeAnnotationManager ;
     //Quản lí các điểm pothole trên map
-    public void addPotholeToMap(List<Pothole> potholeList){
+    public void addPotholeToMap(List<Pothole> potholeList,PointAnnotationManager pointAnnotationManager){
         potholesList= potholeList;
+        ViewAnnotationManager viewAnnotationManager = mapView.getViewAnnotationManager();
+
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_pothole_waning_map);
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
         AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
@@ -615,6 +593,19 @@ public class FragmentMap extends Fragment
                     .withPoint(Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude()));
             pointPotholeAnnotationManager.create(pointAnnotationOptions);
         }
+
+        pointPotholeAnnotationManager.addClickListener(new OnPointAnnotationClickListener() {
+            @Override
+            public boolean onAnnotationClick(@NonNull PointAnnotation pointAnnotation) {
+                pointAnnotationManager.deleteAll();
+                double latitude = pointAnnotation.getPoint().latitude();
+                double longitude = pointAnnotation.getPoint().longitude();
+                String message = "Clicked at: Latitude = " + latitude + ", Longitude = " + longitude;
+                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
     }
 
     private void setclickOnMap(PointAnnotationManager pointAnnotationManager,Bitmap resizedBitmap){
@@ -666,7 +657,7 @@ public class FragmentMap extends Fragment
             navigationButton.setOnClickListener(navigation->{
                 searchETLayout.setVisibility(View.GONE);
                 directionButton.hide();
-                setclickNavigationOnMap(pointDestination);
+                setNavigationOnMap(pointDestination);
             });
             directionButton.setOnClickListener(direction->{
                 getDirectionWithMyLocationPoint(pointDestination);
@@ -685,8 +676,6 @@ public class FragmentMap extends Fragment
 
             });
 
-
-
             return false;
         });
     }
@@ -704,10 +693,10 @@ public class FragmentMap extends Fragment
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(getActivity());
         }
-        createPointPothole();
     }
 
 
+    TextView warningText;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -732,6 +721,7 @@ public class FragmentMap extends Fragment
         searchDestinationET=view.findViewById(R.id.searchDestinationET);
         findRouteButton = view.findViewById(R.id.findRouteButton);
         layoutStartDestination=view.findViewById(R.id.searchStartETandDestination);
+        warningText=view.findViewById(R.id.distancePothole);
         return view;
     }
 
@@ -759,7 +749,7 @@ public class FragmentMap extends Fragment
             @Override
             public void onStyleLoaded(@NonNull Style style) {
 
-                createPointPothole();
+                createPointPothole(pointAnnotationManager);
 
                 setMylocationButton();
 
@@ -845,6 +835,7 @@ public class FragmentMap extends Fragment
 
             }
         });
+        createPointPothole(pointAnnotationManager);
 
     }
 
@@ -894,13 +885,10 @@ public class FragmentMap extends Fragment
                 DirectionsResponse directionsResponse = response.body();
                 DirectionsRoute currentRoute = directionsResponse.routes().get(0);
 
-                LineString lineString = LineString.fromPolyline(currentRoute.geometry(),PRECISION_6);
+                lineString = LineString.fromPolyline(currentRoute.geometry(),PRECISION_6);
 
-                //Các điểm hình thành lên linestring
-                List<Point> pointList = lineString.coordinates();
                 Feature routeFeature = Feature.fromGeometry(lineString);
                 // Make a toast which displays the route's distance
-
 
                 Toast.makeText(getContext(), String.format("Route distance: %.2f meters", currentRoute.distance()), Toast.LENGTH_SHORT).show();
                 mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS,style -> {
@@ -940,6 +928,18 @@ public class FragmentMap extends Fragment
         getCamera(mapView).easeTo(cameraOptions, animationOptions);
     }
 
+
+    private void updateCameraNavigation(Point point, Double bearing) {
+        MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
+        CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(15.0).bearing(bearing).pitch(90.0)
+                .padding(new EdgeInsets(1000.0, 0.0, 0.0, 0.0)).build();
+
+        getCamera(mapView).easeTo(cameraOptions, animationOptions);
+    }
+
+
+    LineString lineString;
+    Location myLocationNavigation;
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
         public void onNewRawLocation(@NonNull Location location) {
@@ -949,10 +949,11 @@ public class FragmentMap extends Fragment
         @Override
         public void onNewLocationMatcherResult(@NonNull LocationMatcherResult locationMatcherResult) {
             Location location = locationMatcherResult.getEnhancedLocation();
-//            navigationLocationProvider.changePosition(location, locationMatcherResult.getKeyPoints(), null, null);
+            navigationLocationProvider.changePosition(location, locationMatcherResult.getKeyPoints(), null, null);
             if (focusLocationNavigationMode) {
                 updateCamera(Point.fromLngLat(location.getLongitude(), location.getLatitude()), (double) location.getBearing());
             }
+            myLocationNavigation=location;
         }
     };
     private final RoutesObserver routesObserver = new RoutesObserver() {
@@ -967,8 +968,46 @@ public class FragmentMap extends Fragment
                     }
                 }
             });
+//            Toast.makeText(getContext(), "Start logic warning", Toast.LENGTH_SHORT).show();
+//
+//            Point pointMyLocationNavigation = Point.fromLngLat(myLocationNavigation.getLongitude(),myLocationNavigation.getLatitude());
+//
+//            List<NavigationRoute> navigationRouteList = routesUpdatedResult.getNavigationRoutes();
+//            NavigationRoute navigationRoute = navigationRouteList.get(navigationRouteList.size());
+//
+//            //Tọa độ các điểm trên đường route được cập nhập liên tục
+//            List<Point> lineNavigation = navigationRoute.getDirectionsRoute().routeOptions().coordinatesList();
+//            Map<Point,Double> potholeOnNavigation=findPotholeOnLineNavigationAnDistance(lineNavigation,pointMyLocationNavigation);
+//
+//            Point nearestPothole = null;
+//            double minDistance = Double.MAX_VALUE;
+//            // Duyệt qua các potholes và tìm pothole gần nhất
+//            for (Map.Entry<Point, Double> entry : potholeOnNavigation.entrySet()) {
+//                double distance = entry.getValue();
+//                if (distance < minDistance) {
+//                    minDistance = distance;
+//                    nearestPothole = entry.getKey();
+//                }
+//            }
+//            minDistance= Math.round(minDistance * 100.0) / 100.0;
+//            Toast.makeText(getContext(), "Set warning", Toast.LENGTH_SHORT).show();
+//            warningText.setText(String.format("%.2f", minDistance));
         }
+
     };
+
+    //Tim các điểm pothole nằm trên tuyền đường này
+    private Map<Point,Double> findPotholeOnLineNavigationAnDistance(List<Point> lineNavigation,Point pointMyLocationNavigation){
+        Map<Point, Double> pointDistanceMap = new HashMap<>();
+        for (Pothole pothole : potholesList){
+            Point point=Point.fromLngLat(pothole.getLocation().getLongitude(),pothole.getLocation().getLatitude());
+            if(booleanPointOnLine(point,lineNavigation)){
+                double distance = TurfMeasurement.distance(pointMyLocationNavigation, point, TurfConstants.UNIT_METERS);
+                pointDistanceMap.put(point,distance);
+            };
+        }
+        return pointDistanceMap;
+    }
 
 
     private final OnMoveListener onMoveListenerNavigation = new OnMoveListener() {
@@ -1075,10 +1114,17 @@ public class FragmentMap extends Fragment
         }
     };
 
-    public void setclickNavigationOnMap(Point destination){
+    public void setNavigationOnMap(Point destination){
 
         layoutStartDestination.setVisibility(View.GONE);
 
+        //không cho phép nhấp chuột vào map khi chuyển sang navigation
+        addOnMapClickListener(mapView.getMapboxMap(), new OnMapClickListener() {
+            @Override
+            public boolean onMapClick(@NonNull Point point) {
+                return false;
+            }
+        });
         navigationButton.hide();
         mylocationButton.hide();
 //            directionButton.hide();
@@ -1108,8 +1154,8 @@ public class FragmentMap extends Fragment
             mapboxNavigation.onDestroy();
             mapboxNavigation.unregisterRoutesObserver(routesObserver);
             mapboxNavigation.unregisterLocationObserver(locationObserver);
-
-
+            updateCameraNavigation(Point.fromLngLat(myLocationNavigation.getLongitude(), myLocationNavigation.getLatitude()),(double) myLocationNavigation.getBearing());
+            endTrip();
         });
 
         soundButton.unmute();
@@ -1172,6 +1218,14 @@ public class FragmentMap extends Fragment
         });
     }
 
+    private void endTrip(){
+        cardViewWarning.setVisibility(View.GONE);
+        cardViewTrip.setVisibility(View.GONE);
+        searchET.setVisibility(View.VISIBLE);
+        soundButton.setVisibility(View.GONE);
+        maneuverView.setVisibility(View.GONE);
+    }
+
     @SuppressLint("MissingPermission")
     private void navigationRoute(Point point) {
 
@@ -1190,31 +1244,16 @@ public class FragmentMap extends Fragment
 
                 mapboxNavigation.requestRoutes(builder.build(), new NavigationRouterCallback() {
                     @Override
-                    public void onRoutesReady(@NonNull List<NavigationRoute> list, @NonNull RouterOrigin routerOrigin) {
+                    public void onRoutesReady(@NonNull List<NavigationRoute> route, @NonNull RouterOrigin routerOrigin) {
                         cardViewWarning.setVisibility(View.VISIBLE);
                         cardViewTrip.setVisibility(View.VISIBLE);
                         soundButton.setVisibility(View.VISIBLE);
                         Toast.makeText(getContext(), "navigationRoute", Toast.LENGTH_SHORT).show();
-                        RouterCallback navigationRouterCallback= new RouterCallback() {
 
-                            @Override
-                            public void onFailure(@NonNull List<RouterFailure> list, @NonNull RouteOptions routeOptions) {
-
-                            }
-
-                            @Override
-                            public void onRoutesReady(@NonNull List<? extends DirectionsRoute> list, @NonNull RouterOrigin routerOrigin) {
-                                Toast.makeText(getContext(), "navigationRoute", Toast.LENGTH_SHORT).show();
-
-                            }
-
-                            @Override
-                            public void onCanceled(@NonNull RouteOptions routeOptions, @NonNull RouterOrigin routerOrigin) {
-
-                            }
-                        };
-                        mapboxNavigation.setNavigationRoutes(list);
+                        mapboxNavigation.setNavigationRoutes(route);
                         mylocationNavigationButton.performClick();
+
+
                     }
                     @Override
                     public void onFailure(@NonNull List<RouterFailure> list, @NonNull RouteOptions routeOptions) {

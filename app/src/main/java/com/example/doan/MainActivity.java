@@ -11,8 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.doan.databinding.AtMainBinding;
 import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
-
-import java.util.NavigableMap;
+import com.example.doan.map.FragmentMap;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapFragmentInteractionListener {

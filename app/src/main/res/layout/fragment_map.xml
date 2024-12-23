@@ -15,6 +15,7 @@
 
         </com.mapbox.maps.MapView>
 
+
     <androidx.cardview.widget.CardView
         android:id="@+id/NotificationWarning"
         android:layout_width="match_parent"
@@ -41,7 +42,7 @@
                 android:id="@+id/distancePothole"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="500m"
+                android:text="Trống"
                 android:textSize="25dp"
                 android:layout_marginStart="10dp"
                 android:textColor="@android:color/white"
