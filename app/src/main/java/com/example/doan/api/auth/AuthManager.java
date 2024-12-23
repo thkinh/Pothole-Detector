@@ -197,6 +197,30 @@ public class AuthManager {
         });
     }
 
+    public void updateDistance(Integer id, Long distance, UpdateDistanceCallBack callBack){
+        Call<Integer> call = authService.updateDistance(id, distance);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.code() == 200){
+                    callBack.onSuccess(response.body());
+                }
+                else {
+                    Log.e("__HTTP RESPONSE", response.raw().toString());
+                    callBack.onFailure(response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                callBack.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+    public interface UpdateDistanceCallBack{
+        void onSuccess(Integer id);
+        void onFailure(String errorMessage);
+    }
 
     public  interface GetALLCallBack{
         void onSuccess(List<AppUser> fetchedUsers);
