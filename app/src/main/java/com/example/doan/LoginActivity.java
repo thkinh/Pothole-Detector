@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                 runOnUiThread(() ->{
                    Toast.makeText(LoginActivity.this, "Welcome "+ user.getUsername(), Toast.LENGTH_SHORT).show();
                 });
-                Intent intent = new Intent(LoginActivity.this, DemoActivity.class);
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 //navigateToDashboard();

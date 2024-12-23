@@ -50,11 +50,13 @@ public class SignupActivity extends AppCompatActivity {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         String confirmPassword = confirmPasswordEditText.getText().toString().trim();
+        Integer distancetraveled = 0;
+        Integer id = 0;
 
         if (ValidateInput(username, email, password, confirmPassword))
         {
             Date date_created = new Date(System.currentTimeMillis());
-            AppUser appUser = new AppUser(username, email, password);
+            AppUser appUser = new AppUser(username, email, password, distancetraveled, id);
             //appUser.setDate_created(date_created);
 
             authManager.signUp(appUser, new AuthManager.SignUpCallback() {
