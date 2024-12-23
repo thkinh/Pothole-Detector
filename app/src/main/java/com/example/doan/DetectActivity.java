@@ -15,8 +15,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.example.doan.api.auth.AuthManager;
 import com.example.doan.feature.DetectEngine;
-import com.example.doan.map.FragmentMap;
+//import com.example.doan.map.FragmentMap;
 import com.example.doan.model.Pothole;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
@@ -112,7 +114,7 @@ public class DetectActivity extends AppCompatActivity
             @Override
             public void onSuccess(LocationEngineResult result) {
                 Location location = result.getLastLocation();
-                Pothole pothole = new Pothole();
+                Pothole pothole = new Pothole(0, "Normal", "None", new Pothole.Location(), AuthManager.getInstance().getAccount(), 0);
 
                 Pothole.Location location1 = new Pothole.Location();
                 location1.setLatitude(location.getLatitude());
