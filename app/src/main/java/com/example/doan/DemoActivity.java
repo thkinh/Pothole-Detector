@@ -15,6 +15,8 @@ import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
 
@@ -44,6 +46,13 @@ public class DemoActivity extends AppCompatActivity {
 
         potholeManager = PotholeManager.getInstance();
 
+        AppUser user = new AppUser();
+        user.setId(109);
+        user.setUsername("thinh7");
+        user.setEmail("22521403@gm.uit.edu.vn");
+        user.setPassword("123456");
+
+        AuthManager.getInstance().setGlobalAccount(user);
     }
 
     private void handle_addDistance(){
@@ -111,11 +120,18 @@ public class DemoActivity extends AppCompatActivity {
 
     @NonNull
     private Pothole createPothole() {
-        Date date = new Date(Calendar.getInstance().getTime().getTime());
-        Pothole pothole = new Pothole(0,date, "None", new Pothole.Location(), AuthManager.getInstance().getAccount(), 0);
         AppUser currentUser = AuthManager.getInstance().getAccount();
-        pothole.setAppUser(AuthManager.getInstance().getAccount());
+        Calendar calendar = Calendar.getInstance();
+
+        java.util.Date utilDate = calendar.getTime();
+        Date sqlDate = new Date(utilDate.getTime());
+        Time sqlTime = new Time(utilDate.getTime());
+
+        Log.d("__Date:",sqlDate.toString());
+        Log.d("__Time:",sqlTime.toString());
+        Pothole pothole = new Pothole(sqlDate, "None", new Pothole.Location(), currentUser, 0);
         pothole.setAppUser(currentUser);
+        pothole.setTimeFound(sqlTime.toString());
         pothole.setSeverity("Normal");
         Pothole.Location location = new Pothole.Location();
         location.setLatitude(0.0);

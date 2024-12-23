@@ -2,13 +2,15 @@ package com.example.doan.model;
 
 import com.google.gson.annotations.JsonAdapter;
 
+import java.sql.Date;
+
 public class AppUser {
 
     private Integer id;
     private String username;
     private String email;
     private String password;
-    private String date_created;
+    private Date date_created;
     private Long distanceTraveled;
 
     public AppUser(){}
@@ -49,7 +51,7 @@ public class AppUser {
         this.password = password;
     }
 
-    public String getDate_created() {
+    public Date getDate_created() {
         return date_created;
     }
 
@@ -60,8 +62,8 @@ public class AppUser {
     public void setDistanceTraveled(Long distanceTraveled) {
         this.distanceTraveled = distanceTraveled;
     }
-//    public void setDate_created(Date date_created) {
-//        this.date_created = date_created;
-//    }
+    public void setDate_created(Date date_created) {
+        this.date_created = date_created;
+    }
 
 }

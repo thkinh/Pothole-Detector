@@ -267,10 +267,10 @@ private void fetchPotholeData(BarChart graph, PieChart pieChart) {
     private void updateGraphView(BarChart graph, List<Pothole> potholes) {
         Map<String, Integer> potholeCountByDate = new HashMap<>();
         for (Pothole pothole : potholes) {
-            String dateFound = pothole.getDateFound();
-            if (dateFound != null) {
-                potholeCountByDate.put(dateFound, potholeCountByDate.getOrDefault(dateFound, 0) + 1);
-            }
+//            String dateFound = pothole.getDateFound();
+//            if (dateFound != null) {
+//                potholeCountByDate.put(dateFound, potholeCountByDate.getOrDefault(dateFound, 0) + 1);
+//            }
         }
 
         List<BarEntry> entries = new ArrayList<>();
