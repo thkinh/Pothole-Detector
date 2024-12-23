@@ -118,6 +118,7 @@ import com.mapbox.navigation.base.formatter.DistanceFormatterOptions;
 import com.mapbox.navigation.base.options.NavigationOptions;
 import com.mapbox.navigation.base.route.NavigationRoute;
 import com.mapbox.navigation.base.route.NavigationRouterCallback;
+import com.mapbox.navigation.base.route.RouterCallback;
 import com.mapbox.navigation.base.route.RouterFailure;
 import com.mapbox.navigation.base.route.RouterOrigin;
 import com.mapbox.navigation.base.trip.model.RouteProgress;
@@ -206,7 +207,8 @@ public class FragmentMap extends Fragment
 
 
     private MapboxManeuverView maneuverView;
-    private CardView cardView;
+    private CardView cardViewTrip;
+    private CardView cardViewWarning;
     private ImageView imageView;
 
     private LinearLayout layoutStartDestination;
@@ -703,13 +705,6 @@ public class FragmentMap extends Fragment
             permissionsManager.requestLocationPermissions(getActivity());
         }
         createPointPothole();
-        Runnable runnable = new Runnable(){
-            public void run() {
-                //some code here
-            }
-        };
-        Thread thread = new Thread(runnable);
-        thread.start();
     }
 
 
@@ -727,7 +722,8 @@ public class FragmentMap extends Fragment
         searchETLayout = (TextInputLayout) view.findViewById(R.id.searchLayout);
         searchResultsView = (SearchResultsView) view.findViewById(R.id.search_results_view);
         searchResultsViewDestination = (SearchResultsView) view.findViewById(R.id.search_results_view);
-        cardView = view.findViewById(R.id.tripProgressCard);
+        cardViewTrip = view.findViewById(R.id.tripProgressCard);
+        cardViewWarning = view.findViewById(R.id.NotificationWarning);
         imageView = view.findViewById(R.id.stop);
         maneuverView = view.findViewById(R.id.maneuverView);
         directionButton = view.findViewById(R.id.directionButton);
@@ -1069,7 +1065,8 @@ public class FragmentMap extends Fragment
                 @Override
                 public Object invoke(@NonNull List<Maneuver> input) {
                     maneuverView.setVisibility(View.VISIBLE);
-                    cardView.setVisibility(View.VISIBLE);
+                    cardViewTrip.setVisibility(View.VISIBLE);
+
                     maneuverView.renderManeuvers(maneuverApi.getManeuvers(routeProgress));
                     return new Object();
                 }
@@ -1079,9 +1076,9 @@ public class FragmentMap extends Fragment
     };
 
     public void setclickNavigationOnMap(Point destination){
-        cardView.setVisibility(View.VISIBLE);
+
         layoutStartDestination.setVisibility(View.GONE);
-        soundButton.setVisibility(View.VISIBLE);
+
         navigationButton.hide();
         mylocationButton.hide();
 //            directionButton.hide();
@@ -1115,7 +1112,6 @@ public class FragmentMap extends Fragment
 
         });
 
-        soundButton.setVisibility(View.VISIBLE);
         soundButton.unmute();
         soundButton.setOnClickListener(view -> {
             isVoiceInstructionsMuted = !isVoiceInstructionsMuted;
@@ -1178,6 +1174,7 @@ public class FragmentMap extends Fragment
 
     @SuppressLint("MissingPermission")
     private void navigationRoute(Point point) {
+
         LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(getContext());
         locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
             @Override
@@ -1194,13 +1191,35 @@ public class FragmentMap extends Fragment
                 mapboxNavigation.requestRoutes(builder.build(), new NavigationRouterCallback() {
                     @Override
                     public void onRoutesReady(@NonNull List<NavigationRoute> list, @NonNull RouterOrigin routerOrigin) {
+                        cardViewWarning.setVisibility(View.VISIBLE);
+                        cardViewTrip.setVisibility(View.VISIBLE);
+                        soundButton.setVisibility(View.VISIBLE);
+                        Toast.makeText(getContext(), "navigationRoute", Toast.LENGTH_SHORT).show();
+                        RouterCallback navigationRouterCallback= new RouterCallback() {
+
+                            @Override
+                            public void onFailure(@NonNull List<RouterFailure> list, @NonNull RouteOptions routeOptions) {
+
+                            }
+
+                            @Override
+                            public void onRoutesReady(@NonNull List<? extends DirectionsRoute> list, @NonNull RouterOrigin routerOrigin) {
+                                Toast.makeText(getContext(), "navigationRoute", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            @Override
+                            public void onCanceled(@NonNull RouteOptions routeOptions, @NonNull RouterOrigin routerOrigin) {
+
+                            }
+                        };
                         mapboxNavigation.setNavigationRoutes(list);
                         mylocationNavigationButton.performClick();
                     }
                     @Override
                     public void onFailure(@NonNull List<RouterFailure> list, @NonNull RouteOptions routeOptions) {
                         Toast.makeText(getContext(), "Route request failed", Toast.LENGTH_SHORT).show();
-                    }
+                    };
                     @Override
                     public void onCanceled(@NonNull RouteOptions routeOptions, @NonNull RouterOrigin routerOrigin) {
 

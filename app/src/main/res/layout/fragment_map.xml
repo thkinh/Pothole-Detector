@@ -206,14 +206,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/maneuverView"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/search_results_view"/>
+        android:layout_below="@id/NotificationWarning"/>
 
 
     <androidx.cardview.widget.CardView
         android:id="@+id/tripProgressCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:cardElevation="8dp"
         app:cardUseCompatPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
