@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         runOnUiThread(()->{
             loginButton.setEnabled(false);
-            loginButton.setText("\uF251");
+            loginButton.setText("Please wait...");
         });
         authManager.signIn(email, password, new AuthManager.SignInCallback() {
             @Override

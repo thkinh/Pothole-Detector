@@ -1,4 +1,4 @@
-package com.example.doan;
+package com.example.doan.map;
 
 
 import static com.mapbox.core.constants.Constants.PRECISION_6;
@@ -42,6 +42,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.doan.R;
 import com.example.doan.api.auth.AuthManager;
 import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;

@@ -5,17 +5,17 @@ import java.sql.Time;
 
 public class Pothole {
 
-
     private Integer id;
-    private String dateFound;
-//    private Time timeFound;
+    private Date dateFound;
+    private String timeFound;
     private String severity;
     private Location location;
     private AppUser appUser;
     private Integer userId;
 
-    public Pothole(Integer id, String dateFound, String severity, Location location, AppUser appUser, Integer userId) {
-        this.id = id;
+    public Pothole() {};
+
+    public Pothole( Date dateFound, String severity, Location location, AppUser appUser, Integer userId) {
         this.dateFound = dateFound;
         this.severity = severity;
         this.location = location;
@@ -47,25 +47,21 @@ public class Pothole {
         this.id = id;
     }
 
-    public String getDateFound() {
+    public Date getDateFound() {
         return dateFound;
     }
-//
-    public void setDateFound(String dateFound) {
+
+    public void setDateFound(Date dateFound) {
         this.dateFound = dateFound;
    }
 
+    public String getTimeFound() {
+        return timeFound;
+    }
 
-
-
-    //
-//    public Time getTimeFound() {
-//        return timeFound;
-//    }
-//
-//    public void setTimeFound(Time timeFound) {
-//        this.timeFound = timeFound;
-//    }
+    public void setTimeFound(String timeFound) {
+        this.timeFound = timeFound;
+    }
 
     public String getSeverity() {
         return severity;

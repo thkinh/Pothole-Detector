@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.doan.api.auth.AuthManager;
@@ -13,6 +14,10 @@ import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;
 
+import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.List;
 
 public class DemoActivity extends AppCompatActivity {
@@ -41,6 +46,13 @@ public class DemoActivity extends AppCompatActivity {
 
         potholeManager = PotholeManager.getInstance();
 
+        AppUser user = new AppUser();
+        user.setId(109);
+        user.setUsername("thinh7");
+        user.setEmail("22521403@gm.uit.edu.vn");
+        user.setPassword("123456");
+
+        AuthManager.getInstance().setGlobalAccount(user);
     }
 
     private void handle_addDistance(){
@@ -88,18 +100,7 @@ public class DemoActivity extends AppCompatActivity {
     }
 
     private void handleAdd(){
-        Pothole pothole = new Pothole(0, "Normal", "None", new Pothole.Location(), AuthManager.getInstance().getAccount(), 0);
-        AppUser currentUser = AuthManager.getInstance().getAccount();
-        pothole.setAppUser(AuthManager.getInstance().getAccount());
-        pothole.setAppUser(currentUser);
-        pothole.setSeverity("Normal");
-
-
-        Pothole.Location location = new Pothole.Location();
-        location.setLatitude(0.0);  location.setLongitude(0.0);
-        location.setCity("None");   location.setCountry("None");
-        pothole.setLocation(location);
-
+        Pothole pothole = createPothole();
         potholeManager.addPothole(pothole, new PotholeManager.AddPotholeCallBack() {
             @Override
             public void onSuccess(Pothole message) {
@@ -115,6 +116,30 @@ public class DemoActivity extends AppCompatActivity {
                 Log.e("FAILED: ", errorMessage);
             }
         });
+    }
+
+    @NonNull
+    private Pothole createPothole() {
+        AppUser currentUser = AuthManager.getInstance().getAccount();
+        Calendar calendar = Calendar.getInstance();
+
+        java.util.Date utilDate = calendar.getTime();
+        Date sqlDate = new Date(utilDate.getTime());
+        Time sqlTime = new Time(utilDate.getTime());
+
+        Log.d("__Date:",sqlDate.toString());
+        Log.d("__Time:",sqlTime.toString());
+        Pothole pothole = new Pothole(sqlDate, "None", new Pothole.Location(), currentUser, 0);
+        pothole.setAppUser(currentUser);
+        pothole.setTimeFound(sqlTime.toString());
+        pothole.setSeverity("Normal");
+        Pothole.Location location = new Pothole.Location();
+        location.setLatitude(0.0);
+        location.setLongitude(0.0);
+        location.setCity("None");
+        location.setCountry("None");
+        pothole.setLocation(location);
+        return pothole;
     }
 
     private void handle_getALL(){

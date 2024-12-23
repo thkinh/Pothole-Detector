@@ -16,10 +16,13 @@ import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
+import com.mapbox.maps.plugin.gestures.GesturesPlugin;
+import com.mapbox.maps.plugin.gestures.GesturesUtils;
 import com.mapbox.maps.plugin.gestures.OnMoveListener;
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin;
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener;
 
+import static com.mapbox.maps.plugin.gestures.GesturesUtils.addOnMapClickListener;
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.getGestures;
 import static com.mapbox.maps.plugin.locationcomponent.LocationComponentUtils.getLocationComponent;
 
@@ -38,6 +41,7 @@ public class MapManager {
     private Point originSearch, destinationSearch;
     private boolean firstSearchOrigin = true;
 
+
     public MapManager(MapView mapView, Context context) {
         this.mapView = mapView;
         this.context = context;
@@ -49,13 +53,8 @@ public class MapManager {
             setupLocationComponent();
             setupAnnotationManager();
             setupListeners();
+            setupAddMarker();
         });
-    }
-
-    private void setupLocationComponent() {
-        locationComponentPlugin = getLocationComponent(mapView);
-        locationComponentPlugin.setEnabled(true);
-        locationComponentPlugin.setPulsingEnabled(true);
     }
 
     private void setupAnnotationManager() {
@@ -64,6 +63,30 @@ public class MapManager {
         AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
         pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
     }
+
+    private void setupAddMarker() {
+        GesturesPlugin gesturesPlugin = GesturesUtils.getGestures(mapView);
+        gesturesPlugin.addOnMapClickListener(mapClickPoint -> {
+            double latitude = mapClickPoint.latitude();
+            double longitude = mapClickPoint.longitude();
+            Point geoJsonPoint = Point.fromLngLat(longitude, latitude);
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_location_pin);
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
+            PointAnnotationOptions options = new PointAnnotationOptions()
+                    .withIconImage(resizedBitmap)
+                    .withPoint(geoJsonPoint);
+            pointAnnotationManager.create(options);
+            return true;
+        });
+    }
+
+
+    private void setupLocationComponent() {
+        locationComponentPlugin = getLocationComponent(mapView);
+        locationComponentPlugin.setEnabled(true);
+        locationComponentPlugin.setPulsingEnabled(true);
+    }
+
 
     private void setupListeners() {
         // Listen for location updates and center the camera

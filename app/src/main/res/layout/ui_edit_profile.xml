@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#B0DFF8"
@@ -7,7 +8,7 @@
 
     <!-- Nút back -->
     <ImageView
-        android:id="@+id/img_back"
+        android:id="@+id/btn_img_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_back"
@@ -66,7 +67,7 @@
 
     <!-- Upload Photo Button -->
     <Button
-        android:id="@+id/uploadPhotoButton"
+        android:id="@+id/btn_uploadPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/profileImage"
@@ -81,7 +82,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/uploadPhotoButton"
+        android:layout_below="@+id/btn_uploadPhoto"
         android:layout_above="@+id/saveButton"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp">
@@ -112,6 +113,7 @@
                     android:textSize="16sp"/>
 
                 <EditText
+                    android:id="@+id/edt_profileName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -148,36 +150,6 @@
                     android:text="Student"
                     android:textColor="@color/opacity_black"
                     android:textSize="16sp" />
-            </LinearLayout>
-
-            <!-- Edit Email -->
-            <LinearLayout
-                android:id="@+id/edit_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/edit_jobtitlel"
-                android:background="@drawable/rounded_card"
-                android:orientation="vertical"
-                android:padding="10dp"
-                android:layout_marginTop="10dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="Email"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
-
-                <EditText
-                    android:id="@+id/profileEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="alice.designer@email.com"
-                    android:textColor="@color/opacity_black"
-                    android:textSize="14sp" />
             </LinearLayout>
 
             <!-- Edit phone number -->
