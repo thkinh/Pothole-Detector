@@ -172,18 +172,6 @@ public class FragmentDashboard extends Fragment {
         });
 //----------------------------End of user and route---------------------
 
-//----------------------------button notify-----------------------------
-        btNotify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentTransaction ft = getParentFragmentManager().beginTransaction();
-                ft.replace(R.id.mainlayout, new FragmentNotify());
-                ft.addToBackStack(null);
-                ft.commit();
-            }
-        });
-//----------------------------button notify-----------------------------
-
 //Bấm vô chữ "trong 7 ngay...." hoặc "muc đo nguy hiem" sẽ chuyen sang fragment statitics
         TextView newRecentlyTxt = view.findViewById(R.id.txt_recently);
         if (newRecentlyTxt != null) {
