@@ -42,6 +42,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.doan.api.auth.AuthManager;
 import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.interfaceFragment.OnMapFragmentInteractionListener;
 import com.example.doan.model.AppUser;
@@ -1126,14 +1127,18 @@ public class FragmentMap extends Fragment
         mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver);
         mapboxNavigation.registerRouteProgressObserver(routeProgressObserver);
 
+        //Kết thúc quá trình navigation
         imageView.setOnClickListener(view -> {
             mapboxNavigation.onDestroy();
             mapboxNavigation.unregisterRoutesObserver(routesObserver);
             mapboxNavigation.unregisterLocationObserver(locationObserver);
 
+            AppUser appUser = AuthManager.getInstance().getAccount();
 
-            double distanceBeforeChangeOnServer=
+            /*TODO
 
+
+            */
         });
 
         soundButton.setVisibility(View.VISIBLE);
@@ -1220,7 +1225,7 @@ public class FragmentMap extends Fragment
                         mapboxNavigation.setNavigationRoutes(list);
                         NotificationWarning.setVisibility(View.VISIBLE);
 
-                        TurfMisc.lineSliceAlong()
+//                        TurfMisc.lineSliceAlong()
 
                         mylocationNavigationButton.performClick();
                     }
@@ -1257,29 +1262,6 @@ public class FragmentMap extends Fragment
         return R * c; // Khoảng cách tính bằng km
     }
 
-    //Tổng quãng đường user đã đi
-//
-//    @SuppressLint("MissingPermission")
-//    public double distanceUser(){
-//        Point[] pointGo = new Point[1];
-//
-//        LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(getContext());
-//
-//        locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
-//            @Override
-//            public void onSuccess(LocationEngineResult result) {
-//                Location location = result.getLastLocation();
-//
-//                pointGo[0] = Point.fromLngLat(location.getLongitude(), location.getLatitude());
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//
-//            }
-//        });
-//        for(int i = 0;i<pointGo)
-//        return 0;
-//    }
+
 
 }

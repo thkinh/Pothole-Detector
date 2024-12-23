@@ -12,6 +12,7 @@
         app:mapbox_cameraTargetLat="39.5"
         app:mapbox_cameraTargetLng="-98.0"
         app:mapbox_cameraZoom="2.0" >
+
         </com.mapbox.maps.MapView>
 
     <androidx.cardview.widget.CardView
@@ -212,7 +213,7 @@
         android:id="@+id/tripProgressCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:cardElevation="8dp"
         app:cardUseCompatPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -224,7 +225,6 @@
             android:id="@+id/tripProgressView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
         <ImageView
             android:id="@+id/stop"
             android:layout_width="48dp"
@@ -241,7 +241,7 @@
         android:layout_above="@id/tripProgressCard"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
-        >
+        android:id="@+id/LayoutButton">
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
