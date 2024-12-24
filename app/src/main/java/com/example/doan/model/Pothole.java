@@ -1,7 +1,13 @@
 package com.example.doan.model;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.sql.Date;
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Pothole {
 
@@ -21,6 +27,9 @@ public class Pothole {
         this.location = location;
         this.appUser = appUser;
         this.userId = userId;
+    }
+
+    public Pothole(String normal, String none, Location location, AppUser account, int userId) {
     }
 
     public Integer getUserId() {
@@ -115,5 +124,31 @@ public class Pothole {
         public void setCity(String city) {
             this.city = city;
         }
+    }
+
+    public static List<Pothole> parsePotholes(String response) {
+        List<Pothole> potholes = new ArrayList<>();
+        try {
+            JSONArray jsonArray = new JSONArray(response);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                Pothole pothole = new Pothole();
+                pothole.setId(jsonObject.getInt("id"));
+                pothole.setDateFound(Date.valueOf(jsonObject.getString("dateFound")));
+                pothole.setTimeFound(jsonObject.getString("timeFound"));
+                pothole.setSeverity(jsonObject.getString("severity"));
+                JSONObject locationObject = jsonObject.getJSONObject("location");
+                Location location = new Location();
+                location.setLatitude(locationObject.getDouble("latitude"));
+                location.setLongitude(locationObject.getDouble("longitude"));
+                location.setCountry(locationObject.getString("country"));
+                location.setCity(locationObject.getString("city"));
+                pothole.setLocation(location);
+                potholes.add(pothole);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return potholes;
     }
 }

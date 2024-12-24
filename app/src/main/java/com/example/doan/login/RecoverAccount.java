@@ -1,4 +1,4 @@
-package com.example.doan;
+package com.example.doan.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 
+import com.example.doan.R;
 import com.example.doan.api.auth.AuthManager;
 import com.example.doan.model.AppUser;
 

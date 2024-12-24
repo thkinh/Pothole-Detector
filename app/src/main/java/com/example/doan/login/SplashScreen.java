@@ -1,8 +1,7 @@
-package com.example.doan;
+package com.example.doan.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -12,6 +11,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.doan.dashboard.MainActivity;
+import com.example.doan.R;
 import com.example.doan.api.auth.AuthManager;
 import com.example.doan.feature.UserPreferences;
 import com.example.doan.model.AppUser;

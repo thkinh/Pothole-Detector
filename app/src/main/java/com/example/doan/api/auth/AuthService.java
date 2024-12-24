@@ -17,6 +17,9 @@ import retrofit2.http.Query;
 
 public interface AuthService{
 
+    @GET("checkUserExists")
+    Call<Boolean> checkUserExists(@Query("email") String email);
+
     @GET("user/SIRequest")
     Call<AppUser> SIRequest(@Query("email")String email, @Query("password")String password);
 

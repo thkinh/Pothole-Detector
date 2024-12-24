@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/img_background"
     android:id="@+id/id_screenSignup"
-    tools:context=".SignupActivity">
+    tools:context=".login.SignupActivity">
 
     <Switch
         android:id="@+id/sw_language"

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/img_background"
-    tools:context=".LoginActivity">
+    tools:context=".login.LoginActivity">
 
     <Switch
         android:id="@+id/sw_language"

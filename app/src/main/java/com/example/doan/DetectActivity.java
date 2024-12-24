@@ -15,6 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import com.example.doan.api.auth.AuthManager;
+import com.example.doan.dashboard.MainActivity;
+import com.example.doan.map.*;
 import com.example.doan.feature.DetectEngine;
 import com.example.doan.model.Pothole;
 import com.example.doan.setting.FragmentSetting;
@@ -82,7 +85,7 @@ public class DetectActivity extends AppCompatActivity
     public void AddFragmentMap(){
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.mainlayout,new Mapbox());
+        fragmentTransaction.add(R.id.mainlayout,new FragmentMap());
         fragmentTransaction.commit();
     }
 
@@ -112,7 +115,9 @@ public class DetectActivity extends AppCompatActivity
             @Override
             public void onSuccess(LocationEngineResult result) {
                 Location location = result.getLastLocation();
-                Pothole pothole = new Pothole();
+                Pothole pothole = new Pothole(null, "Normal", new Pothole.Location(), AuthManager.getInstance().getAccount(), 0);
+
+
                 Pothole.Location location1 = new Pothole.Location();
                 location1.setLatitude(location.getLatitude());
                 location1.setLongitude(location.getLongitude());
