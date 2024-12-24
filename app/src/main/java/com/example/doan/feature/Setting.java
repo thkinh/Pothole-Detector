@@ -1,9 +1,18 @@
 package com.example.doan.feature;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.hardware.SensorManager;
+import android.os.Build;
 
-import com.example.doan.model.AppUser;
 import com.example.doan.model.UserDetails;
+import com.google.gson.Gson;
+
+import java.util.Locale;
 
 public class Setting {
     public enum AppLanguage{
@@ -95,4 +104,58 @@ public class Setting {
     public void setContributor(boolean contributor) {
         isContributor = contributor;
     }
+
+    public void saveToPreferences(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Convert Setting instance to JSON
+        Gson gson = new Gson();
+        String json = gson.toJson(this);
+        editor.putString("settings", json);
+        editor.apply();
+    }
+
+    // Load settings from SharedPreferences
+    public static void loadFromPreferences(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE);
+        String json = sharedPreferences.getString("settings", null);
+        if (json != null) {
+            Gson gson = new Gson();
+            instance = gson.fromJson(json, Setting.class);
+        } else {
+            instance = new Setting();
+        }
+    }
+
+    public void applyLanguage(Context context) {
+        // Set the language based on the user's selected preference
+        Locale locale = (this.getAppLanguage() == Setting.AppLanguage.vi) ? new Locale("vi", "VN") : Locale.US;
+        Locale.setDefault(locale);
+
+        // Get the resources and configuration
+        Resources resources = context.getResources();
+        Configuration config = resources.getConfiguration();
+
+        // Check Android version and apply the appropriate configuration method
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            // For Android N (API 24) and above, use createConfigurationContext
+            config.setLocale(locale);
+            context.createConfigurationContext(config);  // Ensure the context is updated
+        } else {
+            // For versions below API 24, use the deprecated method
+            config.locale = locale;
+            resources.updateConfiguration(config, resources.getDisplayMetrics());
+        }
+
+        // Restart the activity to apply the language change
+        restartActivity(context);
+    }
+
+    private void restartActivity(Context context) {
+        Intent intent = ((Activity) context).getIntent();
+        ((Activity) context).finish();
+        context.startActivity(intent);
+    }
+
 }

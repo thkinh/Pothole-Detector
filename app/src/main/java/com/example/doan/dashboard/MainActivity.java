@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 
 import com.example.doan.ApiClient;
+import com.example.doan.feature.Setting;
 import com.example.doan.setting.FragmentSetting;
 
 import com.example.doan.setting.FragmentSetting;
@@ -72,4 +73,10 @@ public class MainActivity extends AppCompatActivity implements OnMapFragmentInte
         // Handle the configuration change if needed
     }
 
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        Setting.getInstance().saveToPreferences(this);
+    }
 }
