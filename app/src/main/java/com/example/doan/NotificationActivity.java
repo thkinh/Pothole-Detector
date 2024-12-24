@@ -15,11 +15,15 @@ import com.example.doan.api.auth.AuthManager;
 import com.example.doan.model.NotificationAdapter;
 import com.example.doan.model.Pothole;
 import com.example.doan.model.AppUser;
+import com.example.doan.ApiClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationActivity extends AppCompatActivity {
+
+    private static final String PREFS_NAME = "NotificationPrefs";
+    private static final String NOTIFICATION_KEY_PREFIX = "notification_";
 
     private static final String TAG = "NotificationActivity";
     private ListView notificationListView;
@@ -71,12 +75,12 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     private void saveNotificationStates() {
-        SharedPreferences sharedPreferences = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         for (int i = 0; i < notificationList.size(); i++) {
             String notification = notificationList.get(i);
             boolean isRead = !notification.contains("Chưa đọc: ");
-            editor.putBoolean("notification_" + i, isRead);
+            editor.putBoolean(NOTIFICATION_KEY_PREFIX + i, isRead);
         }
         editor.apply();
     }
@@ -88,9 +92,9 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     private void loadNotificationStates() {
-        SharedPreferences sharedPreferences = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         for (int i = 0; i < notificationList.size(); i++) {
-            boolean isRead = sharedPreferences.getBoolean("notification_" + i, false);
+            boolean isRead = sharedPreferences.getBoolean(NOTIFICATION_KEY_PREFIX + i, false);
             if (isRead) {
                 String notification = notificationList.get(i).replace("Chưa đọc: ", "");
                 notificationList.set(i, notification);
