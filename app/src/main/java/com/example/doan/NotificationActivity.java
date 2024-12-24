@@ -115,7 +115,7 @@ public class NotificationActivity extends AppCompatActivity {
                     List<Pothole> potholes = Pothole.parsePotholes(response);
                     notificationList.clear();
                     for (Pothole pothole : potholes) {
-                        String message = "Pothole detected at " + pothole.getLocation().getCity() +
+                        String message = "Chưa đọc: Pothole detected at " + pothole.getLocation().getCity() +
                                 " (Lat: " + pothole.getLocation().getLatitude() +
                                 ", Long: " + pothole.getLocation().getLongitude() +
                                 ") on " + pothole.getDateFound() + " at " + pothole.getTimeFound() +
