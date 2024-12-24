@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -148,6 +150,7 @@ public class FragmentDashboard extends Fragment {
                 startActivity(intent);
             }
         });
+
 
 //----------------------------Start of user and route---------------------
         btnUser.setOnClickListener(new View.OnClickListener() {
@@ -281,8 +284,10 @@ private void fetchPotholeData(BarChart graph, PieChart pieChart) {
             }
         }
 
+        List<String> dateLabels = new ArrayList<>(potholeCountByDate.keySet());
+        Collections.sort(dateLabels); // Sắp xếp dateLabels theo thứ tự ngày
+
         List<BarEntry> entries = new ArrayList<>();
-        List<String> dateLabels = new ArrayList<>();
         int index = 0;
         for (Map.Entry<String, Integer> entry : potholeCountByDate.entrySet()) {
             entries.add(new BarEntry(index++, entry.getValue()));
