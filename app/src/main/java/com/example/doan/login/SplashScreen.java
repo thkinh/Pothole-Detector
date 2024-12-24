@@ -30,6 +30,7 @@ public class SplashScreen extends AppCompatActivity {
         getStartedButton.setOnClickListener(view -> {
             Intent intent = new Intent(SplashScreen.this, LoginActivity.class);
             startActivity(intent);
+            finish();
         });
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {

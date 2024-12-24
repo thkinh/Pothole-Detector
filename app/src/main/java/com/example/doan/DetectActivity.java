@@ -61,7 +61,7 @@ public class DetectActivity extends AppCompatActivity
         btn_startDetect.setOnClickListener(view -> {
             if (!isDetecting) {
                 StartDetect();  // Add this to initialize DetectEngine
-                runOnUiThread(this::loadSensorDataFragment);
+                //runOnUiThread(this::loadSensorDataFragment);
                 isDetecting = true;
             } else {
                 removeSensorDataFragment();
@@ -117,13 +117,14 @@ public class DetectActivity extends AppCompatActivity
                 Location location = result.getLastLocation();
                 Pothole pothole = new Pothole(null, "Normal", new Pothole.Location(), AuthManager.getInstance().getAccount(), 0);
 
-
                 Pothole.Location location1 = new Pothole.Location();
                 location1.setLatitude(location.getLatitude());
                 location1.setLongitude(location.getLongitude());
                 location1.setCountry("None");
                 location1.setCity("None");
                 pothole.setLocation(location1);
+                Toast.makeText(DetectActivity.this, "Pothole Detected"+pothole.getLocation().getLongitude()+"/"
+                        +pothole.getLocation().getLatitude(), Toast.LENGTH_SHORT).show();
                 Log.d("__DETECTION", "Pothole found! "+pothole.getLocation().getLongitude()+"/"
                         +pothole.getLocation().getLatitude());
             }
@@ -134,6 +135,11 @@ public class DetectActivity extends AppCompatActivity
             }
         });
     }
+
+    void hanlde_addPothole(Pothole pothole){
+
+    }
+
 
     @Override
     protected void onResume() {
