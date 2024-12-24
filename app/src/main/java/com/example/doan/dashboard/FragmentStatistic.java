@@ -1,4 +1,4 @@
-package com.example.doan;
+package com.example.doan.dashboard;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,9 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.doan.R;
 import com.example.doan.api.potholes.PotholeManager;
-import com.example.doan.dashboard.ListAdapterRoute;
-import com.example.doan.dashboard.ListDataRoute;
 import com.example.doan.model.Pothole;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -27,7 +26,10 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,11 +77,20 @@ public class FragmentStatistic extends Fragment {
 
     private void updateGraphView(BarChart graph, List<Pothole> potholes) {
         Map<String, Integer> potholeCountByDate = new HashMap<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        // Tính toán ngày bắt đầu và ngày kết thúc
+        Calendar calendar = Calendar.getInstance();
+        Date endDate = calendar.getTime();
+        calendar.add(Calendar.DAY_OF_YEAR, -7);
+        Date startDate = calendar.getTime();
+
         for (Pothole pothole : potholes) {
-//            String dateFound = pothole.getDateFound();
-//            if (dateFound != null) {
-//                potholeCountByDate.put(dateFound, potholeCountByDate.getOrDefault(dateFound, 0) + 1);
-//            }
+            Date dateFound = pothole.getDateFound();
+            if (dateFound != null && !dateFound.before(startDate) && !dateFound.after(endDate)) {
+                String dateString = dateFormat.format(dateFound);
+                potholeCountByDate.put(dateString, potholeCountByDate.getOrDefault(dateString, 0) + 1);
+            }
         }
 
         List<BarEntry> entries = new ArrayList<>();
@@ -102,6 +113,8 @@ public class FragmentStatistic extends Fragment {
 
         YAxis leftAxis = graph.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
+        leftAxis.setGranularity(1f); // Set granularity to 1
+        leftAxis.setGranularityEnabled(true); // Enable granularity
 
         YAxis rightAxis = graph.getAxisRight();
         rightAxis.setEnabled(false);

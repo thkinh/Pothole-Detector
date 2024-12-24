@@ -29,6 +29,9 @@ public class Pothole {
         this.userId = userId;
     }
 
+    public Pothole(String normal, String none, Location location, AppUser account, int userId) {
+    }
+
     public Integer getUserId() {
         return userId;
     }

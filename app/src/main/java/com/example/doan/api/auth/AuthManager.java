@@ -4,6 +4,7 @@ import android.util.Log;
 import com.example.doan.api.RetrofitInstance;
 import com.example.doan.model.AppUser;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -219,6 +220,31 @@ public class AuthManager {
                 callBack.onFailure("API call failed: " + t.getMessage());
             }
         });
+    }
+
+    public void checkUserExists(String email, CheckUserCallback callback) {
+        if (userExists(email)) {
+            callback.onUserExists();
+        } else {
+            callback.onUserNotFound();
+        }
+    }
+
+    private boolean userExists(String email) {
+        Call<Boolean> call = authService.checkUserExists(email);
+        try {
+            Response<Boolean> response = call.execute();
+            return response.body();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public interface CheckUserCallback {
+        void onUserExists();
+        void onUserNotFound();
+        void onFailure(String errorMessage);
     }
 
     public interface UpdateDistanceCallBack{

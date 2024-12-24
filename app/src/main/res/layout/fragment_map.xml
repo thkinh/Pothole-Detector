@@ -277,5 +277,21 @@
             android:id="@+id/navigationButton"
             android:layout_alignParentEnd="true"
             android:layout_margin="16dp"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/potholeDetailLayout"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent">
+
+        <include
+            layout="@layout/ui_potholes_details"
+            android:id="@+id/potholeDetail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
     </LinearLayout>
 </RelativeLayout>

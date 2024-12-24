@@ -1,6 +1,5 @@
 package com.example.doan.dashboard;
 
-import com.example.doan.FragmentStatistic;
 import com.example.doan.NotificationActivity;
 import com.example.doan.R;
 import com.example.doan.api.auth.AuthManager;
@@ -8,6 +7,7 @@ import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.login.LoginActivity;
 import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;
+import com.example.doan.setting.ProfileActivity;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -44,7 +44,10 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +122,7 @@ public class FragmentDashboard extends Fragment {
 
         // Khởi tạo GoogleSignInClient
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id)) // Thay bằng ID client của bạn trong google-services.json
+                .requestIdToken(getString(R.string.default_web_client_id)) // Thay bằng ID client trong google-services.json
                 .requestEmail()
                 .build();
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
@@ -134,6 +137,14 @@ public class FragmentDashboard extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), NotificationActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        tvName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ProfileActivity.class);
                 startActivity(intent);
             }
         });
@@ -191,6 +202,7 @@ public class FragmentDashboard extends Fragment {
                 }
             });
         }
+
 //Bấm vô chữ "trong 7 ngay...." hoặc "muc đo nguy hiem" sẽ chuyen sang fragment statitics
 
 //----------------------------Start of fetch data---------------------
@@ -253,11 +265,20 @@ private void fetchPotholeData(BarChart graph, PieChart pieChart) {
 
     private void updateGraphView(BarChart graph, List<Pothole> potholes) {
         Map<String, Integer> potholeCountByDate = new HashMap<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        // Tính toán ngày bắt đầu và ngày kết thúc
+        Calendar calendar = Calendar.getInstance();
+        Date endDate = calendar.getTime();
+        calendar.add(Calendar.DAY_OF_YEAR, -7);
+        Date startDate = calendar.getTime();
+
         for (Pothole pothole : potholes) {
-//            String dateFound = pothole.getDateFound();
-//            if (dateFound != null) {
-//                potholeCountByDate.put(dateFound, potholeCountByDate.getOrDefault(dateFound, 0) + 1);
-//            }
+            Date dateFound = pothole.getDateFound();
+            if (dateFound != null && !dateFound.before(startDate) && !dateFound.after(endDate)) {
+                String dateString = dateFormat.format(dateFound);
+                potholeCountByDate.put(dateString, potholeCountByDate.getOrDefault(dateString, 0) + 1);
+            }
         }
 
         List<BarEntry> entries = new ArrayList<>();
