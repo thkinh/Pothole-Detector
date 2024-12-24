@@ -22,6 +22,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import java.util.Date;
 
 public class AuthManager {
     private static AuthManager instance;
@@ -360,10 +361,10 @@ public class AuthManager {
                 Date mostRecentDate = null;
                 for (Pothole pothole : potholes) {
                     if (mostRecentDate == null || pothole.getDateFound().after(mostRecentDate)) {
-                        mostRecentDate = pothole.getDateFound();
+                        mostRecentDate = new Date(pothole.getDateFound().getTime());
                     }
                 }
-                user.setMostRecentPotholeDate(mostRecentDate);
+                user.setMostRecentPotholeDate(new java.sql.Date(mostRecentDate.getTime()));
                 callback.onSuccess(user);
             }
 
