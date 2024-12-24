@@ -93,6 +93,7 @@ public class Pothole {
         private Double longitude;
         private String country;
         private String city;
+        private String street;
         public Double getLatitude() {
             return latitude;
         }
@@ -123,6 +124,14 @@ public class Pothole {
 
         public void setCity(String city) {
             this.city = city;
+        }
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
         }
     }
 

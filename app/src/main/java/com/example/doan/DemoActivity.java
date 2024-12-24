@@ -1,19 +1,31 @@
 package com.example.doan;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.doan.api.auth.AuthManager;
 import com.example.doan.api.potholes.PotholeManager;
+import com.example.doan.feature.Storage;
 import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;
+import com.example.doan.setting.EditProfileActivity;
+import com.example.doan.setting.ProfileActivity;
 
+import java.io.File;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
@@ -28,6 +40,8 @@ public class DemoActivity extends AppCompatActivity {
     private Button btn_addDistance;
     private PotholeManager potholeManager;
     private AuthManager authManager;
+    ActivityResultLauncher<Intent> resultLauncher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,19 +54,46 @@ public class DemoActivity extends AppCompatActivity {
         btn_addDistance =findViewById(R.id.add_distance);
 
         button_get.setOnClickListener(view -> handleGet());
-        button_add.setOnClickListener(view -> handleAdd());
+        button_add.setOnClickListener(view -> handleUpload());
         btn_getALL.setOnClickListener(view -> handle_getALL());
         btn_addDistance.setOnClickListener(view -> handle_addDistance());
 
         potholeManager = PotholeManager.getInstance();
 
-        AppUser user = new AppUser();
-        user.setId(109);
-        user.setUsername("thinh7");
-        user.setEmail("22521403@gm.uit.edu.vn");
-        user.setPassword("123456");
+        registerResult();
+    }
 
-        AuthManager.getInstance().setGlobalAccount(user);
+    private void handleUpload(){
+        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+        resultLauncher.launch(intent);
+    }
+    private void registerResult(){
+        resultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        try {
+                            Uri imageUri = result.getData().getData();
+                            File image = Storage.getFileFromUri(imageUri, DemoActivity.this);;
+                            Log.d("__PATH", imageUri.getPath());
+                            potholeManager.uploadProtholeImage(706, image, new AuthManager.UploadImageCallBack() {
+                                @Override
+                                public void onSuccess(String message) {
+                                    Toast.makeText(DemoActivity.this, "Uploaded successfully", Toast.LENGTH_SHORT).show();
+                                }
+                                @Override
+                                public void onFailure(String errorMessage) {
+                                    Log.e("__IMAGE", errorMessage);
+                                }
+                            });
+                        }
+                        catch (Exception e){
+                            Toast.makeText(DemoActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
     }
 
     private void handle_addDistance(){

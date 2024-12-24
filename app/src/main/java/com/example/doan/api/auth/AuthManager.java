@@ -4,12 +4,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import com.example.doan.api.RetrofitInstance;
+import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.model.AppUser;
 
+import com.example.doan.model.Pothole;
 import com.example.doan.model.UserDetails;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Date;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -232,6 +236,31 @@ public class AuthManager {
         });
     }
 
+    public void checkUserExists(String email, CheckUserCallback callback) {
+        if (userExists(email)) {
+            callback.onUserExists();
+        } else {
+            callback.onUserNotFound();
+        }
+    }
+
+    private boolean userExists(String email) {
+        Call<Boolean> call = authService.checkUserExists(email);
+        try {
+            Response<Boolean> response = call.execute();
+            return response.body();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public interface CheckUserCallback {
+        void onUserExists();
+        void onUserNotFound();
+        void onFailure(String errorMessage);
+    }
+
     public void getUserDetails(Integer id, GetDetailsCallBack callBack){
         Call<UserDetails> call = authService.getUserDetails(id);
         call.enqueue(new Callback<UserDetails>() {
@@ -280,7 +309,6 @@ public class AuthManager {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
-                        // Parse response or handle as needed
                         callBack.onSuccess("Image uploaded successfully.");
                     } catch (Exception e) {
                         callBack.onFailure("Error parsing response: " + e.getMessage());
@@ -318,7 +346,6 @@ public class AuthManager {
                     callBack.onFailure("Failed to fetch image: " + response.code() + " - " + response.message());
                 }
             }
-
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 callBack.onFailure("API call failed: " + t.getMessage());
@@ -326,6 +353,31 @@ public class AuthManager {
         });
     }
 
+    public void fetchMostRecentPotholeDate(AppUser user, FetchMostRecentPotholeDateCallback callback) {
+        PotholeManager.getInstance().getPotholes(user, new PotholeManager.GetPotholeCallBack() {
+            @Override
+            public void onSuccess(List<Pothole> potholes) {
+                Date mostRecentDate = null;
+                for (Pothole pothole : potholes) {
+                    if (mostRecentDate == null || pothole.getDateFound().after(mostRecentDate)) {
+                        mostRecentDate = new Date(pothole.getDateFound().getTime());
+                    }
+                }
+                user.setMostRecentPotholeDate(new java.sql.Date(mostRecentDate.getTime()));
+                callback.onSuccess(user);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                callback.onFailure(errorMessage);
+            }
+        });
+    }
+
+    public interface FetchMostRecentPotholeDateCallback {
+        void onSuccess(AppUser user);
+        void onFailure(String errorMessage);
+    }
 
     public interface FetchImageCallBack {
         void onSuccess(Bitmap bitmap);

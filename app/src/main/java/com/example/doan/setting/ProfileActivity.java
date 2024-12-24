@@ -13,7 +13,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.doan.R;
-import com.example.doan.SignupActivity;
+import com.example.doan.login.SignupActivity;
 import com.example.doan.api.auth.AuthManager;
 import com.example.doan.feature.Setting;
 import com.example.doan.model.AppUser;
@@ -36,21 +36,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         authManager = AuthManager.getInstance();
         Refresh();
-        if (authManager.getAccount() == null)
-        {
-            authManager.signIn("thienthinhmtp@gmail.com", "20082004", new AuthManager.SignInCallback() {
-                @Override
-                public void onSuccess(AppUser user) {
-                    Refresh();
-                }
-                @Override
-                public void onFailure(String errorMessage) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(ProfileActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                    });
-                }
-            });
-        }
 
         btn_edit = findViewById(R.id.editProfileButton);
         btn_edit.setOnClickListener(view -> {
@@ -81,7 +66,6 @@ public class ProfileActivity extends AppCompatActivity {
                     tv_email.setText(details.getEmail());
                     tv_phone.setText(details.getPhoneNumber());
                     tv_birth.setText(details.getDateOfBirth().toString());
-                    Toast.makeText(ProfileActivity.this, details.getFullName(), Toast.LENGTH_SHORT).show();
                 });
             }
             @Override
