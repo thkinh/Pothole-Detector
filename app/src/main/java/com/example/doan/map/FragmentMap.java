@@ -149,6 +149,7 @@ import com.mapbox.turf.TurfConstants;
 import com.mapbox.turf.TurfMeasurement;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -928,12 +929,21 @@ public class FragmentMap extends Fragment
             }
         });
     }
-
+    List<Point> potholesListOnDirection;
     private void getListPotholeOnLineRoute(LineString linestring){
+        potholesListOnDirection= new ArrayList<>();
         for ( Pothole potholePoint : potholesList) {
+            Point point= Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude());
 
+            Log.d("PotholeTag", "Pothole on Line check true: " + point.longitude() + " " + point.latitude());
+
+            if (booleanPointOnLine(point,linestring.coordinates())){
+                potholesListOnDirection.add(point);
+                Log.d("PotholeTag", "Pothole on Line true: " + point.longitude() + " " + point.latitude());
+            }
         }
     }
+
     private void getRouteTwoPoint(Point origin ,Point destination) {
         MapboxDirections.Builder builder = MapboxDirections.builder();
         RouteOptions routeOptions = RouteOptions.builder()
@@ -970,6 +980,8 @@ public class FragmentMap extends Fragment
                             .lineColor("#3b9ddd")
                             .lineWidth(8D);
                     LayerUtils.addLayer(style,routeLayer);
+
+                    getListPotholeOnLineRoute(lineString);
 
 
                 });
