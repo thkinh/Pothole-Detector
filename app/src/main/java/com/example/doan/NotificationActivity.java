@@ -1,5 +1,6 @@
 package com.example.doan;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -63,6 +64,41 @@ public class NotificationActivity extends AppCompatActivity {
         fetchPotholes();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveNotificationStates();
+    }
+
+    private void saveNotificationStates() {
+        SharedPreferences sharedPreferences = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        for (int i = 0; i < notificationList.size(); i++) {
+            String notification = notificationList.get(i);
+            boolean isRead = !notification.contains("Chưa đọc: ");
+            editor.putBoolean("notification_" + i, isRead);
+        }
+        editor.apply();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadNotificationStates();
+    }
+
+    private void loadNotificationStates() {
+        SharedPreferences sharedPreferences = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
+        for (int i = 0; i < notificationList.size(); i++) {
+            boolean isRead = sharedPreferences.getBoolean("notification_" + i, false);
+            if (isRead) {
+                String notification = notificationList.get(i).replace("Chưa đọc: ", "");
+                notificationList.set(i, notification);
+            }
+        }
+        updateNotifications(tabUnread.isSelected());
+    }
+
     private void fetchPotholes() {
         Log.d(TAG, "fetchPotholes called");
         AppUser currentUser = AuthManager.getInstance().getAccount();
@@ -75,7 +111,7 @@ public class NotificationActivity extends AppCompatActivity {
                     List<Pothole> potholes = Pothole.parsePotholes(response);
                     notificationList.clear();
                     for (Pothole pothole : potholes) {
-                        String message = "Pothole detected at " + pothole.getLocation().getCity() +
+                        String message = "Chưa đọc: Pothole detected at " + pothole.getLocation().getCity() +
                                 " (Lat: " + pothole.getLocation().getLatitude() +
                                 ", Long: " + pothole.getLocation().getLongitude() +
                                 ") on " + pothole.getDateFound() + " at " + pothole.getTimeFound() +
