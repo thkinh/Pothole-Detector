@@ -360,10 +360,10 @@ public class AuthManager {
                 Date mostRecentDate = null;
                 for (Pothole pothole : potholes) {
                     if (mostRecentDate == null || pothole.getDateFound().after(mostRecentDate)) {
-                        mostRecentDate = pothole.getDateFound();
+                        mostRecentDate = new Date(pothole.getDateFound().getTime());
                     }
                 }
-                user.setMostRecentPotholeDate(mostRecentDate);
+                user.setMostRecentPotholeDate(new java.sql.Date(mostRecentDate.getTime()));
                 callback.onSuccess(user);
             }
 
