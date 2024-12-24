@@ -51,7 +51,6 @@ public class EditProfileActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "Permission Already Granted", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "No Permission yet", Toast.LENGTH_SHORT).show();
         }
         UserDetails details = Setting.getInstance().getUserDetails();
         tv_fullName = findViewById(R.id.edt_profileName);
@@ -96,7 +95,6 @@ public class EditProfileActivity extends AppCompatActivity {
                             public void onSuccess(String message) {
                                 Toast.makeText(EditProfileActivity.this, "Uploaded successfully", Toast.LENGTH_SHORT).show();
                             }
-
                             @Override
                             public void onFailure(String errorMessage) {
                                 Log.e("__IMAGE", errorMessage);
