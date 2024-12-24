@@ -1,6 +1,7 @@
 package com.example.doan.model;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,6 @@ public class NotificationAdapter extends BaseAdapter {
     public NotificationAdapter(Context context, List<String> notifications) {
         this.context = context;
         this.notifications = notifications;
-    }
-
-    public void updateData(List<String> newNotifications) {
-        this.notifications.clear();
-        this.notifications.addAll(newNotifications);
-        notifyDataSetChanged();
     }
 
     @Override
@@ -48,8 +43,15 @@ public class NotificationAdapter extends BaseAdapter {
         }
 
         TextView notificationText = convertView.findViewById(R.id.notification_title);
-        notificationText.setText(notifications.get(position));
+        String notification = notifications.get(position);
+        Log.d("NotificationAdapter", "Binding notification: " + notification);
+        notificationText.setText(notification);
 
         return convertView;
+    }
+
+    public void updateData(List<String> newNotifications) {
+        this.notifications = newNotifications;
+        notifyDataSetChanged();
     }
 }
