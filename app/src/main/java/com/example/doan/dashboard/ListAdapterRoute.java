@@ -31,11 +31,11 @@ public class ListAdapterRoute extends ArrayAdapter<ListDataRoute> {
 
         ImageView listImage = view.findViewById(R.id.img_pothole);
         TextView listName = view.findViewById(R.id.txt_routename);
-        TextView listQuantity = view.findViewById(R.id.txt_quantity);
+        //TextView listQuantity = view.findViewById(R.id.txt_quantity);
 
         listImage.setImageResource(listData.image);
         listName.setText(listData.name);
-        listQuantity.setText(listData.quantity);
+        //listQuantity.setText(listData.quantity);
 
         return view;
     }

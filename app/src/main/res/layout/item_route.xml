@@ -43,7 +43,7 @@
                 android:textColor="@color/white">
             </TextView>
 
-            <TextView
+            <!--<TextView
                 android:id="@+id/txt_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
                 android:textStyle="bold"
                 android:text="69 ổ gà"
                 android:textColor="@color/brightblue">
-            </TextView>
+            </TextView>-->
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
 </RelativeLayout>

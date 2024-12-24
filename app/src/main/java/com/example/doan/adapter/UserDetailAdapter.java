@@ -8,15 +8,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.doan.R;
-import com.example.doan.model.AppUser;
+import com.example.doan.model.UserDetail;
 import java.util.List;
 
 public class UserDetailAdapter extends RecyclerView.Adapter<UserDetailAdapter.UserDetailHolder> {
 
-    private List<AppUser> userDetailList;
+    private List<UserDetail> userDetailList;
     private Context context;
 
-    public UserDetailAdapter(List<AppUser> userDetailList, Context context) {
+    public UserDetailAdapter(List<UserDetail> userDetailList, Context context) {
         this.userDetailList = userDetailList;
         this.context = context;
     }
@@ -30,9 +30,7 @@ public class UserDetailAdapter extends RecyclerView.Adapter<UserDetailAdapter.Us
 
     @Override
     public void onBindViewHolder(@NonNull UserDetailHolder holder, int position) {
-        AppUser user = userDetailList.get(position);
-        holder.userName.setText(user.getUsername());
-        holder.txtDate.setText(user.getMostRecentPotholeDate() != null ? user.getMostRecentPotholeDate().toString() : "No data");
+        holder.userName.setText(userDetailList.get(position).getUsername());
     }
 
     @Override
@@ -43,12 +41,10 @@ public class UserDetailAdapter extends RecyclerView.Adapter<UserDetailAdapter.Us
     public class UserDetailHolder extends RecyclerView.ViewHolder {
 
         private TextView userName;
-        private TextView txtDate;
 
         public UserDetailHolder(@NonNull View itemView) {
             super(itemView);
             userName = itemView.findViewById(R.id.txt_username);
-            txtDate = itemView.findViewById(R.id.txt_date);
         }
     }
 }
