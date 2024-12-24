@@ -318,7 +318,6 @@ public class AuthManager {
                     callBack.onFailure("Failed to fetch image: " + response.code() + " - " + response.message());
                 }
             }
-
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 callBack.onFailure("API call failed: " + t.getMessage());

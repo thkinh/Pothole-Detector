@@ -33,4 +33,7 @@ public interface PotholeService {
     @POST("pothole/uploadImage")
     Call<ResponseBody> uploadPotholeImage(@Query("id") int potholeId, @Part MultipartBody.Part image);
 
+    @GET("pothole/image")
+    Call<ResponseBody> getPotholeImage(@Query("id") Integer potholeId);
+
 }

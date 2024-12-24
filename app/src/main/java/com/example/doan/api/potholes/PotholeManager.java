@@ -1,5 +1,7 @@
 package com.example.doan.api.potholes;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.example.doan.api.RetrofitInstance;
@@ -8,6 +10,7 @@ import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -140,6 +143,30 @@ public class PotholeManager {
                 String errorMessage = "Image upload failed: " + t.getMessage();
                 Log.e("__ERROR:", errorMessage);
                 callBack.onFailure(errorMessage);
+            }
+        });
+    }
+
+    public void fetchProfileImage(int userId, AuthManager.FetchImageCallBack callBack) {
+        Call<ResponseBody> call = potholeService.getPotholeImage(userId);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        InputStream inputStream = response.body().byteStream();
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        callBack.onSuccess(bitmap); // Pass the bitmap to the callback
+                    } catch (Exception e) {
+                        callBack.onFailure("Error processing image: " + e.getMessage());
+                    }
+                } else {
+                    callBack.onFailure("Failed to fetch image: " + response.code() + " - " + response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                callBack.onFailure("API call failed: " + t.getMessage());
             }
         });
     }
