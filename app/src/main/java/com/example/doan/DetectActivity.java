@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.example.doan.api.auth.AuthManager;
+import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.dashboard.MainActivity;
 import com.example.doan.map.*;
 import com.example.doan.feature.DetectEngine;
@@ -61,7 +62,7 @@ public class DetectActivity extends AppCompatActivity
         btn_startDetect.setOnClickListener(view -> {
             if (!isDetecting) {
                 StartDetect();  // Add this to initialize DetectEngine
-                //runOnUiThread(this::loadSensorDataFragment);
+                runOnUiThread(this::loadSensorDataFragment);
                 isDetecting = true;
             } else {
                 removeSensorDataFragment();
@@ -123,8 +124,19 @@ public class DetectActivity extends AppCompatActivity
                 location1.setCountry("None");
                 location1.setCity("None");
                 pothole.setLocation(location1);
-                Toast.makeText(DetectActivity.this, "Pothole Detected"+pothole.getLocation().getLongitude()+"/"
-                        +pothole.getLocation().getLatitude(), Toast.LENGTH_SHORT).show();
+                PotholeManager.getInstance().addPothole(pothole, new PotholeManager.AddPotholeCallBack() {
+                    @Override
+                    public void onSuccess(Pothole pothole) {
+                        Toast.makeText(DetectActivity.this, "Pothole Detected"+pothole.getLocation().getLongitude()+"/"
+                                +pothole.getLocation().getLatitude(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+
+                    }
+                });
+
                 Log.d("__DETECTION", "Pothole found! "+pothole.getLocation().getLongitude()+"/"
                         +pothole.getLocation().getLatitude());
             }
