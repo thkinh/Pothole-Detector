@@ -14,6 +14,7 @@ public class AppUser {
     private Date date_created;
     private Long distanceTraveled;
     private UserDetails details;
+    private Date mostRecentPotholeDate;
 
     public AppUser(){}
 
@@ -74,6 +75,14 @@ public class AppUser {
     }
     public void setDate_created(Date date_created) {
         this.date_created = date_created;
+    }
+
+    public Date getMostRecentPotholeDate() {
+        return mostRecentPotholeDate;
+    }
+
+    public void setMostRecentPotholeDate(Date mostRecentPotholeDate) {
+        this.mostRecentPotholeDate = mostRecentPotholeDate;
     }
 
 }

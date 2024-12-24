@@ -4,11 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import com.example.doan.api.RetrofitInstance;
+import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.model.AppUser;
 
+import com.example.doan.model.Pothole;
 import com.example.doan.model.UserDetails;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -232,6 +235,31 @@ public class AuthManager {
         });
     }
 
+    public void checkUserExists(String email, CheckUserCallback callback) {
+        if (userExists(email)) {
+            callback.onUserExists();
+        } else {
+            callback.onUserNotFound();
+        }
+    }
+
+    private boolean userExists(String email) {
+        Call<Boolean> call = authService.checkUserExists(email);
+        try {
+            Response<Boolean> response = call.execute();
+            return response.body();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public interface CheckUserCallback {
+        void onUserExists();
+        void onUserNotFound();
+        void onFailure(String errorMessage);
+    }
+
     public void getUserDetails(Integer id, GetDetailsCallBack callBack){
         Call<UserDetails> call = authService.getUserDetails(id);
         call.enqueue(new Callback<UserDetails>() {
@@ -326,6 +354,31 @@ public class AuthManager {
         });
     }
 
+    public void fetchMostRecentPotholeDate(AppUser user, FetchMostRecentPotholeDateCallback callback) {
+        PotholeManager.getInstance().getPotholes(user, new PotholeManager.GetPotholeCallBack() {
+            @Override
+            public void onSuccess(List<Pothole> potholes) {
+                Date mostRecentDate = null;
+                for (Pothole pothole : potholes) {
+                    if (mostRecentDate == null || pothole.getDateFound().after(mostRecentDate)) {
+                        mostRecentDate = pothole.getDateFound();
+                    }
+                }
+                user.setMostRecentPotholeDate(mostRecentDate);
+                callback.onSuccess(user);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                callback.onFailure(errorMessage);
+            }
+        });
+    }
+
+    public interface FetchMostRecentPotholeDateCallback {
+        void onSuccess(AppUser user);
+        void onFailure(String errorMessage);
+    }
 
     public interface FetchImageCallBack {
         void onSuccess(Bitmap bitmap);

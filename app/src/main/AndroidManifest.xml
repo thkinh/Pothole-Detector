@@ -25,7 +25,7 @@
         android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
         <activity
-            android:name=".OTPActive2"
+            android:name=".login.OTPActive2"
             android:exported="false" />
         <activity
             android:name=".Notify"
@@ -43,7 +43,7 @@
              "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
         -->
         <activity
-            android:name=".SplashScreen"
+            android:name=".login.SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,7 +52,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".dashboard.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true" >
         </activity>
@@ -61,12 +61,12 @@
         <activity android:name=".NotificationActivity" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".login.LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
-            android:name=".SignupActivity"
+            android:name=".login.SignupActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan"/>
         <activity
@@ -76,10 +76,10 @@
         </activity>
 
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name=".login.ForgotPasswordActivity"
             android:exported="true" />
         <activity
-            android:name=".RecoverAccount"
+            android:name=".login.RecoverAccount"
             android:exported="true"
             android:windowSoftInputMode="adjustPan"/>
         <activity
@@ -95,5 +95,6 @@
             android:windowSoftInputMode="adjustPan"
             android:exported="false">
         </activity>
+
     </application>
 </manifest>
