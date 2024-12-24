@@ -3,7 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <com.mapbox.maps.MapView
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="resultInMeters" />
+
+    <com.mapbox.maps.MapView
         android:id="@+id/mapbox"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
