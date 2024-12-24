@@ -369,6 +369,7 @@ public class FragmentMap extends Fragment
                                 @Override
                                 public void run() {
                                     searchResultsView.setVisibility(View.VISIBLE);
+                                    mylocationButton.setVisibility(View.INVISIBLE);
                                 }
                             });
                         }
@@ -379,6 +380,7 @@ public class FragmentMap extends Fragment
             @Override
             public void afterTextChanged(Editable editable) {
                 searchResultsView.setVisibility(View.GONE);
+                mylocationButton.setVisibility(View.VISIBLE);
             }
         });
 
@@ -428,7 +430,6 @@ public class FragmentMap extends Fragment
                     searchETLayout.setVisibility(View.GONE);
                     layoutStartDestination.setVisibility(View.VISIBLE);
                     destinationSearch=Point.fromLngLat(placeAutocompleteSuggestion.getCoordinate().longitude(),placeAutocompleteSuggestion.getCoordinate().latitude());
-                    searchStartET.setText("Vị trí của tôi");
                     searchDestinationET.setText(placeAutocompleteSuggestion.getName());
                     getDirectionWithMyLocationPoint(destinationSearch);
                     directionButton.setVisibility(View.GONE);
@@ -442,6 +443,7 @@ public class FragmentMap extends Fragment
                         getDirectionWithMyLocationPoint(destinationSearch);
                     }
                     searchResultsView.setVisibility(View.GONE);
+                    mylocationButton.setVisibility(View.VISIBLE);
                 });
             }
 
@@ -489,6 +491,7 @@ public class FragmentMap extends Fragment
                                 @Override
                                 public void run() {
                                     searchResultsView.setVisibility(View.VISIBLE);
+                                    mylocationButton.setVisibility(View.INVISIBLE);
                                 }
                             });
                         }
@@ -868,6 +871,7 @@ TextView countPothole;
                         if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                                 (keyCode == KeyEvent.KEYCODE_ENTER)) {
                             searchResultsView.setVisibility(View.GONE);
+                            mylocationButton.setVisibility(View.VISIBLE);
                             return true;
                         }
                         return false;
@@ -880,6 +884,8 @@ TextView countPothole;
                         if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                                 (keyCode == KeyEvent.KEYCODE_ENTER)) {
                             searchResultsView.setVisibility(View.GONE);
+                            mylocationButton.setVisibility(View.VISIBLE);
+
                             return true;
                         }
                         return false;
@@ -923,6 +929,7 @@ TextView countPothole;
 
                         setSearcStartOrDestiantionhET(pointAnnotationManager,resizedBitmap,searchDestinationET);
                         searchResultsView.setVisibility(View.GONE);
+                        mylocationButton.setVisibility(View.VISIBLE);
 
                     }
                 });
@@ -974,15 +981,18 @@ TextView countPothole;
     }
     List<Point> potholesListOnDirection;
     private void getListPotholeOnLineRoute(LineString linestring){
-        potholesListOnDirection= new ArrayList<>();
-        for ( Pothole potholePoint : potholesList) {
-            Point point= Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude());
-            if (booleanPointOnLine(point,linestring.coordinates())){
+        potholesListOnDirection = new ArrayList<>();
+        for (Pothole potholePoint : potholesList) {
+            Point point = Point.fromLngLat(potholePoint.getLocation().getLongitude(), potholePoint.getLocation().getLatitude());
+
+            // Kiểm tra xem điểm có nằm trên đường và chưa được thêm vào danh sách chưa
+            if (booleanPointOnLine(point, linestring.coordinates()) && !potholesListOnDirection.contains(point)) {
                 potholesListOnDirection.add(point);
                 Log.d("PotholeTag", "Pothole on Line true: " + point.longitude() + " " + point.latitude());
             }
         }
     }
+
 
     private void getRouteTwoPoint(Point origin ,Point destination) {
         MapboxDirections.Builder builder = MapboxDirections.builder();
@@ -1026,7 +1036,7 @@ TextView countPothole;
                     if(potholesListOnDirection.size()>0){
 
                         layoutCountPothole.setVisibility(View.VISIBLE);
-                        countPothole.setText("Số lượng ổ gà trên tuyến đường đã chọn"+potholesListOnDirection.size());
+                        countPothole.setText("Số lượng ổ gà trên tuyến đường đã chọn "+ potholesListOnDirection.size());
                     }
 
                 });
@@ -1367,7 +1377,8 @@ TextView countPothole;
                     routeLineView.renderClearRouteLineValue(style, view);
                 });
         });
-
+        warningText.setText("null");
+        countPothole.setText("Không tìm thấy ổ gà");
     }
 
     @SuppressLint("MissingPermission")
