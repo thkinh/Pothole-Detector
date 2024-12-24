@@ -6,11 +6,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class ApiClient {
-    public interface ApiCallback {
-        void onSuccess(String response);
-        void onFailure(Exception e);
-    }
-
     public static void getPotholes(String user, ApiCallback callback) {
         new Thread(() -> {
             try {
@@ -18,23 +13,22 @@ public class ApiClient {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
 
-                int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    String inputLine;
-                    StringBuilder response = new StringBuilder();
-
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-                    callback.onSuccess(response.toString());
-                } else {
-                    callback.onFailure(new Exception("Failed to fetch data: " + responseCode));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
                 }
+                reader.close();
+                callback.onSuccess(response.toString());
             } catch (Exception e) {
                 callback.onFailure(e);
             }
         }).start();
+    }
+
+    public interface ApiCallback {
+        void onSuccess(String response);
+        void onFailure(Exception e);
     }
 }
