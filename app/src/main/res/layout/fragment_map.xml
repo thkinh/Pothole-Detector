@@ -3,11 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="resultInMeters" />
 
     <com.mapbox.maps.MapView
         android:id="@+id/mapbox"
@@ -253,8 +248,8 @@
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/maneuverView"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/searchLayout"/>
+        android:layout_below="@+id/searchLayout"
+        android:layout_marginTop="10dp"/>
 
 
 
@@ -274,14 +269,15 @@
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/infoLayout"
+                android:id="@+id/layoutCountPothole"
+                android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible">
+                android:visibility="gone">
                 <ImageView
                     android:layout_margin="4dp"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_pothole_waning_map"
                     android:scaleType="fitCenter" />
                 <LinearLayout
@@ -290,24 +286,14 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
                     <TextView
+                        android:id="@+id/countPothole"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:textSize="20dp"
-                        android:text="Tuyến đường gặp 3 ổ gà" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:textSize="18dp"
-                        android:text="Đích đến Trường UIT" />
+                        android:text=""
+                        android:gravity="center"/>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:textSize="15dp"
-                        android:text="Khoảng cách 20m" />
 
                 </LinearLayout>
 
@@ -329,6 +315,7 @@
                 android:layout_weight="1"
                 android:layout_height="60dp"
                 android:text="Tuyến đường"
+                android:textSize="20dp"
                 android:textColor="#FFFF"/>
 
             <!-- Button "Bắt đầu đi" hình vuông -->
@@ -337,6 +324,7 @@
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
+                android:textSize="20dp"
                 android:text="Bắt đầu"
                 android:textColor="#FFFF"/>
 
