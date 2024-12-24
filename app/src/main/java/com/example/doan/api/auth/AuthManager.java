@@ -353,7 +353,7 @@ public class AuthManager {
         });
     }
 
-    public void fetchMostRecentPotholeDate(AppUser user, FetchMostRecentPotholeDateCallback callback) {
+    /*public void fetchMostRecentPotholeDate(AppUser user, FetchMostRecentPotholeDateCallback callback) {
         PotholeManager.getInstance().getPotholes(user, new PotholeManager.GetPotholeCallBack() {
             @Override
             public void onSuccess(List<Pothole> potholes) {
@@ -377,7 +377,7 @@ public class AuthManager {
     public interface FetchMostRecentPotholeDateCallback {
         void onSuccess(AppUser user);
         void onFailure(String errorMessage);
-    }
+    }*/
 
     public interface FetchImageCallBack {
         void onSuccess(Bitmap bitmap);
