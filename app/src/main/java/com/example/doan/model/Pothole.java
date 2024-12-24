@@ -1,7 +1,13 @@
 package com.example.doan.model;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.sql.Date;
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Pothole {
 
@@ -115,5 +121,24 @@ public class Pothole {
         public void setCity(String city) {
             this.city = city;
         }
+    }
+
+    public static List<Pothole> parsePotholes(String response) {
+        // Implement the parsing logic here
+        List<Pothole> potholes = new ArrayList<>();
+        // Example parsing logic (this should be replaced with actual parsing code)
+        // Assuming response is a JSON array of potholes
+        try {
+            JSONArray jsonArray = new JSONArray(response);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                Pothole pothole = new Pothole();
+                // Set pothole fields from jsonObject
+                potholes.add(pothole);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return potholes;
     }
 }
