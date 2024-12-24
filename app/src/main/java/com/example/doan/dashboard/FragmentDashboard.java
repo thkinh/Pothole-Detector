@@ -7,6 +7,7 @@ import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.login.LoginActivity;
 import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;
+import com.example.doan.setting.ProfileActivity;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -140,6 +141,14 @@ public class FragmentDashboard extends Fragment {
             }
         });
 
+        tvName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
 //----------------------------Start of user and route---------------------
         btnUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,6 +202,7 @@ public class FragmentDashboard extends Fragment {
                 }
             });
         }
+
 //Bấm vô chữ "trong 7 ngay...." hoặc "muc đo nguy hiem" sẽ chuyen sang fragment statitics
 
 //----------------------------Start of fetch data---------------------
