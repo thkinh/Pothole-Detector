@@ -15,6 +15,8 @@ import com.example.doan.R;
 import com.example.doan.api.auth.AuthManager;
 import com.example.doan.model.AppUser;
 
+import java.util.Date;
+
 public class SignupActivity extends AppCompatActivity {
 
     // Khai báo các view

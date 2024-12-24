@@ -18,11 +18,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -57,7 +59,10 @@ import com.mapbox.api.directions.v5.MapboxDirections;
 
 import com.mapbox.api.directions.v5.models.Bearing;
 import com.mapbox.api.directions.v5.models.VoiceInstructions;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
 import com.mapbox.bindgen.Expected;
+import com.mapbox.bindgen.ExpectedFactory;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
@@ -66,6 +71,8 @@ import com.mapbox.geojson.Point;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.api.directions.v5.models.RouteOptions;
+import com.mapbox.api.geocoding.v5.GeocodingCriteria;
+import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 
 import com.mapbox.maps.CameraOptions;
 import com.mapbox.maps.EdgeInsets;
@@ -122,6 +129,7 @@ import com.mapbox.navigation.ui.maps.route.arrow.model.RouteArrowOptions;
 import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineApi;
 import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineView;
 import com.mapbox.navigation.ui.maps.route.line.model.MapboxRouteLineOptions;
+import com.mapbox.navigation.ui.maps.route.line.model.RouteLineClearValue;
 import com.mapbox.navigation.ui.maps.route.line.model.RouteLineError;
 import com.mapbox.navigation.ui.maps.route.line.model.RouteLineResources;
 import com.mapbox.navigation.ui.maps.route.line.model.RouteSetValue;
@@ -575,6 +583,7 @@ public class FragmentMap extends Fragment
         });
     }
     List<Pothole> potholesList;
+    View potholeDetailLayout;
     private PointAnnotationManager pointPotholeAnnotationManager ;
     //Quản lí các điểm pothole trên map
     public void addPotholeToMap(List<Pothole> potholeList,PointAnnotationManager pointAnnotationManager){
@@ -592,6 +601,12 @@ public class FragmentMap extends Fragment
                     .withIconImage(resizedBitmap)
                     .withPoint(Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude()));
             pointPotholeAnnotationManager.create(pointAnnotationOptions);
+            if(potholePoint.getLocation().getCountry()==null && potholePoint.getLocation().getCity()==null){
+                getPlaceFromPoint(Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude()));
+//                Toast.makeText(getContext(), place, Toast.LENGTH_SHORT).show();
+//                Pothole.Location location = new Pothole.Location
+//                potholePoint.setLocation();
+            }
         }
 
         pointPotholeAnnotationManager.addClickListener(new OnPointAnnotationClickListener() {
@@ -600,12 +615,67 @@ public class FragmentMap extends Fragment
                 pointAnnotationManager.deleteAll();
                 double latitude = pointAnnotation.getPoint().latitude();
                 double longitude = pointAnnotation.getPoint().longitude();
-                String message = "Clicked at: Latitude = " + latitude + ", Longitude = " + longitude;
-                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                potholeDetailLayout.setVisibility(View.VISIBLE);
+                searchETLayout.setVisibility(View.GONE);
+                ImageButton btnBack = potholeDetailLayout.findViewById(R.id.btnBack);
+                btnBack.setOnClickListener(btn->{
+                    potholeDetailLayout.setVisibility(View.INVISIBLE);
+                    searchETLayout.setVisibility(View.VISIBLE);
+                });
+                Button btnSubmit = potholeDetailLayout.findViewById(R.id.btnSubmit);
+                btnSubmit.setOnClickListener(btn->{
+                });
+                Button btnAddImage = potholeDetailLayout.findViewById(R.id.btnAddImage);
+                btnAddImage.setOnClickListener(btn->{
+
+                });
+                TextView tvLocation = potholeDetailLayout.findViewById(R.id.tvLocation);
+                getPlaceFromPoint(Point.fromLngLat(longitude,latitude));
+
+                tvLocation.setText("Địa điểm: "+place);
                 return true;
             }
         });
 
+    }
+
+
+
+    String place ;
+    private void getPlaceFromPoint(Point point){
+        MapboxGeocoding client = MapboxGeocoding.builder()
+                .accessToken(getString(R.string.mapbox_access_token))
+                .query(point)
+                .geocodingTypes(GeocodingCriteria.TYPE_PLACE)
+                .mode(GeocodingCriteria.MODE_PLACES)
+                .build();
+
+
+        client.enqueueCall(new Callback<GeocodingResponse>() {
+            @Override
+            public void onResponse(Call<GeocodingResponse> call,
+                                   Response<GeocodingResponse> response) {
+                if (response.body() != null) {
+                    List<CarmenFeature> results = response.body().features();
+
+                        // Get the first Feature from the successful geocoding response
+                        CarmenFeature feature = results.get(0);
+                        place = feature.placeName().toString();
+
+                        Toast.makeText(getContext(), feature.placeName(),
+                                Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GeocodingResponse> call, Throwable t) {
+
+                Toast.makeText(getContext(), "Fail Search Place",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
 
     private void setclickOnMap(PointAnnotationManager pointAnnotationManager,Bitmap resizedBitmap){
@@ -675,14 +745,12 @@ public class FragmentMap extends Fragment
                 });
 
             });
+            getPlaceFromPoint(pointDestination);
 
             return false;
         });
     }
 
-//    public void getPlacebyPoint(Point point){
-//        Feature feature = mapView.getMapboxMap().queryRenderedFeatures();
-//    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -698,7 +766,6 @@ public class FragmentMap extends Fragment
 
     TextView warningText;
     @Nullable
-    View potholeDetailLayout;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_map, container, false);
@@ -723,7 +790,7 @@ public class FragmentMap extends Fragment
         findRouteButton = view.findViewById(R.id.findRouteButton);
         layoutStartDestination=view.findViewById(R.id.searchStartETandDestination);
         warningText=view.findViewById(R.id.distancePothole);
-        potholeDetailLayout = view.findViewById(R.id.potholeDetailLayout);
+        potholeDetailLayout=view.findViewById(R.id.potholeDetailLayout);
         return view;
     }
 
@@ -924,7 +991,7 @@ public class FragmentMap extends Fragment
 
     private void updateCamera(Point point, Double bearing) {
         MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
-        CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(15.0).bearing(bearing).pitch(45.0)
+        CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(14.0).bearing(bearing).pitch(0.0)
                 .padding(new EdgeInsets(1000.0, 0.0, 0.0, 0.0)).build();
 
         getCamera(mapView).easeTo(cameraOptions, animationOptions);
@@ -933,7 +1000,7 @@ public class FragmentMap extends Fragment
 
     private void updateCameraNavigation(Point point, Double bearing) {
         MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
-        CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(15.0).bearing(bearing).pitch(90.0)
+        CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(17.0).bearing(bearing).pitch(45.0)
                 .padding(new EdgeInsets(1000.0, 0.0, 0.0, 0.0)).build();
 
         getCamera(mapView).easeTo(cameraOptions, animationOptions);
@@ -953,7 +1020,7 @@ public class FragmentMap extends Fragment
             Location location = locationMatcherResult.getEnhancedLocation();
             navigationLocationProvider.changePosition(location, locationMatcherResult.getKeyPoints(), null, null);
             if (focusLocationNavigationMode) {
-                updateCamera(Point.fromLngLat(location.getLongitude(), location.getLatitude()), (double) location.getBearing());
+                updateCameraNavigation(Point.fromLngLat(location.getLongitude(), location.getLatitude()), (double) location.getBearing());
             }
             myLocationNavigation=location;
         }
@@ -1153,10 +1220,11 @@ public class FragmentMap extends Fragment
         mapboxNavigation.registerRouteProgressObserver(routeProgressObserver);
 
         imageView.setOnClickListener(view -> {
+            mapboxNavigation.stopTripSession();
             mapboxNavigation.onDestroy();
             mapboxNavigation.unregisterRoutesObserver(routesObserver);
             mapboxNavigation.unregisterLocationObserver(locationObserver);
-            updateCameraNavigation(Point.fromLngLat(myLocationNavigation.getLongitude(), myLocationNavigation.getLatitude()),(double) myLocationNavigation.getBearing());
+            updateCamera(Point.fromLngLat(myLocationNavigation.getLongitude(), myLocationNavigation.getLatitude()),(double) myLocationNavigation.getBearing());
             endTrip();
         });
 
@@ -1227,7 +1295,13 @@ public class FragmentMap extends Fragment
         soundButton.setVisibility(View.GONE);
         maneuverView.setVisibility(View.GONE);
 
+        routeLineApi.clearRouteLine(new MapboxNavigationConsumer<Expected<RouteLineError, RouteLineClearValue>>() {
+            @Override
+            public void accept(Expected<RouteLineError, RouteLineClearValue> routeLineErrorRouteLineClearValueExpected) {
+                // Handle potential errors during route line clearing
 
+            }
+        });
     }
 
     @SuppressLint("MissingPermission")
