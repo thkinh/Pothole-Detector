@@ -1065,7 +1065,6 @@ public class FragmentMap extends Fragment
                 updateCameraNavigation(Point.fromLngLat(location.getLongitude(), location.getLatitude()), (double) location.getBearing());
             }
             myLocationNavigation = location;
-            DistanceUser();
             for (Pothole pothole : potholesList) {
                 Point point = Point.fromLngLat(pothole.getLocation().getLongitude(), pothole.getLocation().getLatitude());
                 if (booleanPointOnLine(point, lineString.coordinates())) {
@@ -1348,9 +1347,6 @@ public class FragmentMap extends Fragment
                     routeLineView.renderClearRouteLineValue(style, view);
                 });
         });
-        long distanceLong=(long)(double)distance;
-        AppUser currentUser = AuthManager.getInstance().getAccount();
-        currentUser.setDistanceTraveled((long) distance);
 
     }
 
@@ -1363,7 +1359,6 @@ public class FragmentMap extends Fragment
                 Location location = result.getLastLocation();
 
                 Point origin = Point.fromLngLat(Objects.requireNonNull(location).getLongitude(), location.getLatitude());
-                DistanceUser();
                 RouteOptions.Builder builder = RouteOptions.builder()
                         .coordinatesList(Arrays.asList(origin, point))
                         .alternatives(false)
@@ -1400,12 +1395,5 @@ public class FragmentMap extends Fragment
 
             }
         });
-    }
-    double distance;
-    private void DistanceUser() {
-        Point oldPoint = Point.fromLngLat(myLocationMap.getLongitude(), myLocationMap.getLatitude());
-        Point newPoint = Point.fromLngLat(myLocationNavigation.getLongitude(), myLocationNavigation.getLatitude());
-        distance = TurfMeasurement.distance(oldPoint, newPoint);
-        myLocationMap= myLocationNavigation;
     }
 }
