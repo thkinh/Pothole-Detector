@@ -1,11 +1,21 @@
 package com.example.doan.api.auth;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import com.example.doan.api.RetrofitInstance;
 import com.example.doan.model.AppUser;
 
+import com.example.doan.model.UserDetails;
+
+import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -97,6 +107,7 @@ public class AuthManager {
                             response.body().getPassword(),
                             response.body().getDistanceTraveled());
                     appUser.setId(response.body().getId());
+                    appUser.setDetails(response.body().getDetails());
                     setGlobalAccount(appUser);
                     callback.onSuccess(appUser);
                 }
@@ -219,6 +230,121 @@ public class AuthManager {
                 callBack.onFailure("API call failed: " + t.getMessage());
             }
         });
+    }
+
+    public void getUserDetails(Integer id, GetDetailsCallBack callBack){
+        Call<UserDetails> call = authService.getUserDetails(id);
+        call.enqueue(new Callback<UserDetails>() {
+            @Override
+            public void onResponse(Call<UserDetails> call, Response<UserDetails> response) {
+                if (response.code() == 200){
+                    callBack.onSuccess(response.body());
+                }
+                else {
+                    Log.e("__FAILED:", response.raw().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<UserDetails> call, Throwable t) {
+                callBack.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+    public void updateUserDetails(Integer uID, UserDetails details, UpdateDetailsCallBack callBack){
+        Call<UserDetails> call = authService.updateUserDetails(uID,details);
+        call.enqueue(new Callback<UserDetails>() {
+            @Override
+            public void onResponse(Call<UserDetails> call, Response<UserDetails> response) {
+                if (response.code() == 200){
+                    callBack.onSuccess(response.body());
+                }
+                else {
+                    Log.e("__FAILED:", response.raw().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<UserDetails> call, Throwable t) {
+                callBack.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+    public void uploadProfileImage(int id, File imageFile, UploadImageCallBack callBack) {
+        RequestBody requestFile = RequestBody.create(imageFile, MediaType.parse("image/jpeg"));
+        MultipartBody.Part body = MultipartBody.Part.createFormData("imageFile", imageFile.getName(), requestFile);
+
+        Call<ResponseBody> call = authService.uploadImage(id, body);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        // Parse response or handle as needed
+                        callBack.onSuccess("Image uploaded successfully.");
+                    } catch (Exception e) {
+                        callBack.onFailure("Error parsing response: " + e.getMessage());
+                    }
+                } else {
+                    String errorMessage = "Image upload failed: " + response.code() + " - " + response.message();
+                    Log.e("__UPLOAD_FAILED:", ""+response.code());
+                    callBack.onFailure(errorMessage);
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                String errorMessage = "Image upload failed: " + t.getMessage();
+                Log.e("__ERROR:", errorMessage);
+                callBack.onFailure(errorMessage);
+            }
+        });
+    }
+
+    public void fetchProfileImage(int userId, FetchImageCallBack callBack) {
+        Call<ResponseBody> call = authService.getProfileImage(userId);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        InputStream inputStream = response.body().byteStream();
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        callBack.onSuccess(bitmap); // Pass the bitmap to the callback
+                    } catch (Exception e) {
+                        callBack.onFailure("Error processing image: " + e.getMessage());
+                    }
+                } else {
+                    callBack.onFailure("Failed to fetch image: " + response.code() + " - " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                callBack.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+
+    public interface FetchImageCallBack {
+        void onSuccess(Bitmap bitmap);
+        void onFailure(String errorMessage);
+    }
+
+    public interface UploadImageCallBack {
+        void onSuccess(String message);
+        void onFailure(String errorMessage);
+    }
+
+    public interface UpdateDetailsCallBack{
+        void onSuccess(UserDetails details);
+        void onFailure(String errorMessage);
+    }
+
+    public interface GetDetailsCallBack{
+        void onSuccess(UserDetails details);
+        void onFailure(String errorMessage);
     }
 
     public interface UpdateDistanceCallBack{

@@ -1,5 +1,6 @@
 package com.example.doan.model;
 
+import com.google.firebase.firestore.auth.User;
 import com.google.gson.annotations.JsonAdapter;
 
 import java.sql.Date;
@@ -12,6 +13,7 @@ public class AppUser {
     private String password;
     private Date date_created;
     private Long distanceTraveled;
+    private UserDetails details;
 
     public AppUser(){}
 
@@ -20,6 +22,14 @@ public class AppUser {
         this.email =email;
         this.password = password;
         this.distanceTraveled = distanceTraveled;
+    }
+
+    public UserDetails getDetails() {
+        return details;
+    }
+
+    public void setDetails(UserDetails details) {
+        this.details = details;
     }
 
     // Getters and Setters...

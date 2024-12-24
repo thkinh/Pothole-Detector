@@ -7,7 +7,7 @@
 
         <!-- Nút back -->
         <ImageView
-            android:id="@+id/img_back"
+            android:id="@+id/img_backFromProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_back"
@@ -140,7 +140,7 @@
                 android:textStyle="bold"
                 android:textSize="18sp"/>
             <TextView
-                android:id="@+id/dateofbirth"
+                android:id="@+id/profileDateOfBirth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="21/08/2004"
@@ -163,8 +163,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="I am a UI/UX Designer, I have been working in this field for 3 years. /n I like to design and create new things."
                 android:textColor="@color/opacity_black"
+                android:text="None"
                 android:textSize="16sp" />
         </LinearLayout>
 

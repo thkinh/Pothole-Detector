@@ -8,7 +8,7 @@
 
     <!-- Nút back -->
     <ImageView
-        android:id="@+id/btn_img_back"
+        android:id="@+id/btn_img_backFromEditP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_back"
@@ -31,7 +31,7 @@
 
     <!-- Background Header Image -->
     <ImageView
-        android:id="@+id/backgroundHeaderImage"
+        android:id="@+id/edt_backgroundHeaderImage"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_below="@+id/profileTitle"
@@ -44,7 +44,8 @@
         android:id="@+id/replacePhotoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/backgroundHeaderImage"
+        android:visibility="invisible"
+        android:layout_below="@+id/edt_backgroundHeaderImage"
         android:text="Replace Photo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="-116dp"
@@ -53,24 +54,24 @@
 
     <!-- Profile Image -->
     <ImageView
-        android:id="@+id/profileImage"
+        android:id="@+id/edt_profileImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/backgroundHeaderImage"
+        android:layout_below="@+id/edt_backgroundHeaderImage"
         android:src="@drawable/img_background"
         android:scaleType="centerCrop"
         android:background="@drawable/circle_border"
         android:layout_marginTop="-55dp"
         android:clipToOutline="true"
-        android:outlineProvider="background"/>
+        />
 
     <!-- Upload Photo Button -->
     <Button
         android:id="@+id/btn_uploadPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/profileImage"
+        android:layout_below="@+id/edt_profileImage"
         android:text="Upload Photo"
         android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true"
@@ -143,7 +144,7 @@
                     android:textSize="18sp"/>
 
                 <EditText
-                    android:id="@+id/profileJobTitle"
+                    android:id="@+id/edt_jobTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -157,7 +158,6 @@
                 android:id="@+id/edit_phonenumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/edit_email"
                 android:background="@drawable/rounded_card"
                 android:orientation="vertical"
                 android:padding="10dp"
@@ -173,7 +173,7 @@
                     android:textSize="16sp"/>
 
                 <EditText
-                    android:id="@+id/profilePhone"
+                    android:id="@+id/edt_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -184,7 +184,7 @@
 
             <!-- Edit Date of Birth -->
             <LinearLayout
-                android:id="@+id/edit_dateofbirth"
+                android:id="@+id/edit_birthofDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/edit_phonenumber"
@@ -203,7 +203,7 @@
                     android:textSize="16sp"/>
 
                 <EditText
-                    android:id="@+id/profileDateOfBirth"
+                    android:id="@+id/edt_birth"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"

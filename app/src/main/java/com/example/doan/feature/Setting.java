@@ -3,6 +3,7 @@ package com.example.doan.feature;
 import android.hardware.SensorManager;
 
 import com.example.doan.model.AppUser;
+import com.example.doan.model.UserDetails;
 
 public class Setting {
     public enum AppLanguage{
@@ -20,7 +21,7 @@ public class Setting {
     private boolean isContributor;
     private AppLanguage appLanguage;
     private Sensitivity sensitivity;
-
+    private UserDetails userDetails;
 
     private static Setting instance;
     private Setting(){
@@ -36,6 +37,14 @@ public class Setting {
             instance = new Setting();
         }
         return instance;
+    }
+
+    public UserDetails getUserDetails() {
+        return userDetails;
+    }
+
+    public void setUserDetails(UserDetails userDetails) {
+        this.userDetails = userDetails;
     }
 
     public int getSensitivity(){
