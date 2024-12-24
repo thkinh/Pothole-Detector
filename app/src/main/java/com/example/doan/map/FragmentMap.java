@@ -185,10 +185,10 @@ public class FragmentMap extends Fragment
     private PermissionsManager permissionsManager;
 
     //Các thành phần của layout
-    private FloatingActionButton navigationButton;
+    private Button navigationButton;
     private FloatingActionButton mylocationButton;
     private FloatingActionButton mylocationNavigationButton;
-    private FloatingActionButton directionButton;
+    private Button directionButton;
     private MapboxSoundButton soundButton;
 
     private PlaceAutocomplete placeAutocomplete;
@@ -334,11 +334,14 @@ public class FragmentMap extends Fragment
         getGestures(mapView).addOnMoveListener(onMoveListener);
 
         mylocationButton.setOnClickListener(viewButton -> {
-            mylocationButton.hide();
             locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
             getGestures(mapView).addOnMoveListener(onMoveListener);
             getMyLocationMap();
         });
+    }
+
+    public void setDirectionButton(FloatingActionButton directionButton) {
+
     }
 
     //nếu như nhấp vào search start trước.
@@ -414,7 +417,7 @@ public class FragmentMap extends Fragment
 
                 navigationButton.setOnClickListener(view->{
                     searchETLayout.setVisibility(View.GONE);
-                    directionButton.hide();
+
                     setNavigationOnMap(placeAutocompleteSuggestion.getCoordinate());
                 });
                 Toast.makeText(getContext(), String.format("Show layout search 2 point", placeAutocompleteSuggestion.getCoordinate()), Toast.LENGTH_SHORT).show();
@@ -541,7 +544,6 @@ public class FragmentMap extends Fragment
 
                 navigationButton.setOnClickListener(view->{
                     searchETLayout.setVisibility(View.GONE);
-                    directionButton.hide();
                     setNavigationOnMap(placeAutocompleteSuggestion.getCoordinate());
                 });
 
@@ -739,7 +741,6 @@ public class FragmentMap extends Fragment
 
             navigationButton.setOnClickListener(navigation->{
                 searchETLayout.setVisibility(View.GONE);
-                directionButton.hide();
                 setNavigationOnMap(pointDestination);
             });
             directionButton.setOnClickListener(direction->{
@@ -787,7 +788,7 @@ public class FragmentMap extends Fragment
         mylocationButton.hide();
         mylocationNavigationButton = (FloatingActionButton) view.findViewById(R.id.mylocationNavigationButton);
         mylocationNavigationButton.hide();
-        navigationButton = (FloatingActionButton) view.findViewById(R.id.navigationButton);
+        navigationButton = view.findViewById(R.id.navigationButton);
         searchET = (TextInputEditText) view.findViewById(R.id.searchET);
         searchETLayout = (TextInputLayout) view.findViewById(R.id.searchLayout);
         searchResultsView = (SearchResultsView) view.findViewById(R.id.search_results_view);
@@ -1064,7 +1065,10 @@ public class FragmentMap extends Fragment
             if (focusLocationNavigationMode) {
                 updateCameraNavigation(Point.fromLngLat(location.getLongitude(), location.getLatitude()), (double) location.getBearing());
             }
+            notificationWarning.setVisibility(View.GONE);
+
             myLocationNavigation = location;
+            if(lineString!=null){
             for (Pothole pothole : potholesList) {
                 Point point = Point.fromLngLat(pothole.getLocation().getLongitude(), pothole.getLocation().getLatitude());
                 if (booleanPointOnLine(point, lineString.coordinates())) {
@@ -1086,7 +1090,11 @@ public class FragmentMap extends Fragment
                         NotifyManager.showNotification(getContext(), "Cảnh báo ổ gà", distanceString);
                     }
                 }
-            }
+                else {
+                    notificationWarning.setVisibility(View.GONE);
+
+                }
+            }}
         }
     };
 
@@ -1125,7 +1133,6 @@ public class FragmentMap extends Fragment
         public void onMoveBegin(@NonNull MoveGestureDetector moveGestureDetector) {
             focusLocationNavigationMode = false;
             getGestures(mapView).removeOnMoveListener(this);
-            mylocationButton.hide();
             mylocationNavigationButton.show();
 
         }
@@ -1235,8 +1242,7 @@ public class FragmentMap extends Fragment
                 return false;
             }
         });
-        navigationButton.hide();
-        mylocationButton.hide();
+
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
         routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(getContext()).build());
 
