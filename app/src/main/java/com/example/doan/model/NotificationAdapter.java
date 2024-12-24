@@ -12,13 +12,18 @@ import com.example.doan.R;
 import java.util.List;
 
 public class NotificationAdapter extends BaseAdapter {
-
-    private final Context context;
+    private Context context;
     private List<String> notifications;
 
     public NotificationAdapter(Context context, List<String> notifications) {
         this.context = context;
         this.notifications = notifications;
+    }
+
+    public void updateData(List<String> newNotifications) {
+        this.notifications.clear();
+        this.notifications.addAll(newNotifications);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -27,7 +32,7 @@ public class NotificationAdapter extends BaseAdapter {
     }
 
     @Override
-    public String getItem(int position) {
+    public Object getItem(int position) {
         return notifications.get(position);
     }
 
@@ -43,13 +48,8 @@ public class NotificationAdapter extends BaseAdapter {
         }
 
         TextView notificationText = convertView.findViewById(R.id.notification_title);
-        notificationText.setText(getItem(position));
+        notificationText.setText(notifications.get(position));
 
         return convertView;
-    }
-
-    public void updateData(List<String> newNotifications) {
-        this.notifications = newNotifications;
-        notifyDataSetChanged();
     }
 }
