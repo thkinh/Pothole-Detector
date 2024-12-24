@@ -168,9 +168,9 @@ public class LoginActivity extends AppCompatActivity {
                     GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
                     if (googleSignInAccount != null) {
                         // When sign in account is not equal to null initialize auth credential
-                        AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
+                        //AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
                         // Check credential
-                        mAuth.signInWithCredential(authCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        /*mAuth.signInWithCredential(authCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
@@ -181,7 +181,10 @@ public class LoginActivity extends AppCompatActivity {
                                     displayToast("Authentication failed :" + task.getException().getMessage());
                                 }
                             }
-                        });
+                        });*/
+                        String email = googleSignInAccount.getEmail();
+                        String username = googleSignInAccount.getDisplayName();
+                        sendUserInfoToServer(username, email);
                     }
 //                    navigateToSecondActivity2();
                 } catch (ApiException e) {
@@ -190,6 +193,53 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void sendUserInfoToServer(String username, String email) {
+        AuthManager.getInstance().checkUserExists(email, new AuthManager.CheckUserCallback() {
+            @Override
+            public void onUserExists() {
+                // User exists, log them in
+                runOnUiThread(() -> {
+                    Toast.makeText(LoginActivity.this, "Welcome back", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                });
+            }
+
+            @Override
+            public void onUserNotFound() {
+                // User does not exist, create a new account
+                AppUser appUser = new AppUser(username, email, "123456", 0L);
+                AuthManager.getInstance().signUp(appUser, new AuthManager.SignUpCallback() {
+                    @Override
+                    public void onSuccess(AppUser user) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(LoginActivity.this, "Welcome " + user.getUsername(), Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                runOnUiThread(() -> {
+                    Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+    }
+
     private void displayToast(String s) {
         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
     }

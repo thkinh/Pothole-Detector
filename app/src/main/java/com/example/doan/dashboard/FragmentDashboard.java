@@ -1,6 +1,5 @@
 package com.example.doan.dashboard;
 
-import com.example.doan.FragmentStatistic;
 import com.example.doan.NotificationActivity;
 import com.example.doan.R;
 import com.example.doan.api.auth.AuthManager;
@@ -119,7 +118,7 @@ public class FragmentDashboard extends Fragment {
 
         // Khởi tạo GoogleSignInClient
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id)) // Thay bằng ID client của bạn trong google-services.json
+                .requestIdToken(getString(R.string.default_web_client_id)) // Thay bằng ID client trong google-services.json
                 .requestEmail()
                 .build();
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);

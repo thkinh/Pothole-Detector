@@ -114,8 +114,7 @@ public class DetectActivity extends AppCompatActivity
             @Override
             public void onSuccess(LocationEngineResult result) {
                 Location location = result.getLastLocation();
-                Pothole pothole = new Pothole(0, "Normal", "None", new Pothole.Location(), AuthManager.getInstance().getAccount(), 0);
-
+                Pothole pothole = new Pothole(null, "Normal", new Pothole.Location(), AuthManager.getInstance().getAccount(), 0);
                 Pothole.Location location1 = new Pothole.Location();
                 location1.setLatitude(location.getLatitude());
                 location1.setLongitude(location.getLongitude());
