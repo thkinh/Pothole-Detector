@@ -647,7 +647,7 @@ public class FragmentMap extends Fragment
                 .accessToken(getString(R.string.mapbox_access_token))
                 .query(point)
                 .geocodingTypes(GeocodingCriteria.TYPE_PLACE)
-                .mode(GeocodingCriteria.MODE_PLACES)
+                .mode(GeocodingCriteria.TYPE_ADDRESS)
                 .build();
 
 
