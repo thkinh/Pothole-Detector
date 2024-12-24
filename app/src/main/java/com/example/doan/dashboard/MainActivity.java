@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnMapFragmentInte
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainlayout, fragment);
+        fragmentTransaction.addToBackStack(null); // Thêm vào back stack
         fragmentTransaction.commit();
     }
 

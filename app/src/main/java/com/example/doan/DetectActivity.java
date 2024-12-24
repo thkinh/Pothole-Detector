@@ -85,7 +85,7 @@ public class DetectActivity extends AppCompatActivity
     public void AddFragmentMap(){
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.mainlayout,new FragmentMap());
+        fragmentTransaction.add(R.id.mainlayout,new Mapbox());
         fragmentTransaction.commit();
     }
 
