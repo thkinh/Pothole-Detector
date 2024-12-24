@@ -28,6 +28,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -78,9 +79,15 @@ public class FragmentStatistic extends Fragment {
         Map<String, Integer> potholeCountByDate = new HashMap<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+        // Tính toán ngày bắt đầu và ngày kết thúc
+        Calendar calendar = Calendar.getInstance();
+        Date endDate = calendar.getTime();
+        calendar.add(Calendar.DAY_OF_YEAR, -7);
+        Date startDate = calendar.getTime();
+
         for (Pothole pothole : potholes) {
             Date dateFound = pothole.getDateFound();
-            if (dateFound != null) {
+            if (dateFound != null && !dateFound.before(startDate) && !dateFound.after(endDate)) {
                 String dateString = dateFormat.format(dateFound);
                 potholeCountByDate.put(dateString, potholeCountByDate.getOrDefault(dateString, 0) + 1);
             }
@@ -106,6 +113,8 @@ public class FragmentStatistic extends Fragment {
 
         YAxis leftAxis = graph.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
+        leftAxis.setGranularity(1f); // Set granularity to 1
+        leftAxis.setGranularityEnabled(true); // Enable granularity
 
         YAxis rightAxis = graph.getAxisRight();
         rightAxis.setEnabled(false);
