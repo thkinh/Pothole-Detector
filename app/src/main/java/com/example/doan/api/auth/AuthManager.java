@@ -13,6 +13,7 @@ import com.example.doan.model.UserDetails;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Date;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -308,7 +309,6 @@ public class AuthManager {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
-                        // Parse response or handle as needed
                         callBack.onSuccess("Image uploaded successfully.");
                     } catch (Exception e) {
                         callBack.onFailure("Error parsing response: " + e.getMessage());
