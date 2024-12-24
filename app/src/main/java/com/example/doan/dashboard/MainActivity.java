@@ -3,6 +3,10 @@ package com.example.doan.dashboard;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -62,4 +66,31 @@ public class MainActivity extends AppCompatActivity implements OnMapFragmentInte
         // Handle the configuration change if needed
     }
 
+    private void fetchPotholes(String user) {
+        ApiClient.getPotholes(user, new ApiClient.ApiCallback() {
+            @Override
+            public void onSuccess(String response) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    // Parse the response and update UI
+                    Log.d("API Response", response);
+                    // Show notifications based on the response
+                    showNotifications(response);
+                });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    Log.e("API Error", e.getMessage());
+                });
+            }
+        });
+    }
+
+    private void showNotifications(String response) {
+        // Parse the response and show notifications
+        // This is a placeholder implementation
+        // You need to parse the JSON response and create notifications accordingly
+        Log.d("Notifications", "Show notifications based on response: " + response);
+    }
 }

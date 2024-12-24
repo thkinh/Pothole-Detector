@@ -112,6 +112,10 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly-SNAPSHOT'
     //Java language
     implementation "androidx.fragment:fragment:1.8.5"
+
+    //Firebase
+    implementation 'com.google.firebase:firebase-database:20.0.5'
+    implementation 'com.google.firebase:firebase-messaging:23.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
