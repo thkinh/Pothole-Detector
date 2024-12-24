@@ -208,7 +208,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:text="21/08/2004"
+                    android:text="2004-08-20"
                     android:textColor="@color/opacity_black"
                     android:textSize="14sp" />
             </LinearLayout>

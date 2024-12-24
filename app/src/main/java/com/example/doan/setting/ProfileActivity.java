@@ -65,7 +65,8 @@ public class ProfileActivity extends AppCompatActivity {
                     tv_job.setText(details.getJobTitle());
                     tv_email.setText(details.getEmail());
                     tv_phone.setText(details.getPhoneNumber());
-                    tv_birth.setText(details.getDateOfBirth().toString());
+                    if (details.getDateOfBirth() != null){
+                    tv_birth.setText(details.getDateOfBirth().toString());}
                 });
             }
             @Override
@@ -76,12 +77,14 @@ public class ProfileActivity extends AppCompatActivity {
         authManager.fetchProfileImage(authManager.getAccount().getId(), new AuthManager.FetchImageCallBack() {
             @Override
             public void onSuccess(Bitmap bitmap) {
-                ImageView imageView = findViewById(R.id.profileImage);
-                imageView.setImageBitmap(bitmap);
+                runOnUiThread(() ->{
+                    ImageView imageView = findViewById(R.id.profileImage);
+                    imageView.setImageBitmap(bitmap);
+                });
             }
             @Override
             public void onFailure(String errorMessage) {
-                Toast.makeText(ProfileActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ProfileActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
     }
