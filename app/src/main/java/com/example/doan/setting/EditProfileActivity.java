@@ -64,7 +64,8 @@ public class EditProfileActivity extends AppCompatActivity {
         tv_fullName.setText(details.getFullName());
         tv_job.setText(details.getJobTitle());
         tv_phone.setText(details.getPhoneNumber());
-        tv_birth.setText(details.getDateOfBirth().toString());
+        if (details.getDateOfBirth() != null){
+        tv_birth.setText(details.getDateOfBirth().toString());}
 
         btn_save.setOnClickListener(view -> saveProfile(new UserDetails()));
         btn_back.setOnClickListener(view -> finish());
@@ -140,6 +141,7 @@ public class EditProfileActivity extends AppCompatActivity {
             details.setDateOfBirth(dateOfBirth);
         }catch (IllegalArgumentException e){
             Toast.makeText(EditProfileActivity.this, "Wrong format: yy-mm-dd", Toast.LENGTH_SHORT).show();
+            return;
         }
         AuthManager.getInstance().updateUserDetails(AuthManager.getInstance().getAccount().getId(),details, new AuthManager.UpdateDetailsCallBack() {
             @Override
