@@ -1,5 +1,6 @@
 package com.example.doan.dashboard;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 
 import com.example.doan.ApiClient;
+import com.example.doan.DetectActivity;
 import com.example.doan.feature.Setting;
 import com.example.doan.setting.FragmentSetting;
 
@@ -44,9 +46,17 @@ public class MainActivity extends AppCompatActivity implements OnMapFragmentInte
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.btn_home) {
                 replaceFragment(new FragmentDashboard());
-            } else if (item.getItemId() == R.id.btn_map) {
-                replaceFragment(new FragmentMap());
-            } else if (item.getItemId() == R.id.btn_setting) {
+            } else if (item.getItemId() == R.id.btn_map)
+            {
+                if (!Setting.getInstance().getIsContributor() ){
+                    replaceFragment(new FragmentMap());
+                }
+                if (Setting.getInstance().getIsContributor()){
+                    Intent intent = new Intent(MainActivity.this, DetectActivity.class);
+                    startActivity(intent);
+                }
+            }
+            else if (item.getItemId() == R.id.btn_setting) {
                 replaceFragment(new FragmentSetting());
             }
             return true;

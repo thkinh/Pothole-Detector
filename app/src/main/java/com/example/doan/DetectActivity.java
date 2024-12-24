@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.example.doan.api.auth.AuthManager;
+import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.dashboard.MainActivity;
 import com.example.doan.map.*;
 import com.example.doan.feature.DetectEngine;
@@ -117,13 +118,25 @@ public class DetectActivity extends AppCompatActivity
                 Location location = result.getLastLocation();
                 Pothole pothole = new Pothole(null, "Normal", new Pothole.Location(), AuthManager.getInstance().getAccount(), 0);
 
-
                 Pothole.Location location1 = new Pothole.Location();
                 location1.setLatitude(location.getLatitude());
                 location1.setLongitude(location.getLongitude());
                 location1.setCountry("None");
                 location1.setCity("None");
                 pothole.setLocation(location1);
+                PotholeManager.getInstance().addPothole(pothole, new PotholeManager.AddPotholeCallBack() {
+                    @Override
+                    public void onSuccess(Pothole pothole) {
+                        Toast.makeText(DetectActivity.this, "Pothole Detected"+pothole.getLocation().getLongitude()+"/"
+                                +pothole.getLocation().getLatitude(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+
+                    }
+                });
+
                 Log.d("__DETECTION", "Pothole found! "+pothole.getLocation().getLongitude()+"/"
                         +pothole.getLocation().getLatitude());
             }
@@ -134,6 +147,11 @@ public class DetectActivity extends AppCompatActivity
             }
         });
     }
+
+    void hanlde_addPothole(Pothole pothole){
+
+    }
+
 
     @Override
     protected void onResume() {

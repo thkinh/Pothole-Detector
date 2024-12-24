@@ -239,7 +239,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
-                            android:text="Alert preferences"
+                            android:text="@string/iscontributor"
                             android:textSize="20dp" />
 
 
@@ -248,6 +248,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
+                            android:id="@+id/switch_contribute"
                             android:layout_marginEnd="30dp"
                             android:gravity="center"
                             android:thumb="@drawable/thumb_white"
@@ -260,7 +261,7 @@
         </LinearLayout>
     </ScrollView>
     <Button
-        android:id="@+id/btn_logout"
+        android:id="@+id/btn_stlogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="100dp"
