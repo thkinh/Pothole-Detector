@@ -127,16 +127,23 @@ public class Pothole {
     }
 
     public static List<Pothole> parsePotholes(String response) {
-        // Implement the parsing logic here
         List<Pothole> potholes = new ArrayList<>();
-        // Example parsing logic (this should be replaced with actual parsing code)
-        // Assuming response is a JSON array of potholes
         try {
             JSONArray jsonArray = new JSONArray(response);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 Pothole pothole = new Pothole();
-                // Set pothole fields from jsonObject
+                pothole.setId(jsonObject.getInt("id"));
+                pothole.setDateFound(Date.valueOf(jsonObject.getString("dateFound")));
+                pothole.setTimeFound(jsonObject.getString("timeFound"));
+                pothole.setSeverity(jsonObject.getString("severity"));
+                JSONObject locationObject = jsonObject.getJSONObject("location");
+                Location location = new Location();
+                location.setLatitude(locationObject.getDouble("latitude"));
+                location.setLongitude(locationObject.getDouble("longitude"));
+                location.setCountry(locationObject.getString("country"));
+                location.setCity(locationObject.getString("city"));
+                pothole.setLocation(location);
                 potholes.add(pothole);
             }
         } catch (JSONException e) {

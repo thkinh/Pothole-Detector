@@ -20,6 +20,7 @@ import java.util.List;
 
 public class NotificationActivity extends AppCompatActivity {
 
+    private static final String TAG = "NotificationActivity";
     private ListView notificationListView;
     private NotificationAdapter adapterNotification;
     private List<String> notificationList;
@@ -58,43 +59,51 @@ public class NotificationActivity extends AppCompatActivity {
 
         notificationListView.setOnItemClickListener((parent, view, position, id) -> markNotificationAsRead(position));
 
+        Log.d(TAG, "Calling fetchPotholes");
         fetchPotholes();
     }
 
     private void fetchPotholes() {
+        Log.d(TAG, "fetchPotholes called");
         AppUser currentUser = AuthManager.getInstance().getAccount();
         if (currentUser != null && currentUser.getUsername() != null) {
             String username = currentUser.getUsername();
             ApiClient.getPotholes(username, new ApiClient.ApiCallback() {
                 @Override
                 public void onSuccess(String response) {
-                    Log.d("API Success", "Response: " + response);
+                    Log.d(TAG, "API Success: " + response);
                     List<Pothole> potholes = Pothole.parsePotholes(response);
                     notificationList.clear();
                     for (Pothole pothole : potholes) {
-                        String message = "Pothole detected at " + pothole.getLocation().getCity() + " with severity " + pothole.getSeverity();
+                        String message = "Pothole detected at " + pothole.getLocation().getCity() +
+                                " (Lat: " + pothole.getLocation().getLatitude() +
+                                ", Long: " + pothole.getLocation().getLongitude() +
+                                ") on " + pothole.getDateFound() + " at " + pothole.getTimeFound() +
+                                " with severity " + pothole.getSeverity();
                         notificationList.add(message);
                     }
-                    updateNotifications(tabUnread.isSelected());
+                    runOnUiThread(() -> updateNotifications(tabUnread.isSelected()));
                 }
 
                 @Override
                 public void onFailure(Exception e) {
-                    Log.e("API Error", e.getMessage());
+                    Log.e(TAG, "API Error: " + e.getMessage());
                 }
             });
         } else {
-            Log.e("User Error", "Current user is null or username is not available");
+            Log.e(TAG, "Current user is null or username is not available");
         }
     }
 
     private void updateNotifications(boolean showUnread) {
+        Log.d(TAG, "Updating notifications, showUnread: " + showUnread);
         filteredNotificationList.clear();
         for (String notification : notificationList) {
             if (!showUnread || notification.contains("Chưa đọc")) {
                 filteredNotificationList.add(notification);
             }
         }
+        Log.d(TAG, "Filtered notifications size: " + filteredNotificationList.size());
         adapterNotification.updateData(filteredNotificationList);
     }
 
