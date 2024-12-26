@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.doan.R;
@@ -29,7 +30,7 @@ import java.util.Locale;
 public class FragmentSetting extends Fragment {
 
     private RelativeLayout layou_vi, layout_en;
-    private SwitchCompat switchContribute;
+    private Switch switchContribute;
     //private Button btn_stProfile;
     private Button btn_stLogout;
     private MaterialCardView profile;

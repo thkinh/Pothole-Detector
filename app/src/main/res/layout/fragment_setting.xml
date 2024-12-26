@@ -2,10 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    android:layout_width="411dp"
+    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/setting"
     android:layout_centerHorizontal="true"
+    android:background="@color/white"
     tools:context=".setting.FragmentSetting">
 
     <com.google.android.material.card.MaterialCardView
@@ -19,8 +19,8 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp">
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="330dp"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_arrow_back">
 
@@ -28,7 +28,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:text="@string/setting"
                 android:textStyle="bold"
                 android:layout_centerInParent="true"
@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
                 android:layout_below="@id/setting"
-                app:cardCornerRadius="0dp">
+                app:cardCornerRadius="5dp">
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
@@ -71,7 +71,7 @@
                         android:layout_toEndOf="@id/profile_img"
                         android:layout_marginStart="10dp"
                         android:text="@string/profile"
-                        android:textSize="24sp"
+                        android:textSize="20sp"
                         android:textStyle="bold">
                     </TextView>
                     <ImageView
@@ -89,7 +89,7 @@
                 android:id="@+id/language_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/profile">
+                app:cardCornerRadius="5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -118,7 +118,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginStart="10dp"
                             android:text="Language"
-                            android:textSize="24dp"
+                            android:textSize="20sp"
                             android:textStyle="bold" />
 
                         <ImageView
@@ -177,7 +177,8 @@
 
             <com.google.android.material.card.MaterialCardView
                  android:layout_width="match_parent"
-                 android:layout_height="wrap_content">
+                 android:layout_height="wrap_content"
+                app:cardCornerRadius="5dp">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -224,7 +225,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_margin="20dp"
                                 android:text="Weekly report"
-                                android:textSize="20sp" />
+                                android:textSize="16sp" />
 
 
                             <Switch
@@ -250,10 +251,11 @@
                                 android:layout_height="wrap_content"
                                 android:layout_margin="20dp"
                                 android:text="@string/iscontributor"
-                                android:textSize="20dp" />
+                                android:textSize="16sp" />
 
 
                             <Switch
+                                android:id="@+id/switch_contribute"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:minHeight="48dp"
@@ -270,7 +272,8 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="5dp">
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="75dp">
@@ -290,7 +293,7 @@
                         android:layout_marginStart="10dp"
                         android:text="Detection Sensitivity"
                         android:layout_toEndOf="@id/sensitivity_img"
-                        android:textSize="24sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"/>
 
                     <TextView
@@ -308,7 +311,8 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="5dp">
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="75dp">
@@ -327,7 +331,7 @@
                         android:layout_marginStart="10dp"
                         android:text="About us"
                         android:layout_toEndOf="@id/about_img"
-                        android:textSize="24sp"
+                        android:textSize="16sp"
                         android:textStyle="bold">
                     </TextView>
                     <ImageView
