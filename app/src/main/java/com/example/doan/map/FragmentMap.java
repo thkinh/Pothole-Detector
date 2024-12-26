@@ -784,6 +784,7 @@ public class FragmentMap extends Fragment
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(getActivity());
         }
+        showbuttonNavigationWhenMove=false;
     }
 TextView countPothole;
     CardView notificationWarning;
@@ -800,6 +801,7 @@ TextView countPothole;
         mylocationNavigationButton.hide();
         navigationButton = view.findViewById(R.id.navigationButton);
         searchET = (TextInputEditText) view.findViewById(R.id.searchET);
+        searchET.setText("");
         searchETLayout = (TextInputLayout) view.findViewById(R.id.searchLayout);
         searchResultsView = (SearchResultsView) view.findViewById(R.id.search_results_view);
         searchResultsViewDestination = (SearchResultsView) view.findViewById(R.id.search_results_view);
@@ -814,11 +816,13 @@ TextView countPothole;
         findRouteButton = view.findViewById(R.id.findRouteButton);
         layoutStartDestination=view.findViewById(R.id.searchStartETandDestination);
         warningText=view.findViewById(R.id.distancePothole);
+        warningText.setText("");
         potholeDetailLayout=view.findViewById(R.id.potholeDetailLayout);
         notificationWarning=view.findViewById(R.id.NotificationWarning);
         countPothole=view.findViewById(R.id.countPothole);
+        countPothole.setText("");
         layoutCountPothole=view.findViewById(R.id.layoutCountPothole);
-
+        LayoutButton=view.findViewById(R.id.LayoutButton);
         return view;
     }
 
@@ -1058,7 +1062,7 @@ TextView countPothole;
 
     private void updateCamera(Point point, Double bearing) {
         MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
-        CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(14.0).bearing(bearing).pitch(0.0)
+        CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(15.0).bearing(bearing).pitch(0.0)
                 .padding(new EdgeInsets(1000.0, 0.0, 0.0, 0.0)).build();
 
         getCamera(mapView).easeTo(cameraOptions, animationOptions);
@@ -1067,7 +1071,7 @@ TextView countPothole;
 
     private void updateCameraNavigation(Point point, Double bearing) {
         MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
-        CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(17.0).bearing(bearing).pitch(45.0)
+        CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(18.0).bearing(bearing).pitch(45.0)
                 .padding(new EdgeInsets(1000.0, 0.0, 0.0, 0.0)).build();
 
         getCamera(mapView).easeTo(cameraOptions, animationOptions);
@@ -1100,12 +1104,13 @@ TextView countPothole;
 
                     // Tính khoảng cách giữa vị trí hiện tại và pothole
                     double distance = TurfMeasurement.distance(point, Point.fromLngLat(location.getLongitude(), location.getLatitude()));
+                    notificationWarning.setVisibility(View.VISIBLE);
 
                     // Chuyển khoảng cách ra dạng mét
                     double distanceInMeters = distance * 1000;  // Đổi từ km sang m
                     String distanceString = String.format("%.2f", distanceInMeters);
                     // Kiểm tra nếu khoảng cách nhỏ hơn hoặc bằng 400m
-                    if (distanceInMeters <= 400) {
+                    if (distanceInMeters <= 200) {
                         // Hiển thị thông báo
                         warningText.setText(+Math.round(distanceInMeters) + "m");
                         notificationWarning.setVisibility(View.VISIBLE);
@@ -1151,14 +1156,15 @@ TextView countPothole;
     };
 
 
-
+    boolean showbuttonNavigationWhenMove=false;
     private final OnMoveListener onMoveListenerNavigation = new OnMoveListener() {
         @Override
         public void onMoveBegin(@NonNull MoveGestureDetector moveGestureDetector) {
             focusLocationNavigationMode = false;
             getGestures(mapView).removeOnMoveListener(this);
-            mylocationNavigationButton.show();
-
+            if(showbuttonNavigationWhenMove){
+                mylocationNavigationButton.show();
+            }
         }
 
         @Override
@@ -1254,11 +1260,14 @@ TextView countPothole;
 
         }
     };
-
+    View LayoutButton;
     public void setNavigationOnMap(Point destination){
         layoutCountPothole.setVisibility(View.GONE);
         layoutStartDestination.setVisibility(View.GONE);
         notificationWarning.setVisibility(View.GONE);
+        mylocationButton.setVisibility(View.GONE);
+        LayoutButton.setVisibility(View.GONE);
+        showbuttonNavigationWhenMove=true;
         //không cho phép nhấp chuột vào map khi chuyển sang navigation
         addOnMapClickListener(mapView.getMapboxMap(), new OnMapClickListener() {
             @Override
@@ -1266,6 +1275,7 @@ TextView countPothole;
                 return false;
             }
         });
+        mylocationNavigationButton.setVisibility(View.VISIBLE);
 
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
         routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(getContext()).build());
@@ -1377,8 +1387,12 @@ TextView countPothole;
                     routeLineView.renderClearRouteLineValue(style, view);
                 });
         });
-        warningText.setText("null");
+        notificationWarning.setVisibility(View.GONE);
         countPothole.setText("Không tìm thấy ổ gà");
+        LayoutButton.setVisibility(View.VISIBLE);
+        mylocationButton.setVisibility(View.VISIBLE);
+        mylocationNavigationButton.setVisibility(View.GONE);
+        showbuttonNavigationWhenMove=false;
     }
 
     @SuppressLint("MissingPermission")
@@ -1400,7 +1414,7 @@ TextView countPothole;
                 mapboxNavigation.requestRoutes(builder.build(), new NavigationRouterCallback() {
                     @Override
                     public void onRoutesReady(@NonNull List<NavigationRoute> route, @NonNull RouterOrigin routerOrigin) {
-                        cardViewWarning.setVisibility(View.VISIBLE);
+//                        cardViewWarning.setVisibility(View.VISIBLE);
                         cardViewTrip.setVisibility(View.VISIBLE);
                         soundButton.setVisibility(View.VISIBLE);
                         Toast.makeText(getContext(), "navigationRoute", Toast.LENGTH_SHORT).show();
