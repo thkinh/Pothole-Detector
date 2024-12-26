@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -149,6 +150,7 @@ public class FragmentDashboard extends Fragment {
                 startActivity(intent);
             }
         });
+
 
 //----------------------------Start of user and route---------------------
         btnUser.setOnClickListener(new View.OnClickListener() {
