@@ -11,88 +11,124 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/setting"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        app:cardBackgroundColor="@color/pacificblue">
+        android:layout_height="85dp"
+        android:layout_marginTop="-15dp"
+        app:cardBackgroundColor="@color/darkpacificblue">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="10dp">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_arrow_back">
+
+            </ImageView>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
                 android:text="@string/setting"
                 android:textStyle="bold"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="20dp" />
+                android:layout_centerInParent="true"
+                android:textColor="@color/white"/>
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Profile Button -->
-    <Button
-        android:id="@+id/btn_stprofile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/setting"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="16dp"
-        android:text="Profile Settings"
-        android:textSize="16sp"
-        android:backgroundTint="@color/pacificblue"
-        android:textColor="@android:color/white" />
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_stprofile">
+        android:layout_height="match_parent"
+        android:layout_below="@id/setting"
+        android:layout_above="@id/btn_stlogout">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:id="@+id/language"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/profile"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:layout_below="@id/setting"
+                app:cardCornerRadius="0dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
                     <ImageView
+                        android:id="@+id/profile_img"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/ic_language" />
-
+                        android:layout_marginStart="10dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/baseline_person_24">
+                    </ImageView>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Language"
-                        android:textSize="24dp"
-                        android:textStyle="bold"
-                        android:layout_margin="10dp" />
-
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/profile_img"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/profile"
+                        android:textSize="24sp"
+                        android:textStyle="bold">
+                    </TextView>
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:background="@drawable/ic_extenddown" />
-                </LinearLayout>
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/baseline_arrow_forward_ios_24">
+
+                    </ImageView>
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/language_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile">
 
                 <LinearLayout
-                    android:id="@+id/list_language"
-                    android:layout_below="@id/language"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@drawable/background_setting_list"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <RelativeLayout
+                        android:id="@+id/language"
+                        android:layout_width="match_parent"
+                        android:layout_height="75dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:id="@+id/language_img"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_alignParentStart="true"
+                            android:background="@drawable/ic_language" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/language_img"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="10dp"
+                            android:text="Language"
+                            android:textSize="24dp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginLeft="20dp"
+                            android:background="@drawable/baseline_arrow_forward_ios_24" />
+                    </RelativeLayout>
 
                     <RelativeLayout
                         android:id="@+id/st_lang_vi"
@@ -136,135 +172,180 @@
                             android:layout_marginEnd="25dp"
                             android:background="@drawable/ic_english" />
                     </RelativeLayout>
-
                 </LinearLayout>
-            </RelativeLayout>
-            <RelativeLayout
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <RelativeLayout
+                            android:id="@+id/notification"
+                            android:layout_width="match_parent"
+                            android:layout_height="75dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:id="@+id/notification_img"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/ic_notification" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Notification"
+                                android:textSize="24dp"
+                                android:textStyle="bold"
+                                android:layout_marginStart="10dp"
+                                android:layout_centerVertical="true"
+                                android:layout_toEndOf="@id/notification_img"/>
+
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/baseline_arrow_forward_ios_24" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="20dp"
+                                android:text="Weekly report"
+                                android:textSize="20sp" />
+
+
+                            <Switch
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:minHeight="48dp"
+                                android:minWidth="48dp"
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginEnd="10dp"
+                                android:track="@drawable/track_setting"
+                                android:thumb="@drawable/thumb_white">
+                            </Switch>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="20dp"
+                                android:text="@string/iscontributor"
+                                android:textSize="20dp" />
+
+
+                            <Switch
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:minHeight="48dp"
+                                android:minWidth="48dp"
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginEnd="10dp"
+                                android:track="@drawable/track_setting"
+                                android:thumb="@drawable/thumb_white">
+                            </Switch>
+                        </RelativeLayout>
+                    </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <LinearLayout
-                    android:id="@+id/notification"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:layout_height="75dp">
 
                     <ImageView
+                        android:id="@+id/sensitivity_img"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/ic_notification" />
+                        android:src="@drawable/baseline_sensors_24"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="10dp">
+                    </ImageView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="10dp"
+                        android:text="Detection Sensitivity"
+                        android:layout_toEndOf="@id/sensitivity_img"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Notification"
-                        android:textSize="24dp"
-                        android:textStyle="bold"
-                        android:layout_margin="10dp" />
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="HIGH"
+                        android:textSize="20sp"
+                        android:gravity="center"
+                        android:textStyle="italic"
+                        android:layout_marginEnd="20dp" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
 
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp">
+                    <ImageView
+                        android:id="@+id/about_img"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/baseline_info_24"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="10dp">
+                    </ImageView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="10dp"
+                        android:text="About us"
+                        android:layout_toEndOf="@id/about_img"
+                        android:textSize="24sp"
+                        android:textStyle="bold">
+                    </TextView>
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_marginLeft="20dp"
-                        android:background="@drawable/ic_extenddown" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/list_notification"
-                    android:layout_below="@id/notification"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@drawable/background_setting_list"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="20dp"
-                            android:text="Detection Sensitivity"
-                            android:textSize="20dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:text="HIGH>"
-                            android:textSize="20dp"
-                            android:gravity="center"
-                            android:textStyle="bold"
-                            android:layout_marginEnd="30dp" />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="20dp"
-                            android:text="Weekly report"
-                            android:textSize="20dp" />
-
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:thumb="@drawable/thumb_white"
-                            app:track="@drawable/track_setting"
-                            app:showText="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginEnd="30dp"
-                            android:gravity="center" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="20dp"
-                            android:text="@string/iscontributor"
-                            android:textSize="20dp" />
-
-
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:id="@+id/switch_contribute"
-                            android:layout_marginEnd="30dp"
-                            android:gravity="center"
-                            android:thumb="@drawable/thumb_white"
-                            app:showText="true"
-                            app:track="@drawable/track_setting" />
-                    </RelativeLayout>
-
-                </LinearLayout>
-            </RelativeLayout>
+                        android:src="@drawable/baseline_arrow_forward_ios_24">
+                    </ImageView>
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </ScrollView>
     <Button
         android:id="@+id/btn_stlogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="100dp"
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
         android:backgroundTint="#e84f41"
