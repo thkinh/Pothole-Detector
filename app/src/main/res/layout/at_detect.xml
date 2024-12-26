@@ -11,22 +11,18 @@
         android:layout_alignParentTop="true" />
 
 
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@id/ControlDetect"
         android:layout_below="@id/topFragmentContainer">
-
-
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -62,6 +58,14 @@
                 android:layout_alignParentEnd="true"
                 android:layout_margin="16dp"/>
         </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/mainlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/lightpacificblue">
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
@@ -101,14 +105,6 @@
         android:background="@null" />
 
 </LinearLayout>
-    <RelativeLayout
-        android:id="@+id/mainlayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/ControlDetect"
-        android:layout_marginTop="36dp"
-        android:background="@color/lightpacificblue">
-    </RelativeLayout>
 
 </RelativeLayout>
 

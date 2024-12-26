@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DoAn</string>
+    <string name="key_api_google_map">AIzaSyAU7gVtnVKyrasCLaFjsQ6xUlqsfSaGCQQ</string>
+
+    <string name="welcome">
+        <b>Welcome!\nYou are not currently logged in.\nPlease log in to get started.</b>
+    </string>
+
+    <string name="login"><b>Login</b></string>
+
+    <string name="username1"><b>Motorbike Driver Linh</b></string>
+
+    <string name="routename1"><b>Tang Nhon Phu</b></string>
+
+    <string name="latest">Latest:</string>
+
+    <string name="latesttime"><b>05/11/2024</b></string>
+
+    <string name="title"><b>Pothole Detecting</b></string>
+    <string name="title_activity_main_dashboard">MainDashboard</string>
+    <string name="search">Enter Address, City or Zip Code </string>
+    <string name="permission_required_toast">Location permission is required for this demo.</string>
+
+    <!-- Declared Strings for Authentication UI -->
+    <string name="welcome_message">Welcome!\nYou are not currently logged in.\nPlease!!! Login to get started.</string>
+
+    <string name="btn_getStarted">Get started</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_signup">Sign up</string>
+    <string name="btn_finish">Finish</string>
+    <string name="btn_continueWGoogle">Continue with Google</string>
+    <string name="btn_confirm">Confirm</string>
+    <string name="btn_findRoute">Find Route</string>
+
+    <string name="txt_choose_destination">Choose destination or pin on...</string>
+    <string name="txt_choose_starting_point">Choose starting point</string>
+    <string name="txt_username">Username</string>
+    <string name="txt_opt">OTP CODE</string>
+    <string name="txt_email">Email</string>
+    <string name="txt_password">Password</string>
+    <string name="txt_rePassword">Re-Password</string>
+    <string name="txt_forgotPassword"><u>Forgot password?</u></string>
+    <string name="txt_askSignUp">You have no account? <u>Sign up</u></string>
+    <string name="txt_askLogin">Already have an account? <u>Login</u></string>
+    <string name="txt_newPassword">New password</string>
+    <string name="txt_cfPassword">Confirm password</string>
+    <string name="txt_note"><b>Note</b>: Do not reuse a previously used password!</string>
+    <string name="txt_popupEmail">Recover Account</string>
+    <string name="txt_popupNote">Please enter your email in order to reset the password</string>
+    <string name="txt_optNote">Please enter the <b>OTP</b> code that has been sent to you for verification</string>
+
+    <!-- String potholes details -->
+    <string name="txt_title_details">Detailed Information about the Pothole</string>
+    <string name="txt_location">Location:</string>
+    <string name="txt_date">Detection Date:</string>
+    <string name="txt_severity">Severity Level:</string>
+    <string name="txt_image">Image:</string>
+    <string name="txt_preview_image">Preview Image</string>
+    <string name="txt_detect">Pothole detected!</string>
+    <string name="txt_notification">Notification</string>
+
+    <string name="btn_image">Add Image</string>
+    <string name="btn_saving">Save Information</string>
+    <string name="btn_navigation">Start</string>
+    <string name="btn_all">All</string>
+    <string name="btn_unread">Unread</string>
+
+    <string name="editText_newPassword">Enter new password</string>
+    <string name="editText_cfPassword">Retype new password</string>
+    <string name="editText_username">Enter username here</string>
+    <string name="editText_email">Enter email here</string>
+    <string name="editText_password">Enter password here</string>
+    <string name="editText_opt">Enter OTP code here</string>
+</resources>

@@ -171,7 +171,6 @@ public class PotholeManager {
         });
     }
 
-
     public interface FetchPotholeCallBack{
         void onSuccess(Pothole potholes);
         void onFailure(String errorMessage);

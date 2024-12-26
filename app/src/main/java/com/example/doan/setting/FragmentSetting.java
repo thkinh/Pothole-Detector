@@ -1,83 +1,128 @@
 package com.example.doan.setting;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.doan.R;
+import com.example.doan.feature.Setting;
 import com.example.doan.feature.UserPreferences;
 import com.example.doan.login.LoginActivity;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.material.card.MaterialCardView;
-import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Locale;
+
 
 public class FragmentSetting extends Fragment {
 
+    private RelativeLayout layou_vi, layout_en;
+    private SwitchCompat switchContribute;
+    private Button btn_stProfile, btn_stLogout;
 
-    private MaterialCardView userProfileCard;
-    private MaterialCardView logoutCard;
+    public FragmentSetting() {
+        // Required empty public constructor
+    }
 
-    Activity context;
-    private FirebaseAuth mAuth;
-    private GoogleSignInClient googleSignInClient;
+    public static FragmentSetting newInstance(String param1, String param2) {
+        FragmentSetting fragment = new FragmentSetting();
+        Bundle args = new Bundle();
+
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_setting, container, false);
 
-        mAuth = FirebaseAuth.getInstance();
 
-        // Lấy tham chiếu đến các CardView
-        userProfileCard = view.findViewById(R.id.userprofile);
-        logoutCard = view.findViewById(R.id.logout);
 
-        // Thiết lập OnClickListener cho userProfileCard
-        userProfileCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ProfileActivity.class);
-                startActivity(intent);
-            }
+
+        View rootView = inflater.inflate(R.layout.fragment_setting, container, false);
+        // Find the RelativeLayout by ID
+        layou_vi = rootView.findViewById(R.id.st_lang_vi);
+        layout_en = rootView.findViewById(R.id.st_lang_en);
+        layou_vi.setOnClickListener(v -> {
+            Setting.getInstance().setAppLanguage(Setting.AppLanguage.vi);
+            Setting.getInstance().applyLanguage(requireContext());
+            Setting.getInstance().saveToPreferences(requireContext()); // Save selection
+            Toast.makeText(requireContext(), "Vietnamese", Toast.LENGTH_SHORT).show();
+            refreshFragment(); // Refresh to apply changes
         });
 
-        // Thiết lập OnClickListener cho logoutCard
-        logoutCard.setOnClickListener(v -> logout());
+        btn_stProfile = rootView.findViewById(R.id.btn_stprofile);
+        btn_stLogout = rootView.findViewById(R.id.btn_stlogout);
 
-        return view;
+        btn_stLogout.setOnClickListener(view -> {
+            UserPreferences userPreferences = new UserPreferences(requireContext());
+            userPreferences.clearUserData();
+            Intent intent = new Intent(this.getContext(), LoginActivity.class);
+            startActivity(intent);
+            requireActivity().finish();
+        });
+
+        btn_stProfile.setOnClickListener(view -> {
+            Intent intent = new Intent(this.getContext(), ProfileActivity.class );
+            startActivity(intent);
+
+        });
+
+        layout_en.setOnClickListener(view -> {
+            Setting.getInstance().setAppLanguage(Setting.AppLanguage.en_US);
+            Setting.getInstance().applyLanguage(requireContext());
+            Setting.getInstance().saveToPreferences(requireContext()); // Save selection
+            Toast.makeText(requireContext(), "English-US", Toast.LENGTH_SHORT).show();
+            refreshFragment(); // Refresh to apply changes
+        });
+
+        switchContribute = rootView.findViewById(R.id.switch_contribute);
+        // Initialize the switch state from the Setting instance
+        switchContribute.setChecked(Setting.getInstance().getIsContributor());
+
+        // Set OnCheckedChangeListener to handle click
+        switchContribute.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // The switch is turned ON
+                Toast.makeText(getContext(), "Contributor mode enabled", Toast.LENGTH_SHORT).show();
+                // You can update the Setting instance here or save to SharedPreferences
+                Setting.getInstance().setContributor(true);
+                Setting.getInstance().saveToPreferences(requireContext());
+            } else {
+                // The switch is turned OFF
+                Toast.makeText(getContext(), "Contributor mode disabled", Toast.LENGTH_SHORT).show();
+                // Update the Setting instance or SharedPreferences
+                Setting.getInstance().setContributor(false);
+                Setting.getInstance().saveToPreferences(requireContext());
+            }
+        });
+        return rootView;
     }
 
-    private void logout() {
-        //Dang xuat cua thang thinh
-        UserPreferences userPreferences = new UserPreferences(this.context);
-        userPreferences.clearUserData();
-
-        // Đăng xuất Firebase
-        mAuth.signOut();
-
-        // Đăng xuất tài khoản Google
-        googleSignInClient.signOut().addOnCompleteListener(requireActivity(), task -> {
-            if (task.isSuccessful()) {
-                // Hiển thị thông báo và kết thúc Activity
-                Toast.makeText(requireContext(), "Logout successful", Toast.LENGTH_SHORT).show();
-                requireActivity().finish(); // Kết thúc Activity
-            } else {
-                // Xử lý khi có lỗi
-                Toast.makeText(requireContext(), "Logout failed", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        Intent intent = new Intent(requireActivity(), LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        requireActivity().finish();
+    private void refreshFragment() {
+        Fragment currentFragment = getParentFragmentManager().findFragmentById(R.id.mainlayout);
+        if (currentFragment != null) {
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .detach(currentFragment)
+                    .attach(currentFragment)
+                    .commit();
+        }
     }
 }

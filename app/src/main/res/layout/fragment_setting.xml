@@ -24,69 +24,122 @@
                 android:text="@string/setting"
                 android:textStyle="bold"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginStart="20dp" />
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
+
+    <!-- Profile Button -->
+    <Button
+        android:id="@+id/btn_stprofile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/setting"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:text="Profile Settings"
+        android:textSize="16sp"
+        android:backgroundTint="@color/pacificblue"
+        android:textColor="@android:color/white" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/setting">
+        android:layout_below="@id/btn_stprofile">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/userprofile"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
                 <LinearLayout
-                    android:id="@+id/user"
+                    android:id="@+id/language"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_margin="10dp"
-                        android:background="@drawable/ic_user" />
+                        android:background="@drawable/ic_language" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:text="Profile"
+                        android:text="Language"
                         android:textSize="24dp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:layout_margin="10dp" />
 
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/baseline_arrow_forward_ios_24" />
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/ic_extenddown" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/list_user"
-                    android:layout_below="@id/user"
+                    android:id="@+id/list_language"
+                    android:layout_below="@id/language"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:background="@drawable/background_setting_list"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp">
+
+                    <RelativeLayout
+                        android:id="@+id/st_lang_vi"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="20dp"
+                            android:text="Vietnamese"
+                            android:textSize="20dp" />
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="25dp"
+                            android:background="@drawable/ic_vietnamese" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/st_lang_en"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="20dp"
+                            android:text="English"
+                            android:textStyle="bold"
+                            android:textSize="20dp" />
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="25dp"
+                            android:background="@drawable/ic_english" />
+                    </RelativeLayout>
+
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/logout"
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
@@ -102,15 +155,15 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_margin="10dp"
-                        android:background="@drawable/ic_power"/>
+                        android:background="@drawable/ic_notification" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Logout"
+                        android:text="Notification"
                         android:textSize="24dp"
                         android:textStyle="bold"
-                        android:layout_margin="10dp"/>
+                        android:layout_margin="10dp" />
 
                     <ImageView
                         android:layout_width="50dp"
@@ -118,10 +171,104 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:layout_marginLeft="20dp"
-                        android:background="@drawable/baseline_arrow_forward_ios_24"/>
+                        android:background="@drawable/ic_extenddown" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout
+                    android:id="@+id/list_notification"
+                    android:layout_below="@id/notification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/background_setting_list"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="20dp"
+                            android:text="Detection Sensitivity"
+                            android:textSize="20dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:text="HIGH>"
+                            android:textSize="20dp"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:layout_marginEnd="30dp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="20dp"
+                            android:text="Weekly report"
+                            android:textSize="20dp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:thumb="@drawable/thumb_white"
+                            app:track="@drawable/track_setting"
+                            app:showText="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="30dp"
+                            android:gravity="center" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="20dp"
+                            android:text="@string/iscontributor"
+                            android:textSize="20dp" />
+
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:id="@+id/switch_contribute"
+                            android:layout_marginEnd="30dp"
+                            android:gravity="center"
+                            android:thumb="@drawable/thumb_white"
+                            app:showText="true"
+                            app:track="@drawable/track_setting" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
-
+    <Button
+        android:id="@+id/btn_stlogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:backgroundTint="#e84f41"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:text="Log Out" />
 </RelativeLayout>

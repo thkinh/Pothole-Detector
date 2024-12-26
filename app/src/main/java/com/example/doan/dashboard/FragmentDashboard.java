@@ -289,9 +289,8 @@ private void fetchPotholeData(BarChart graph, PieChart pieChart) {
 
         List<BarEntry> entries = new ArrayList<>();
         int index = 0;
-        for (Map.Entry<String, Integer> entry : potholeCountByDate.entrySet()) {
-            entries.add(new BarEntry(index++, entry.getValue()));
-            dateLabels.add(entry.getKey());
+        for (String date : dateLabels) {
+            entries.add(new BarEntry(index++, potholeCountByDate.get(date)));
         }
 
         BarDataSet dataSet = new BarDataSet(entries, "Number of Potholes");
