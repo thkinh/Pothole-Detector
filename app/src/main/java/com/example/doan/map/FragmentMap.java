@@ -1113,10 +1113,14 @@ TextView countPothole;
             if (focusLocationNavigationMode) {
                 updateCameraNavigation(Point.fromLngLat(location.getLongitude(), location.getLatitude()), (double) location.getBearing());
             }
-            List<Point> potholesToRemove = null;
-            if(potholesListOnDirection==null){
+            if (potholesListOnDirection == null) {
+                potholesListOnDirection = new ArrayList<>();
                 notificationWarning.setVisibility(View.GONE);
+
             }
+
+            List<Point> potholesToRemove = new ArrayList<>();
+
 
             myLocationNavigation = location;
             if(lineString!=null && potholesListOnDirection!=null){
@@ -1139,9 +1143,18 @@ TextView countPothole;
                         NotifyManager.showNotification(getContext(), "Cảnh báo ổ gà", distanceString);
                         break;
                     }
+
                     else if (distanceInMeters<20){
                         notificationWarning.setVisibility(View.GONE);
+                        potholesToRemove.add(pothole);
                     }
+                }
+                try{
+                    if(potholesToRemove!=null){
+                        potholesListOnDirection.removeAll(potholesToRemove);
+                    }
+                }catch (Exception e) {
+                    Log.e("LocationObserver", "Error while removing potholes: ", e);
                 }
             }
         }
@@ -1159,6 +1172,7 @@ TextView countPothole;
                     }
                 }
             });
+
             // Lấy danh sách các tuyến đường được cập nhật
             List<NavigationRoute> navigationRoutes = routesUpdatedResult.getNavigationRoutes();
 
