@@ -471,7 +471,6 @@ public class FragmentMap extends Fragment
         searchETStartOrStart.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                Toast.makeText(getContext(), "setSearchET beforeTextChanged", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -515,7 +514,6 @@ public class FragmentMap extends Fragment
 
             @Override
             public void onSuggestionSelected(@NonNull PlaceAutocompleteSuggestion placeAutocompleteSuggestion) {
-                Toast.makeText(getContext(), String.format("FirstSearch: %s", FirstSearchOrigin), Toast.LENGTH_SHORT).show();
 
                 ignoreNextQueryUpdateStartorDestination = true;
                 if(FirstSearchOrigin==true) {
@@ -563,7 +561,7 @@ public class FragmentMap extends Fragment
                         getDirectionWithMyLocationPoint(destinationSearch);
                     }
                     if (destinationSearch==null ){
-                        Toast.makeText(getContext(), String.format("Không có điểm đích", placeAutocompleteSuggestion.getCoordinate()), Toast.LENGTH_SHORT).show();
+
                     }
                     if(originSearch!=null && destinationSearch!=null){
                         getRouteTwoPoint(originSearch,destinationSearch);
@@ -637,11 +635,14 @@ public class FragmentMap extends Fragment
                     potholeDetailLayout.setVisibility(View.VISIBLE);
                     searchETLayout.setVisibility(View.GONE);
                     mylocationButton.setVisibility(View.INVISIBLE);
+                    LayoutButton.setVisibility(View.GONE);
                     ImageButton btnBack = potholeDetailLayout.findViewById(R.id.btnBack);
                     btnBack.setOnClickListener(btn->{
                         potholeDetailLayout.setVisibility(View.INVISIBLE);
                         searchETLayout.setVisibility(View.VISIBLE);
                         mylocationButton.setVisibility(View.INVISIBLE);
+                        LayoutButton.setVisibility(View.VISIBLE);
+
                     });
                     Button btnSubmit = potholeDetailLayout.findViewById(R.id.btnSubmit);
                     btnSubmit.setOnClickListener(btn->{
@@ -1099,7 +1100,7 @@ TextView countPothole;
     LineString lineString;
     Location myLocationNavigation;
     Location myLocationMap;
-    boolean havePotholeOnLine=false;
+    boolean havePotholeRemove=false;
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
         public void onNewRawLocation(@NonNull Location location) {
@@ -1141,12 +1142,13 @@ TextView countPothole;
                         // Hiển thị thông báo
                         // Gọi phương thức để gửi thông báo (NotifyWarning là phương thức thông báo bạn đã định nghĩa)
                         NotifyManager.showNotification(getContext(), "Cảnh báo ổ gà", distanceString);
-                        break;
+
                     }
 
                     else if (distanceInMeters<20){
                         notificationWarning.setVisibility(View.GONE);
                         potholesToRemove.add(pothole);
+                        break;
                     }
                 }
                 try{
@@ -1186,7 +1188,6 @@ TextView countPothole;
                     lineString = LineString.fromPolyline(geometry, PRECISION_6);  // Chuyển từ polyline string thành LineString
                 }
                 getListPotholeOnLineRoute(lineString);
-                Toast.makeText(getContext(), "Route Update", Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -1316,6 +1317,7 @@ TextView countPothole;
         });
         mylocationNavigationButton.setVisibility(View.VISIBLE);
 
+
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
         routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(getContext()).build());
 
@@ -1331,6 +1333,7 @@ TextView countPothole;
         NavigationOptions navigationOptions = new NavigationOptions.Builder(getContext()).accessToken(getString(R.string.mapbox_access_token)).build();
 
         MapboxNavigationApp.setup(navigationOptions);
+        // Đảm bảo rằng MapboxNavigation đã được khởi tạo
         mapboxNavigation = new MapboxNavigation(navigationOptions);
 
         mapboxNavigation.registerRoutesObserver(routesObserver);
@@ -1456,7 +1459,6 @@ TextView countPothole;
 //                        cardViewWarning.setVisibility(View.VISIBLE);
                         cardViewTrip.setVisibility(View.VISIBLE);
                         soundButton.setVisibility(View.VISIBLE);
-                        Toast.makeText(getContext(), "navigationRoute", Toast.LENGTH_SHORT).show();
 
                         mapboxNavigation.setNavigationRoutes(route);
                         mylocationNavigationButton.performClick();
@@ -1465,7 +1467,7 @@ TextView countPothole;
                     }
                     @Override
                     public void onFailure(@NonNull List<RouterFailure> list, @NonNull RouteOptions routeOptions) {
-                        Toast.makeText(getContext(), "Route request failed", Toast.LENGTH_SHORT).show();
+
                     };
                     @Override
                     public void onCanceled(@NonNull RouteOptions routeOptions, @NonNull RouterOrigin routerOrigin) {
@@ -1479,5 +1481,11 @@ TextView countPothole;
 
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mapboxNavigation!=null) { endTrip(); }
     }
 }
