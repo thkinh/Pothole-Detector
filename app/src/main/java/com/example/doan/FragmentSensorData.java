@@ -14,7 +14,7 @@ import org.w3c.dom.Text;
 
 public class FragmentSensorData extends Fragment {
 
-    private TextView tvdt_mean, tvdt_sd;
+    private TextView tvdt_mean, tvdt_sd, tvdt_phFound;
 
     public FragmentSensorData() {
         // Required empty public constructor
@@ -29,8 +29,14 @@ public class FragmentSensorData extends Fragment {
 
         tvdt_mean = rootView.findViewById(R.id.tvdt_meanZ);
         tvdt_sd = rootView.findViewById(R.id.tvdt_sdZ);
-
+        tvdt_phFound = rootView.findViewById(R.id.tvdt_potholeFound);
         return rootView;
+    }
+
+    public void updateFound(Integer number){
+        if (tvdt_phFound!=null){
+            tvdt_phFound.setText(number.toString());
+        }
     }
 
     public void updateMeanValue(String meanValue) {

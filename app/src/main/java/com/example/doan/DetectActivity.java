@@ -107,6 +107,7 @@ public class DetectActivity extends AppCompatActivity
                 @Override
                 public void onPotholeDetected(int potholeCount) {
                     Log.d("__Pothole count", ""+potholeCount);
+                    fragmentSensorData.updateFound(potholeCount);
                     addFoundedPothole();
                 }
                 @Override
@@ -119,7 +120,6 @@ public class DetectActivity extends AppCompatActivity
                     fragmentSensorData.updateMeanValue(formattedMeanZ);
                     fragmentSensorData.updateSdValue(formattedSdZ);
                 }
-
             });
             sensorManager.registerListener(detectEngine.getSensorEventListener(), accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
