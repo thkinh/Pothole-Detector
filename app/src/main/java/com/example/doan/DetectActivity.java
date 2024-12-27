@@ -154,11 +154,25 @@ public class DetectActivity extends AppCompatActivity
                             +pothole.getLocation().getLatitude());
                     Toast.makeText(DetectActivity.this, "Pothole found", Toast.LENGTH_SHORT).show();
                 });
+                handle_addPothole(pothole);
             }
 
             @Override
             public void onFailure(@NonNull Exception exception) {
 
+            }
+        });
+    }
+
+    private void handle_addPothole(Pothole pothole){
+        PotholeManager.getInstance().addPothole(pothole, new PotholeManager.AddPotholeCallBack() {
+            @Override
+            public void onSuccess(Pothole pothole) {
+                Log.d("__API_DEBUG", "Nice");
+            }
+            @Override
+            public void onFailure(String errorMessage) {
+                Log.d("__API_DEBUG", errorMessage);
             }
         });
     }
@@ -185,6 +199,8 @@ public class DetectActivity extends AppCompatActivity
         super.onDestroy();
         if (detectEngine != null) {
             detectEngine.close();
+            sensorManager.unregisterListener(detectEngine.getSensorEventListener());
+            detectEngine = null;
         }
     }
 
