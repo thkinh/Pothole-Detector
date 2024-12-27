@@ -20,6 +20,7 @@ import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.dashboard.MainActivity;
 import com.example.doan.map.*;
 import com.example.doan.feature.DetectEngine;
+import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;
 import com.example.doan.setting.FragmentSetting;
 import com.mapbox.android.core.location.LocationEngine;
@@ -27,6 +28,9 @@ import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.location.LocationEngineResult;
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.Time;
+import java.util.Calendar;
 
 public class DetectActivity extends AppCompatActivity
 {
@@ -35,13 +39,15 @@ public class DetectActivity extends AppCompatActivity
     boolean isDetecting ;
     private SensorManager sensorManager;
     private Sensor accelerometer;
+    private FragmentSensorData fragmentSensorData;
     private FragmentManager fragmentManager;
+    private LocationEngine locationEngine;
+    private Calendar calendar;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_detect);
-        EdgeToEdge.enable(this);
         isDetecting = false;
         btn_exitDetect =  findViewById(R.id.exitDetect);
         btn_startDetect = findViewById(R.id.startDectect);
@@ -49,6 +55,8 @@ public class DetectActivity extends AppCompatActivity
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        locationEngine = LocationEngineProvider.getBestLocationEngine(DetectActivity.this);
+        calendar = Calendar.getInstance();
         if (accelerometer == null) {
             Toast.makeText(this, "Accelerometer not available", Toast.LENGTH_LONG).show();
             return;
@@ -64,9 +72,12 @@ public class DetectActivity extends AppCompatActivity
                 StartDetect();  // Add this to initialize DetectEngine
                 runOnUiThread(this::loadSensorDataFragment);
                 isDetecting = true;
-            } else {
-                removeSensorDataFragment();
-                detectEngine.close();
+            }
+            else if (isDetecting)
+            {
+                Log.d("__STOP MODEL", "Stopped Detecting");
+                runOnUiThread(this::removeSensorDataFragment);
+                sensorManager.unregisterListener(detectEngine.getSensorEventListener());
                 isDetecting = false;
             }
         });
@@ -95,12 +106,20 @@ public class DetectActivity extends AppCompatActivity
             detectEngine = new DetectEngine(DetectActivity.this, 60, new DetectEngine.DetectionCallback() {
                 @Override
                 public void onPotholeDetected(int potholeCount) {
-                    Log.d("Pothole count", ""+potholeCount);
+                    Log.d("__Pothole count", ""+potholeCount);
                     addFoundedPothole();
                 }
                 @Override
                 public void onSafe() {
+                    double meanZ = detectEngine.getMeanZ();
+                    double sdZ = detectEngine.getSdZ();
+                    // Limit to 2 decimal places
+                    String formattedMeanZ = String.format("%.5f", meanZ);
+                    String formattedSdZ = String.format("%.5f", sdZ);
+                    fragmentSensorData.updateMeanValue(formattedMeanZ);
+                    fragmentSensorData.updateSdValue(formattedSdZ);
                 }
+
             });
             sensorManager.registerListener(detectEngine.getSensorEventListener(), accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
@@ -109,47 +128,39 @@ public class DetectActivity extends AppCompatActivity
         }
     }
 
+
     @SuppressLint("MissingPermission")
-    public void addFoundedPothole(){
-        LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(DetectActivity.this);
+    private void addFoundedPothole(){
+        java.util.Date utilDate = calendar.getTime();
+        Date sqlDate = new Date(utilDate.getTime());
+        Time sqlTime = new Time(utilDate.getTime());
+        AppUser account = AuthManager.getInstance().getAccount();
+        Pothole pothole = new Pothole(null, "High", new Pothole.Location(),account , account.getId());
         locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
             @Override
             public void onSuccess(LocationEngineResult result) {
                 Location location = result.getLastLocation();
-                Pothole pothole = new Pothole(null, "Normal", new Pothole.Location(), AuthManager.getInstance().getAccount(), 0);
-
-                Pothole.Location location1 = new Pothole.Location();
-                location1.setLatitude(location.getLatitude());
-                location1.setLongitude(location.getLongitude());
-                location1.setCountry("None");
-                location1.setCity("None");
-                pothole.setLocation(location1);
-                PotholeManager.getInstance().addPothole(pothole, new PotholeManager.AddPotholeCallBack() {
-                    @Override
-                    public void onSuccess(Pothole pothole) {
-                        Toast.makeText(DetectActivity.this, "Pothole Detected"+pothole.getLocation().getLongitude()+"/"
-                                +pothole.getLocation().getLatitude(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(String errorMessage) {
-
-                    }
+                Pothole.Location ph_location = new Pothole.Location();
+                ph_location.setLatitude(location.getLatitude());
+                ph_location.setLongitude(location.getLongitude());
+                ph_location.setCountry("NONE");
+                ph_location.setCity("NONE");
+                ph_location.setStreet("NONE");
+                pothole.setLocation(ph_location);
+                pothole.setDateFound(sqlDate);
+                pothole.setTimeFound(String.valueOf(sqlTime));
+                runOnUiThread(()->{
+                    Log.d("__DETECTION", "Pothole found! "+pothole.getLocation().getLongitude()+"/"
+                            +pothole.getLocation().getLatitude());
+                    Toast.makeText(DetectActivity.this, "Pothole found", Toast.LENGTH_SHORT).show();
                 });
-
-                Log.d("__DETECTION", "Pothole found! "+pothole.getLocation().getLongitude()+"/"
-                        +pothole.getLocation().getLatitude());
             }
 
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Log.e("Location Failure", exception.getMessage());
+
             }
         });
-    }
-
-    void hanlde_addPothole(Pothole pothole){
-
     }
 
 
@@ -179,15 +190,14 @@ public class DetectActivity extends AppCompatActivity
 
 
     private void loadSensorDataFragment() {
-        FragmentSensorData fragment = new FragmentSensorData();
+        fragmentSensorData = new FragmentSensorData();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.setCustomAnimations(
                 R.anim.slide_in,
-                R.anim.slide_in
+                R.anim.slide_out
         );
-
-        transaction.replace(R.id.topFragmentContainer, fragment);
+        transaction.replace(R.id.topFragmentContainer, fragmentSensorData);
         transaction.commit();
     }
     private void removeSensorDataFragment() {
@@ -196,7 +206,7 @@ public class DetectActivity extends AppCompatActivity
         if (fragment != null) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.setCustomAnimations(
-                    R.anim.slide_out, // Enter animation (when fragment reappears)
+                    R.anim.slide_in, // Enter animation (when fragment reappears)
                     R.anim.slide_out // Exit animation (when fragment disappears)
             );
             transaction.remove(fragment);

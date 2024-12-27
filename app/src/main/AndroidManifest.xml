@@ -47,17 +47,17 @@
             android:name=".login.SplashScreen"
             android:exported="true">
 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".dashboard.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true" >
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <!-- Khai báo NotificationActivity -->
@@ -67,6 +67,7 @@
             android:name=".login.LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
+
         </activity>
         <activity
             android:name=".login.SignupActivity"
