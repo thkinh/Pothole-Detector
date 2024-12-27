@@ -623,43 +623,48 @@ public class FragmentMap extends Fragment
             if(potholePoint.getLocation().getCountry()==null && potholePoint.getLocation().getCity()==null){
                 getPlaceFromPoint(Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude()));
             }
+
+            pointPotholeAnnotationManager.addClickListener(new OnPointAnnotationClickListener() {
+                @Override
+                public boolean onAnnotationClick(@NonNull PointAnnotation pointAnnotation) {
+                    pointAnnotationManager.deleteAll();
+
+                    String id= potholePoint.getId().toString();
+
+                    double latitude = pointAnnotation.getPoint().latitude();
+                    double longitude = pointAnnotation.getPoint().longitude();
+                    potholeDetailLayout.setVisibility(View.VISIBLE);
+                    searchETLayout.setVisibility(View.GONE);
+                    mylocationButton.setVisibility(View.INVISIBLE);
+                    ImageButton btnBack = potholeDetailLayout.findViewById(R.id.btnBack);
+                    btnBack.setOnClickListener(btn->{
+                        potholeDetailLayout.setVisibility(View.INVISIBLE);
+                        searchETLayout.setVisibility(View.VISIBLE);
+                        mylocationButton.setVisibility(View.INVISIBLE);
+                    });
+                    Button btnSubmit = potholeDetailLayout.findViewById(R.id.btnSubmit);
+                    btnSubmit.setOnClickListener(btn->{
+                    });
+                    Button btnAddImage = potholeDetailLayout.findViewById(R.id.btnAddImage);
+                    btnAddImage.setOnClickListener(btn->{
+
+                    });
+                    TextView tvLocation = potholeDetailLayout.findViewById(R.id.tvLocation);
+                    getPlaceFromPoint(Point.fromLngLat(longitude,latitude));
+
+                    Toast.makeText(getContext(), id, Toast.LENGTH_SHORT).show();
+                    if(place!=null){
+                        tvLocation.setText("Địa điểm: "+place);
+                    }
+                    else{
+                        tvLocation.setText("Địa điểm: "+ "{"+longitude+","+latitude+"}");
+
+                    }
+                    return true;
+                }
+            });
         }
 
-        pointPotholeAnnotationManager.addClickListener(new OnPointAnnotationClickListener() {
-            @Override
-            public boolean onAnnotationClick(@NonNull PointAnnotation pointAnnotation) {
-                pointAnnotationManager.deleteAll();
-                double latitude = pointAnnotation.getPoint().latitude();
-                double longitude = pointAnnotation.getPoint().longitude();
-                potholeDetailLayout.setVisibility(View.VISIBLE);
-                searchETLayout.setVisibility(View.GONE);
-                mylocationButton.setVisibility(View.INVISIBLE);
-                ImageButton btnBack = potholeDetailLayout.findViewById(R.id.btnBack);
-                btnBack.setOnClickListener(btn->{
-                    potholeDetailLayout.setVisibility(View.INVISIBLE);
-                    searchETLayout.setVisibility(View.VISIBLE);
-                    mylocationButton.setVisibility(View.INVISIBLE);
-                });
-                Button btnSubmit = potholeDetailLayout.findViewById(R.id.btnSubmit);
-                btnSubmit.setOnClickListener(btn->{
-                });
-                Button btnAddImage = potholeDetailLayout.findViewById(R.id.btnAddImage);
-                btnAddImage.setOnClickListener(btn->{
-
-                });
-                TextView tvLocation = potholeDetailLayout.findViewById(R.id.tvLocation);
-                getPlaceFromPoint(Point.fromLngLat(longitude,latitude));
-
-                if(place!=null){
-                    tvLocation.setText("Địa điểm: "+place);
-                }
-                else{
-                    tvLocation.setText("Địa điểm: "+ "{"+longitude+","+latitude+"}");
-
-                }
-                return true;
-            }
-        });
 
     }
 
@@ -670,7 +675,7 @@ public class FragmentMap extends Fragment
         MapboxGeocoding client = MapboxGeocoding.builder()
                 .accessToken(getString(R.string.mapbox_access_token))
                 .query(point)
-                .geocodingTypes(GeocodingCriteria.TYPE_PLACE)
+                .geocodingTypes(GeocodingCriteria.TYPE_ADDRESS)
                 .mode(GeocodingCriteria.TYPE_ADDRESS)
                 .build();
 
@@ -706,6 +711,7 @@ public class FragmentMap extends Fragment
 
         addOnMapClickListener(mapView.getMapboxMap(), pointDestination -> {
             // Xóa tất cả các annotation
+            getPlaceFromPoint(pointDestination);
             pointAnnotationManager.deleteAll();
             searchStartET.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -753,22 +759,26 @@ public class FragmentMap extends Fragment
                 setNavigationOnMap(pointDestination);
             });
             directionButton.setOnClickListener(direction->{
-                getDirectionWithMyLocationPoint(pointDestination);
                 searchETLayout.setVisibility(View.GONE);
                 layoutStartDestination.setVisibility(View.VISIBLE);
 
-                searchStartET.setText("Vị trí của tôi");
-                searchDestinationET.setText(pointDestination.coordinates().toString());
+                if(place ==null) {
+                    searchDestinationET.setText(pointDestination.coordinates().toString());
+                }else {
+                    searchDestinationET.setText(place);
+                }
                 destinationSearch=pointDestination;
                 findRouteButton.setOnClickListener(button->{
                     if(originSearch!=null && destinationSearch!= null){
                         getRouteTwoPoint(originSearch,destinationSearch);
+                    }else{
+
+                        getDirectionWithMyLocationPoint(pointDestination);
                     }
                     searchResultsView.setVisibility(View.GONE);
                 });
 
             });
-            getPlaceFromPoint(pointDestination);
 
             return false;
         });
@@ -986,13 +996,16 @@ TextView countPothole;
     List<Point> potholesListOnDirection;
     private void getListPotholeOnLineRoute(LineString linestring){
         potholesListOnDirection = new ArrayList<>();
-        for (Pothole potholePoint : potholesList) {
-            Point point = Point.fromLngLat(potholePoint.getLocation().getLongitude(), potholePoint.getLocation().getLatitude());
 
-            // Kiểm tra xem điểm có nằm trên đường và chưa được thêm vào danh sách chưa
-            if (booleanPointOnLine(point, linestring.coordinates()) && !potholesListOnDirection.contains(point)) {
-                potholesListOnDirection.add(point);
-                Log.d("PotholeTag", "Pothole on Line true: " + point.longitude() + " " + point.latitude());
+        if(potholesList!=null){
+            for (Pothole potholePoint : potholesList) {
+                Point point = Point.fromLngLat(potholePoint.getLocation().getLongitude(), potholePoint.getLocation().getLatitude());
+
+                // Kiểm tra xem điểm có nằm trên đường và chưa được thêm vào danh sách chưa
+                if (booleanPointOnLine(point, linestring.coordinates()) && !potholesListOnDirection.contains(point)) {
+                    potholesListOnDirection.add(point);
+                    Log.d("PotholeTag", "Pothole on Line true: " + point.longitude() + " " + point.latitude());
+                }
             }
         }
     }
@@ -1097,7 +1110,7 @@ TextView countPothole;
 
 
             myLocationNavigation = location;
-            if(lineString!=null){
+            if(lineString!=null && potholesList!=null){
             for (Pothole pothole : potholesList) {
                 Point point = Point.fromLngLat(pothole.getLocation().getLongitude(), pothole.getLocation().getLatitude());
                 if (booleanPointOnLine(point, lineString.coordinates())) {
@@ -1268,6 +1281,8 @@ TextView countPothole;
         mylocationButton.setVisibility(View.GONE);
         LayoutButton.setVisibility(View.GONE);
         showbuttonNavigationWhenMove=true;
+        searchResultsViewDestination.setVisibility(View.GONE);
+        searchResultsView.setVisibility(View.GONE);
         //không cho phép nhấp chuột vào map khi chuyển sang navigation
         addOnMapClickListener(mapView.getMapboxMap(), new OnMapClickListener() {
             @Override
