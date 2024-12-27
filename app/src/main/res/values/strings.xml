@@ -91,4 +91,8 @@
 
     <string name="default_web_client_id">72747195748-v759vtnhb8b8f30veta4ad6ehsuud9tu.apps.googleusercontent.com</string>
     <string name="iscontributor">IsContributor</string>
+
+    <!-- String for the setting -->
+    <string name="profile">Profile</string>
+
 </resources>

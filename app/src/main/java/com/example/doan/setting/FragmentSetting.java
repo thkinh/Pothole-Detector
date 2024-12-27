@@ -15,12 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.doan.R;
 import com.example.doan.feature.Setting;
 import com.example.doan.feature.UserPreferences;
 import com.example.doan.login.LoginActivity;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.Locale;
 
@@ -28,8 +30,10 @@ import java.util.Locale;
 public class FragmentSetting extends Fragment {
 
     private RelativeLayout layou_vi, layout_en;
-    private SwitchCompat switchContribute;
-    private Button btn_stProfile, btn_stLogout;
+    private Switch switchContribute;
+    //private Button btn_stProfile;
+    private Button btn_stLogout;
+    private MaterialCardView profile;
 
     public FragmentSetting() {
         // Required empty public constructor
@@ -67,7 +71,8 @@ public class FragmentSetting extends Fragment {
             refreshFragment(); // Refresh to apply changes
         });
 
-        btn_stProfile = rootView.findViewById(R.id.btn_stprofile);
+        profile = rootView.findViewById(R.id.profile);
+        //btn_stProfile = rootView.findViewById(R.id.btn_stprofile);
         btn_stLogout = rootView.findViewById(R.id.btn_stlogout);
 
         btn_stLogout.setOnClickListener(view -> {
@@ -78,10 +83,15 @@ public class FragmentSetting extends Fragment {
             requireActivity().finish();
         });
 
-        btn_stProfile.setOnClickListener(view -> {
+        /*btn_stProfile.setOnClickListener(view -> {
             Intent intent = new Intent(this.getContext(), ProfileActivity.class );
             startActivity(intent);
 
+        });*/
+
+        profile.setOnClickListener(view -> {
+            Intent intent = new Intent(this.getContext(), ProfileActivity.class );
+            startActivity(intent);
         });
 
         layout_en.setOnClickListener(view -> {

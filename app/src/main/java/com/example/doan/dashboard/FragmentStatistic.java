@@ -29,6 +29,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -93,12 +94,13 @@ public class FragmentStatistic extends Fragment {
             }
         }
 
+        List<String> dateLabels = new ArrayList<>(potholeCountByDate.keySet());
+        Collections.sort(dateLabels); // Sắp xếp dateLabels theo thứ tự ngày
+
         List<BarEntry> entries = new ArrayList<>();
-        List<String> dateLabels = new ArrayList<>();
         int index = 0;
-        for (Map.Entry<String, Integer> entry : potholeCountByDate.entrySet()) {
-            entries.add(new BarEntry(index++, entry.getValue()));
-            dateLabels.add(entry.getKey());
+        for (String date : dateLabels) {
+            entries.add(new BarEntry(index++, potholeCountByDate.get(date)));
         }
 
         BarDataSet dataSet = new BarDataSet(entries, "Number of Potholes");

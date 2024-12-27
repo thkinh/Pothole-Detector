@@ -340,9 +340,6 @@ public class FragmentMap extends Fragment
         });
     }
 
-    public void setDirectionButton(FloatingActionButton directionButton) {
-
-    }
 
     //nếu như nhấp vào search start trước.
 
@@ -372,6 +369,7 @@ public class FragmentMap extends Fragment
                                 @Override
                                 public void run() {
                                     searchResultsView.setVisibility(View.VISIBLE);
+                                    mylocationButton.setVisibility(View.INVISIBLE);
                                 }
                             });
                         }
@@ -382,8 +380,11 @@ public class FragmentMap extends Fragment
             @Override
             public void afterTextChanged(Editable editable) {
                 searchResultsView.setVisibility(View.GONE);
+                mylocationButton.setVisibility(View.VISIBLE);
             }
         });
+
+
 
         placeAutocompleteUiAdapter.addSearchListener(new PlaceAutocompleteUiAdapter.SearchListener() {
             @Override
@@ -429,7 +430,6 @@ public class FragmentMap extends Fragment
                     searchETLayout.setVisibility(View.GONE);
                     layoutStartDestination.setVisibility(View.VISIBLE);
                     destinationSearch=Point.fromLngLat(placeAutocompleteSuggestion.getCoordinate().longitude(),placeAutocompleteSuggestion.getCoordinate().latitude());
-                    searchStartET.setText("Vị trí của tôi");
                     searchDestinationET.setText(placeAutocompleteSuggestion.getName());
                     getDirectionWithMyLocationPoint(destinationSearch);
                     directionButton.setVisibility(View.GONE);
@@ -443,8 +443,10 @@ public class FragmentMap extends Fragment
                         getDirectionWithMyLocationPoint(destinationSearch);
                     }
                     searchResultsView.setVisibility(View.GONE);
+                    mylocationButton.setVisibility(View.VISIBLE);
                 });
             }
+
 
             @Override
             public void onPopulateQueryClick(@NonNull PlaceAutocompleteSuggestion placeAutocompleteSuggestion) {
@@ -457,6 +459,7 @@ public class FragmentMap extends Fragment
             }
         });
     }
+
 
     Point originSearch;
     Point destinationSearch;
@@ -488,6 +491,7 @@ public class FragmentMap extends Fragment
                                 @Override
                                 public void run() {
                                     searchResultsView.setVisibility(View.VISIBLE);
+                                    mylocationButton.setVisibility(View.INVISIBLE);
                                 }
                             });
                         }
@@ -618,9 +622,6 @@ public class FragmentMap extends Fragment
             pointPotholeAnnotationManager.create(pointAnnotationOptions);
             if(potholePoint.getLocation().getCountry()==null && potholePoint.getLocation().getCity()==null){
                 getPlaceFromPoint(Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude()));
-//                Toast.makeText(getContext(), place, Toast.LENGTH_SHORT).show();
-//                Pothole.Location location = new Pothole.Location
-//                potholePoint.setLocation();
             }
         }
 
@@ -632,10 +633,12 @@ public class FragmentMap extends Fragment
                 double longitude = pointAnnotation.getPoint().longitude();
                 potholeDetailLayout.setVisibility(View.VISIBLE);
                 searchETLayout.setVisibility(View.GONE);
+                mylocationButton.setVisibility(View.INVISIBLE);
                 ImageButton btnBack = potholeDetailLayout.findViewById(R.id.btnBack);
                 btnBack.setOnClickListener(btn->{
                     potholeDetailLayout.setVisibility(View.INVISIBLE);
                     searchETLayout.setVisibility(View.VISIBLE);
+                    mylocationButton.setVisibility(View.INVISIBLE);
                 });
                 Button btnSubmit = potholeDetailLayout.findViewById(R.id.btnSubmit);
                 btnSubmit.setOnClickListener(btn->{
@@ -647,7 +650,13 @@ public class FragmentMap extends Fragment
                 TextView tvLocation = potholeDetailLayout.findViewById(R.id.tvLocation);
                 getPlaceFromPoint(Point.fromLngLat(longitude,latitude));
 
-                tvLocation.setText("Địa điểm: "+place);
+                if(place!=null){
+                    tvLocation.setText("Địa điểm: "+place);
+                }
+                else{
+                    tvLocation.setText("Địa điểm: "+ "{"+longitude+","+latitude+"}");
+
+                }
                 return true;
             }
         });
@@ -776,9 +785,10 @@ public class FragmentMap extends Fragment
             permissionsManager.requestLocationPermissions(getActivity());
         }
     }
-
+TextView countPothole;
     CardView notificationWarning;
     TextView warningText;
+    LinearLayout layoutCountPothole;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -806,6 +816,9 @@ public class FragmentMap extends Fragment
         warningText=view.findViewById(R.id.distancePothole);
         potholeDetailLayout=view.findViewById(R.id.potholeDetailLayout);
         notificationWarning=view.findViewById(R.id.NotificationWarning);
+        countPothole=view.findViewById(R.id.countPothole);
+        layoutCountPothole=view.findViewById(R.id.layoutCountPothole);
+
         return view;
     }
 
@@ -858,6 +871,7 @@ public class FragmentMap extends Fragment
                         if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                                 (keyCode == KeyEvent.KEYCODE_ENTER)) {
                             searchResultsView.setVisibility(View.GONE);
+                            mylocationButton.setVisibility(View.VISIBLE);
                             return true;
                         }
                         return false;
@@ -870,6 +884,8 @@ public class FragmentMap extends Fragment
                         if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                                 (keyCode == KeyEvent.KEYCODE_ENTER)) {
                             searchResultsView.setVisibility(View.GONE);
+                            mylocationButton.setVisibility(View.VISIBLE);
+
                             return true;
                         }
                         return false;
@@ -913,6 +929,7 @@ public class FragmentMap extends Fragment
 
                         setSearcStartOrDestiantionhET(pointAnnotationManager,resizedBitmap,searchDestinationET);
                         searchResultsView.setVisibility(View.GONE);
+                        mylocationButton.setVisibility(View.VISIBLE);
 
                     }
                 });
@@ -964,15 +981,18 @@ public class FragmentMap extends Fragment
     }
     List<Point> potholesListOnDirection;
     private void getListPotholeOnLineRoute(LineString linestring){
-        potholesListOnDirection= new ArrayList<>();
-        for ( Pothole potholePoint : potholesList) {
-            Point point= Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude());
-            if (booleanPointOnLine(point,linestring.coordinates())){
+        potholesListOnDirection = new ArrayList<>();
+        for (Pothole potholePoint : potholesList) {
+            Point point = Point.fromLngLat(potholePoint.getLocation().getLongitude(), potholePoint.getLocation().getLatitude());
+
+            // Kiểm tra xem điểm có nằm trên đường và chưa được thêm vào danh sách chưa
+            if (booleanPointOnLine(point, linestring.coordinates()) && !potholesListOnDirection.contains(point)) {
                 potholesListOnDirection.add(point);
                 Log.d("PotholeTag", "Pothole on Line true: " + point.longitude() + " " + point.latitude());
             }
         }
     }
+
 
     private void getRouteTwoPoint(Point origin ,Point destination) {
         MapboxDirections.Builder builder = MapboxDirections.builder();
@@ -1013,6 +1033,11 @@ public class FragmentMap extends Fragment
 
                     getListPotholeOnLineRoute(lineString);
 
+                    if(potholesListOnDirection.size()>0){
+
+                        layoutCountPothole.setVisibility(View.VISIBLE);
+                        countPothole.setText("Số lượng ổ gà trên tuyến đường đã chọn "+ potholesListOnDirection.size());
+                    }
 
                 });
             }
@@ -1065,7 +1090,7 @@ public class FragmentMap extends Fragment
             if (focusLocationNavigationMode) {
                 updateCameraNavigation(Point.fromLngLat(location.getLongitude(), location.getLatitude()), (double) location.getBearing());
             }
-            notificationWarning.setVisibility(View.GONE);
+
 
             myLocationNavigation = location;
             if(lineString!=null){
@@ -1089,10 +1114,9 @@ public class FragmentMap extends Fragment
                         // Gọi phương thức để gửi thông báo (NotifyWarning là phương thức thông báo bạn đã định nghĩa)
                         NotifyManager.showNotification(getContext(), "Cảnh báo ổ gà", distanceString);
                     }
-                }
-                else {
-                    notificationWarning.setVisibility(View.GONE);
-
+                    else{
+                        notificationWarning.setVisibility(View.GONE);
+                    }
                 }
             }}
         }
@@ -1232,7 +1256,7 @@ public class FragmentMap extends Fragment
     };
 
     public void setNavigationOnMap(Point destination){
-
+        layoutCountPothole.setVisibility(View.GONE);
         layoutStartDestination.setVisibility(View.GONE);
         notificationWarning.setVisibility(View.GONE);
         //không cho phép nhấp chuột vào map khi chuyển sang navigation
@@ -1337,8 +1361,8 @@ public class FragmentMap extends Fragment
         updateCamera(Point.fromLngLat(myLocationNavigation.getLongitude(), myLocationNavigation.getLatitude()),(double) myLocationNavigation.getBearing());
 
         cardViewWarning.setVisibility(View.GONE);
-        cardViewTrip.setVisibility(View.INVISIBLE);
-        searchET.setVisibility(View.VISIBLE);
+        cardViewTrip.setVisibility(View.GONE);
+        searchETLayout.setVisibility(View.VISIBLE);
         soundButton.setVisibility(View.GONE);
         maneuverView.setVisibility(View.GONE);
         navigationButton.setVisibility(View.VISIBLE);
@@ -1353,7 +1377,8 @@ public class FragmentMap extends Fragment
                     routeLineView.renderClearRouteLineValue(style, view);
                 });
         });
-
+        warningText.setText("null");
+        countPothole.setText("Không tìm thấy ổ gà");
     }
 
     @SuppressLint("MissingPermission")
