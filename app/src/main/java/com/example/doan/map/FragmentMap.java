@@ -163,6 +163,7 @@ import com.mapbox.turf.TurfMeasurement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -675,8 +676,8 @@ public class FragmentMap extends Fragment
         MapboxGeocoding client = MapboxGeocoding.builder()
                 .accessToken(getString(R.string.mapbox_access_token))
                 .query(point)
-                .geocodingTypes(GeocodingCriteria.TYPE_ADDRESS)
-                .mode(GeocodingCriteria.TYPE_ADDRESS)
+//                .geocodingTypes(GeocodingCriteria.MODE_PLACES)
+//                .mode(GeocodingCriteria.TYPE_ADDRESS)
                 .build();
 
 
@@ -694,6 +695,10 @@ public class FragmentMap extends Fragment
                         Toast.makeText(getContext(), feature.placeName(),
                                 Toast.LENGTH_SHORT).show();
 
+                }else{
+
+                    Toast.makeText(getContext(),"Error network",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -1094,6 +1099,7 @@ TextView countPothole;
     LineString lineString;
     Location myLocationNavigation;
     Location myLocationMap;
+    boolean havePotholeOnLine=false;
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
         public void onNewRawLocation(@NonNull Location location) {
@@ -1107,34 +1113,49 @@ TextView countPothole;
             if (focusLocationNavigationMode) {
                 updateCameraNavigation(Point.fromLngLat(location.getLongitude(), location.getLatitude()), (double) location.getBearing());
             }
-
+            notificationWarning.setVisibility(View.VISIBLE);
+            List<Point> potholesToRemove = null;
+            if(potholesListOnDirection==null){
+                notificationWarning.setVisibility(View.GONE);
+            }
 
             myLocationNavigation = location;
-            if(lineString!=null && potholesList!=null){
-            for (Pothole pothole : potholesList) {
-                Point point = Point.fromLngLat(pothole.getLocation().getLongitude(), pothole.getLocation().getLatitude());
-                if (booleanPointOnLine(point, lineString.coordinates())) {
+            if(lineString!=null && potholesListOnDirection!=null){
+            for (Point pothole : potholesListOnDirection) {
+                Point point = Point.fromLngLat(pothole.longitude(), pothole.latitude());
+//                if (booleanPointOnLine(point, lineString.coordinates())) {
 
                     // Tính khoảng cách giữa vị trí hiện tại và pothole
                     double distance = TurfMeasurement.distance(point, Point.fromLngLat(location.getLongitude(), location.getLatitude()));
-                    notificationWarning.setVisibility(View.VISIBLE);
 
                     // Chuyển khoảng cách ra dạng mét
                     double distanceInMeters = distance * 1000;  // Đổi từ km sang m
                     String distanceString = String.format("%.2f", distanceInMeters);
                     // Kiểm tra nếu khoảng cách nhỏ hơn hoặc bằng 400m
-                    if (distanceInMeters <= 200) {
-                        // Hiển thị thông báo
-                        warningText.setText(+Math.round(distanceInMeters) + "m");
+                    if (distanceInMeters <= 100 && distanceInMeters>=20 ) {
                         notificationWarning.setVisibility(View.VISIBLE);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                warningText.setText(+Math.round(distanceInMeters) + "m");
 
-
-                        // Gọi phương thức để gửi thông báo (NotifyWarning là phương thức thông báo bạn đã định nghĩa)
-                        NotifyManager.showNotification(getContext(), "Cảnh báo ổ gà", distanceString);
+                                // Hiển thị thông báo
+                                // Gọi phương thức để gửi thông báo (NotifyWarning là phương thức thông báo bạn đã định nghĩa)
+                                NotifyManager.showNotification(getContext(), "Cảnh báo ổ gà", distanceString);
+                            }
+                        });
+                        break;
                     }
-                    else{
+                    else if (distanceInMeters<20){
+//                        potholesToRemove.add(pothole); // Đánh dấu để xóa sau vòng lặp
                         notificationWarning.setVisibility(View.GONE);
                     }
+//                }
+//                potholesListOnDirection.removeAll(potholesToRemove);
+
+                // Ẩn thông báo nếu không còn ổ gà trong danh sách
+                if (potholesListOnDirection.isEmpty()) {
+                    notificationWarning.setVisibility(View.GONE);
                 }
             }}
         }
@@ -1164,6 +1185,8 @@ TextView countPothole;
                 if (geometry != null) {
                     lineString = LineString.fromPolyline(geometry, PRECISION_6);  // Chuyển từ polyline string thành LineString
                 }
+                getListPotholeOnLineRoute(lineString);
+                Toast.makeText(getContext(), "Route Update", Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -1277,12 +1300,12 @@ TextView countPothole;
     public void setNavigationOnMap(Point destination){
         layoutCountPothole.setVisibility(View.GONE);
         layoutStartDestination.setVisibility(View.GONE);
-        notificationWarning.setVisibility(View.GONE);
         mylocationButton.setVisibility(View.GONE);
         LayoutButton.setVisibility(View.GONE);
         showbuttonNavigationWhenMove=true;
         searchResultsViewDestination.setVisibility(View.GONE);
         searchResultsView.setVisibility(View.GONE);
+
         //không cho phép nhấp chuột vào map khi chuyển sang navigation
         addOnMapClickListener(mapView.getMapboxMap(), new OnMapClickListener() {
             @Override
@@ -1402,7 +1425,7 @@ TextView countPothole;
                     routeLineView.renderClearRouteLineValue(style, view);
                 });
         });
-        notificationWarning.setVisibility(View.GONE);
+
         countPothole.setText("Không tìm thấy ổ gà");
         LayoutButton.setVisibility(View.VISIBLE);
         mylocationButton.setVisibility(View.VISIBLE);
