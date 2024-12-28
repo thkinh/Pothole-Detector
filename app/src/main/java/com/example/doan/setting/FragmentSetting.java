@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.doan.R;
@@ -29,7 +31,7 @@ import java.util.Locale;
 public class FragmentSetting extends Fragment {
 
     private RelativeLayout layou_vi, layout_en;
-    private SwitchCompat switchContribute;
+    private Switch switchContribute;
     //private Button btn_stProfile;
     private Button btn_stLogout;
     private MaterialCardView profile;
@@ -48,15 +50,11 @@ public class FragmentSetting extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
-
 
         View rootView = inflater.inflate(R.layout.fragment_setting, container, false);
         // Find the RelativeLayout by ID

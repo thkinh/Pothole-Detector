@@ -1,11 +1,13 @@
 package com.example.doan.login;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.doan.dashboard.MainActivity;
 import com.example.doan.R;
 import com.example.doan.api.auth.AuthManager;
+import com.example.doan.feature.Setting;
 import com.example.doan.feature.UserPreferences;
 import com.example.doan.model.AppUser;
 
@@ -62,6 +65,23 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.btn_login);
         askSignupText = findViewById(R.id.txt_askSignUp_scrLogin);
         forgotPassword = findViewById(R.id.txt_forgotPassword);
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch lang_switch = findViewById(R.id.sw_language);
+        if (Setting.getInstance().getAppLanguage() == Setting.AppLanguage.vi){
+            lang_switch.setChecked(false);
+        }
+        if (Setting.getInstance().getAppLanguage() == Setting.AppLanguage.en_US){
+            lang_switch.setChecked(true);
+        }
+        lang_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked){
+                Setting.getInstance().setAppLanguage(Setting.AppLanguage.en_US);
+                Setting.getInstance().applyLanguage(this);
+            }
+            if (!isChecked){
+                Setting.getInstance().setAppLanguage(Setting.AppLanguage.vi);
+                Setting.getInstance().applyLanguage(this);
+            }
+        });
 
         //Ánh xạ các view từ layout for Google Sign In
         googleButton = findViewById(R.id.btn_continueWGoogle_scrLogin);

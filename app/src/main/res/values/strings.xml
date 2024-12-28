@@ -40,13 +40,13 @@
     <string name="txt_username">Username</string>
     <string name="txt_opt">OTP CODE</string>
     <string name="txt_email">Email</string>
-    <string name="txt_password">Password</string>
+    <string name="txt_password">Mật Khâu</string>
     <string name="txt_rePassword">Re-Password</string>
-    <string name="txt_forgotPassword"><u>Forgot password?</u></string>
-    <string name="txt_askSignUp">Don\'t have an account? <u>Sign up</u></string>
-    <string name="txt_askLogin">Already have an account? <u>Login</u></string>
-    <string name="txt_newPassword">New password</string>
-    <string name="txt_cfPassword">Confirm password</string>
+    <string name="txt_forgotPassword"><u>Quên Mật khẩu?</u></string>
+    <string name="txt_askSignUp">Không có tài khoản? <u>Đăng kí</u></string>
+    <string name="txt_askLogin">Đã có tài khoản? <u>Đăng nhập</u></string>
+    <string name="txt_newPassword">Mật khẩu mới</string>
+    <string name="txt_cfPassword">Xác nhận mật</string>
     <string name="txt_note"><b>Lưu ý</b>: Không đặt lại mật khấu đã từng sử dụng!</string>
     <string name="txt_popupEmail">Recover Account</string>
     <string name="txt_popupNote">Để đặt lại mật khẩu cho tài khoản, vui lòng nhập email được liên kết với tài khoản của bạn.</string>
@@ -93,7 +93,6 @@
     <string name="iscontributor">IsContributor</string>
 
     <!-- String for the setting -->
-    <string name="setting">SETTING</string>
     <string name="profile">Profile</string>
 
 </resources>

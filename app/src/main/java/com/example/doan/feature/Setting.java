@@ -129,8 +129,15 @@ public class Setting {
     }
 
     public void applyLanguage(Context context) {
+
+        Locale locale;
+        if (this.getAppLanguage() == AppLanguage.en_US){
+            locale = Locale.US;
+        }
+        else {
+            locale = new Locale("vi", "Vietnam");
+        }
         // Set the language based on the user's selected preference
-        Locale locale = (this.getAppLanguage() == Setting.AppLanguage.vi) ? new Locale("vi", "VN") : Locale.US;
         Locale.setDefault(locale);
 
         // Get the resources and configuration

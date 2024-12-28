@@ -21,11 +21,21 @@ public class DetectEngine {
 
     private final LinkedList<Double> zValuesWindow;
     private final int windowSize;
+    private SensorEventListener sensorEventListener;
+    private double meanZ, sdZ;
     Model model;
     private int potholes = 0;
 
     public int GetPotholes(){
         return potholes;
+    }
+
+    public double getSdZ() {
+        return sdZ;
+    }
+
+    public double getMeanZ() {
+        return meanZ;
     }
 
     public interface DetectionCallback {
@@ -44,46 +54,49 @@ public class DetectEngine {
     }
 
     public SensorEventListener getSensorEventListener() {
-        return new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-                double z = event.values[2];
-                updateRollingWindow(z);
+        if (sensorEventListener == null) { // Create the instance only once
+            sensorEventListener = new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent event) {
+                    double z = event.values[2];
+                    updateRollingWindow(z);
 
-                if (zValuesWindow.size() == windowSize) {
-                    double meanZ = calculateMean();
-                    double varianceZ = calculateVariance(meanZ);
-                    double sdZ = Math.sqrt(varianceZ);
+                    if (zValuesWindow.size() == windowSize) {
+                        meanZ = calculateMean();
+                        double varianceZ = calculateVariance(meanZ);
+                        sdZ = Math.sqrt(varianceZ);
 
-                    try {
-                        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(2 * 4);
-                        byteBuffer.order(ByteOrder.nativeOrder());
-                        byteBuffer.putFloat((float) meanZ);
-                        byteBuffer.putFloat((float) sdZ);
+                        try {
+                            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(2 * 4);
+                            byteBuffer.order(ByteOrder.nativeOrder());
+                            byteBuffer.putFloat((float) meanZ);
+                            byteBuffer.putFloat((float) sdZ);
 
-                        TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 2}, DataType.FLOAT32);
-                        inputFeature0.loadBuffer(byteBuffer);
+                            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 2}, DataType.FLOAT32);
+                            inputFeature0.loadBuffer(byteBuffer);
 
-                        Model.Outputs outputs = model.process(inputFeature0);
-                        float prediction = outputs.getOutputFeature0AsTensorBuffer().getFloatArray()[0];
-                        if (prediction > 0.9055) {
-                            potholes++;
-                            callback.onPotholeDetected(potholes);
-                        } else {
-                            callback.onSafe();
+                            Model.Outputs outputs = model.process(inputFeature0);
+                            float prediction = outputs.getOutputFeature0AsTensorBuffer().getFloatArray()[0];
+                            if (prediction > 0.9055) {
+                                potholes++;
+                                callback.onPotholeDetected(potholes);
+                            } else {
+                                callback.onSafe();
+                            }
+                            zValuesWindow.clear();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                        zValuesWindow.clear();
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }
-            }
 
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-                // No implementation needed
-            }
-        };
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int accuracy) {
+                    // No action needed
+                }
+            };
+        }
+        return sensorEventListener;
     }
 
     private void updateRollingWindow(double zValue) {
@@ -110,6 +123,10 @@ public class DetectEngine {
     }
 
     public void close() {
-        model.close();
+        if (model != null) {
+            model.close();
+            model = null;
+        }
+        sensorEventListener = null;
     }
 }

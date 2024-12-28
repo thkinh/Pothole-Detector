@@ -46,6 +46,7 @@
         <activity
             android:name=".login.SplashScreen"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -56,6 +57,7 @@
             android:name=".dashboard.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true" >
+
         </activity>
 
         <!-- Khai báo NotificationActivity -->
@@ -65,6 +67,7 @@
             android:name=".login.LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
+
         </activity>
         <activity
             android:name=".login.SignupActivity"
