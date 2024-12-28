@@ -147,8 +147,8 @@ public class PotholeManager {
         });
     }
 
-    public void fetchProfileImage(int userId, AuthManager.FetchImageCallBack callBack) {
-        Call<ResponseBody> call = potholeService.getPotholeImage(userId);
+    public void fetchPotholeImage(int potholeId, AuthManager.FetchImageCallBack callBack) {
+        Call<ResponseBody> call = potholeService.getPotholeImage(potholeId);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -173,6 +173,25 @@ public class PotholeManager {
 
     public void deleteDuplicatedPothole(Integer id, DeletePotholeCallBack callBack){
         Call<String> call = potholeService.deletePothole(id);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()){
+                    callBack.onSuccess(response.body());
+                }
+                else {
+                    callBack.onFailure(response.raw().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callBack.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+    public void deleteDuplicatedPotholeByLL(Double latitude, Double longitude, DeletePotholeCallBack callBack){
+        Call<String> call = potholeService.deletePotholeByLL(latitude,longitude);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

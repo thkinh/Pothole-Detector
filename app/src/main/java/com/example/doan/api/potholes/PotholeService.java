@@ -39,4 +39,8 @@ public interface PotholeService {
 
     @DELETE("pothole/deleteDuplicate")
     Call<String> deletePothole (@Query("id") Integer potholeId);
+
+    @DELETE("pothole/deleteDuplicateByLL")
+    Call<String> deletePotholeByLL (@Query("lat") Double latitude, @Query("long") Double longitude);
+
 }
