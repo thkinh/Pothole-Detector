@@ -35,8 +35,6 @@ public class Mapbox extends Fragment {
         setMylocationButton();
         return view;
     }
-
-
     private final OnIndicatorPositionChangedListener onIndicatorPositionChangedListener = new OnIndicatorPositionChangedListener() {
         @Override
         public void onIndicatorPositionChanged(@NonNull Point point) {
@@ -64,7 +62,6 @@ public class Mapbox extends Fragment {
     };
 
     public void setMylocationButton() {
-
         mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(10.0).build());
         LocationComponentPlugin locationComponentPlugin = getLocationComponent(mapView);
         locationComponentPlugin.setEnabled(true);

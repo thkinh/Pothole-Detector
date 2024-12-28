@@ -171,6 +171,30 @@ public class PotholeManager {
         });
     }
 
+    public void deleteDuplicatedPothole(Integer id, DeletePotholeCallBack callBack){
+        Call<String> call = potholeService.deletePothole(id);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()){
+                    callBack.onSuccess(response.body());
+                }
+                else {
+                    callBack.onFailure(response.raw().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callBack.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+    public interface DeletePotholeCallBack{
+        void onSuccess(String responseString);
+        void onFailure(String errorMessage);
+    }
+
     public interface FetchPotholeCallBack{
         void onSuccess(Pothole potholes);
         void onFailure(String errorMessage);

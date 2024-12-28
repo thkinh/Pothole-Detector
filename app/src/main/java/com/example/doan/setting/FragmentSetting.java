@@ -80,11 +80,6 @@ public class FragmentSetting extends Fragment {
             requireActivity().finish();
         });
 
-        /*btn_stProfile.setOnClickListener(view -> {
-            Intent intent = new Intent(this.getContext(), ProfileActivity.class );
-            startActivity(intent);
-
-        });*/
 
         profile.setOnClickListener(view -> {
             Intent intent = new Intent(this.getContext(), ProfileActivity.class );

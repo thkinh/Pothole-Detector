@@ -56,7 +56,6 @@ public class DetectActivity extends AppCompatActivity
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         locationEngine = LocationEngineProvider.getBestLocationEngine(DetectActivity.this);
-        calendar = Calendar.getInstance();
         if (accelerometer == null) {
             Toast.makeText(this, "Accelerometer not available", Toast.LENGTH_LONG).show();
             return;
@@ -131,6 +130,7 @@ public class DetectActivity extends AppCompatActivity
 
     @SuppressLint("MissingPermission")
     private void addFoundedPothole(){
+        calendar = Calendar.getInstance();
         java.util.Date utilDate = calendar.getTime();
         Date sqlDate = new Date(utilDate.getTime());
         Time sqlTime = new Time(utilDate.getTime());
@@ -140,6 +140,15 @@ public class DetectActivity extends AppCompatActivity
             @Override
             public void onSuccess(LocationEngineResult result) {
                 Location location = result.getLastLocation();
+                if (location == null) {
+                    runOnUiThread(() -> {
+                        finish();
+                        Toast.makeText(DetectActivity.this,
+                                "Unable to detect location. Please enable location services.",
+                                Toast.LENGTH_LONG).show();
+                    });
+                    return;
+                }
                 Pothole.Location ph_location = new Pothole.Location();
                 ph_location.setLatitude(location.getLatitude());
                 ph_location.setLongitude(location.getLongitude());
@@ -148,7 +157,7 @@ public class DetectActivity extends AppCompatActivity
                 ph_location.setStreet("NONE");
                 pothole.setLocation(ph_location);
                 pothole.setDateFound(sqlDate);
-                pothole.setTimeFound(String.valueOf(sqlTime));
+                pothole.setTimeFound(sqlTime.toString());
                 runOnUiThread(()->{
                     Log.d("__DETECTION", "Pothole found! "+pothole.getLocation().getLongitude()+"/"
                             +pothole.getLocation().getLatitude());
@@ -159,7 +168,11 @@ public class DetectActivity extends AppCompatActivity
 
             @Override
             public void onFailure(@NonNull Exception exception) {
-
+                runOnUiThread(() -> {
+                    Toast.makeText(DetectActivity.this,
+                            "Failed to retrieve location: " + exception.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                });
             }
         });
     }
@@ -173,6 +186,7 @@ public class DetectActivity extends AppCompatActivity
             @Override
             public void onFailure(String errorMessage) {
                 Log.d("__API_DEBUG", errorMessage);
+                Toast.makeText(DetectActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
     }
