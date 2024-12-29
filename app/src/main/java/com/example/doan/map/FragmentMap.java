@@ -1,5 +1,6 @@
 package com.example.doan.map;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -615,28 +616,39 @@ public class FragmentMap extends Fragment
 
                 double latitude = pointAnnotation.getPoint().latitude();
                 double longitude = pointAnnotation.getPoint().longitude();
-                potholeDetailLayout.setVisibility(View.VISIBLE);
+                /*potholeDetailLayout.setVisibility(View.VISIBLE);
                 searchETLayout.setVisibility(View.GONE);
                 mylocationButton.setVisibility(View.INVISIBLE);
-                LayoutButton.setVisibility(View.GONE);
-                ImageButton btnBack = potholeDetailLayout.findViewById(R.id.btnBack);
+                LayoutButton.setVisibility(View.GONE);*/
+//------------------------dialog-------------------------------------
+                // Inflate the dialog layout
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                View dialogView = inflater.inflate(R.layout.dialog_mapdetail, null);
+
+                // Create the AlertDialog
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+                dialogBuilder.setView(dialogView);
+                AlertDialog alertDialog = dialogBuilder.create();
+
+                // Set up the dialog views
+                ImageButton btnBack = dialogView.findViewById(R.id.btnBack);
                 btnBack.setOnClickListener(btn->{
-                    potholeDetailLayout.setVisibility(View.INVISIBLE);
+                    /*dialogView.setVisibility(View.INVISIBLE);
                     searchETLayout.setVisibility(View.VISIBLE);
                     mylocationButton.setVisibility(View.INVISIBLE);
-                    LayoutButton.setVisibility(View.VISIBLE);
-
+                    LayoutButton.setVisibility(View.VISIBLE);*/
+                    alertDialog.show();
                 });
-                Button btnSubmit = potholeDetailLayout.findViewById(R.id.btnSubmit);
+                Button btnSubmit = dialogView.findViewById(R.id.btnSubmit);
                 btnSubmit.setOnClickListener(btn->{
                 });
-                Button btnAddImage = potholeDetailLayout.findViewById(R.id.btnAddImage);
+                Button btnAddImage = dialogView.findViewById(R.id.btnAddImage);
                 btnAddImage.setOnClickListener(btn->{
                     handleUpload();
                 });
-                TextView tvLocation = potholeDetailLayout.findViewById(R.id.tvLocation);
+                TextView tvLocation = dialogView.findViewById(R.id.tvLocation);
                 getPlaceFromPoint(Point.fromLngLat(longitude,latitude));
-                ImageView Pothole_image = potholeDetailLayout.findViewById(R.id.imgPreview);
+                ImageView Pothole_image = dialogView.findViewById(R.id.imgPreview);
                 handleRetrieveImage(Pothole_image);
                 if(place!=null){
                     tvLocation.setText("Địa điểm: "+place);
@@ -644,6 +656,7 @@ public class FragmentMap extends Fragment
                 else{
                     tvLocation.setText("Địa điểm: "+ "{"+longitude+","+latitude+"}");
                 }
+                alertDialog.show();
                 return true;
             });
         }
