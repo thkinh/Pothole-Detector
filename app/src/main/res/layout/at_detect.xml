@@ -10,6 +10,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/topFragmentContainer"
+        android:layout_margin="25dp"
+        android:contextClickable="true"
+        android:src="@drawable/ic_danger"
+        android:backgroundTint="#30FAAA"
+        android:id="@+id/add_ph_manually">
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -46,7 +57,6 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_direction_map_button"
                 android:layout_margin="16dp"
-
                 android:layout_toRightOf="@id/mylocationButton"/>
 
 
@@ -101,6 +111,7 @@
         android:layout_height="40dp"
         android:layout_weight="1"
         android:scaleType="centerInside"
+        android:contentDescription="setting at the detect activity"
         android:src="@drawable/setting1"
         android:background="@null" />
 

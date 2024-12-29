@@ -1,11 +1,13 @@
 package com.example.doan.map;
 
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
-
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import com.example.doan.R;
 
 public class NotifyManager {
@@ -32,5 +34,16 @@ public class NotifyManager {
 
         // Hiển thị Notification
         notificationManager.notify(1, notification);
+    }
+
+    public static void showVibrate(Context context){
+        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            //deprecated in API 26
+            v.vibrate(500);
+        }
     }
 }
