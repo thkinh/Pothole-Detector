@@ -751,7 +751,7 @@ public class FragmentMap extends Fragment
                         CarmenFeature feature = results.get(0);
                         place = feature.address();
 
-                        Toast.makeText(getContext(), feature.address().toString(),
+                        Toast.makeText(getContext(), feature.placeName().toString(),
                                 Toast.LENGTH_SHORT).show();
 
                 }else{
