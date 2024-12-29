@@ -52,6 +52,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.JsonObject;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -599,10 +600,22 @@ public class FragmentMap extends Fragment
         pointPotholeAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
 
         for ( Pothole potholePoint : potholesList) {
+
+            JsonObject jsonData = new JsonObject();
+            jsonData.addProperty("id",potholePoint.getId());
+            jsonData.addProperty("dateFound",potholePoint.getTimeFound());
+            jsonData.addProperty("timeFound",potholePoint.getTimeFound());
+            jsonData.addProperty("severity",potholePoint.getSeverity());
+            jsonData.addProperty("longitude",potholePoint.getLocation().getLongitude());
+            jsonData.addProperty("latitude",potholePoint.getLocation().getLatitude());
+            jsonData.addProperty("country",potholePoint.getLocation().getCountry());
+            jsonData.addProperty("city",potholePoint.getLocation().getCity());
+            jsonData.addProperty("street",potholePoint.getLocation().getStreet());
             PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                     .withTextAnchor(TextAnchor.CENTER)
                     .withIconImage(resizedBitmap)
-                    .withPoint(Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude()));
+                    .withPoint(Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude()))
+                    .withData(jsonData);
             pointPotholeAnnotationManager.create(pointAnnotationOptions);
             if(potholePoint.getLocation().getCountry()==null && potholePoint.getLocation().getCity()==null){
                 getPlaceFromPoint(Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude()));
