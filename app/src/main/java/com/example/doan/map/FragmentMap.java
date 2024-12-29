@@ -1,6 +1,5 @@
 package com.example.doan.map;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -53,6 +52,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.JsonObject;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -66,6 +66,7 @@ import com.mapbox.api.directions.v5.MapboxDirections;
 
 import com.mapbox.api.directions.v5.models.Bearing;
 import com.mapbox.api.directions.v5.models.VoiceInstructions;
+import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
 import com.mapbox.bindgen.Expected;
@@ -600,10 +601,22 @@ public class FragmentMap extends Fragment
         pointPotholeAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
 
         for ( Pothole potholePoint : potholesList) {
+
+            JsonObject jsonData = new JsonObject();
+            jsonData.addProperty("id",potholePoint.getId());
+            jsonData.addProperty("dateFound",potholePoint.getTimeFound());
+            jsonData.addProperty("timeFound",potholePoint.getTimeFound());
+            jsonData.addProperty("severity",potholePoint.getSeverity());
+            jsonData.addProperty("longitude",potholePoint.getLocation().getLongitude());
+            jsonData.addProperty("latitude",potholePoint.getLocation().getLatitude());
+            jsonData.addProperty("country",potholePoint.getLocation().getCountry());
+            jsonData.addProperty("city",potholePoint.getLocation().getCity());
+            jsonData.addProperty("street",potholePoint.getLocation().getStreet());
             PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                     .withTextAnchor(TextAnchor.CENTER)
                     .withIconImage(resizedBitmap)
-                    .withPoint(Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude()));
+                    .withPoint(Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude()))
+                    .withData(jsonData);
             pointPotholeAnnotationManager.create(pointAnnotationOptions);
             if(potholePoint.getLocation().getCountry()==null && potholePoint.getLocation().getCity()==null){
                 getPlaceFromPoint(Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude()));
@@ -612,51 +625,53 @@ public class FragmentMap extends Fragment
             pointPotholeAnnotationManager.addClickListener(pointAnnotation -> {
                 pointAnnotationManager.deleteAll();
 
-                selected_pothole_id = potholePoint.getId();;
+//                selected_pothole_id = potholePoint.getId();;
+                JsonObject data = pointAnnotation.getData().getAsJsonObject();
 
+                // Lấy id từ JsonObject
+                String id = data.has("id") ? data.get("id").getAsString() : null;
+//                String id = data.has("id") ? data.get("id").getAsString() : null;
+//                String id = data.has("dateFound") ? data.get("dateFound").getAsString() : null;
+//                String id = data.has("timeFound") ? data.get("timeFound").getAsString() : null;
+//                String id = data.has("severity") ? data.get("severity").getAsString() : null;
+//                String id = data.has("country") ? data.get("country").getAsString() : null;
+//                String id = data.has("city") ? data.get("city").getAsString() : null;
+//                String id = data.has("street") ? data.get("street").getAsString() : null;
+                selected_pothole_id = Integer.parseInt(id);
+
+                // Kiểm tra nếu id hợp lệ
+                if (id != null) {
+                    Toast.makeText(getContext(), "Pothole ID: " + id, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "ID không tồn tại!", Toast.LENGTH_SHORT).show();
+                }
                 double latitude = pointAnnotation.getPoint().latitude();
                 double longitude = pointAnnotation.getPoint().longitude();
-                /*potholeDetailLayout.setVisibility(View.VISIBLE);
+                potholeDetailLayout.setVisibility(View.VISIBLE);
                 searchETLayout.setVisibility(View.GONE);
                 mylocationButton.setVisibility(View.INVISIBLE);
-                LayoutButton.setVisibility(View.GONE);*/
-//------------------------dialog-------------------------------------
-                // Inflate the dialog layout
-                LayoutInflater inflater = LayoutInflater.from(getContext());
-                View dialogView = inflater.inflate(R.layout.dialog_mapdetail, null);
-
-                // Create the AlertDialog
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
-                dialogBuilder.setView(dialogView);
-                AlertDialog alertDialog = dialogBuilder.create();
-
-                // Set up the dialog views
-                ImageButton btnBack = dialogView.findViewById(R.id.btnBack);
+                LayoutButton.setVisibility(View.GONE);
+                ImageButton btnBack = potholeDetailLayout.findViewById(R.id.btnBack);
                 btnBack.setOnClickListener(btn->{
-                    /*dialogView.setVisibility(View.INVISIBLE);
+                    potholeDetailLayout.setVisibility(View.INVISIBLE);
                     searchETLayout.setVisibility(View.VISIBLE);
                     mylocationButton.setVisibility(View.INVISIBLE);
-                    LayoutButton.setVisibility(View.VISIBLE);*/
-                    alertDialog.show();
+                    LayoutButton.setVisibility(View.VISIBLE);
+
                 });
-                Button btnSubmit = dialogView.findViewById(R.id.btnSubmit);
+                Button btnSubmit = potholeDetailLayout.findViewById(R.id.btnSubmit);
                 btnSubmit.setOnClickListener(btn->{
                 });
-                Button btnAddImage = dialogView.findViewById(R.id.btnAddImage);
+                Button btnAddImage = potholeDetailLayout.findViewById(R.id.btnAddImage);
                 btnAddImage.setOnClickListener(btn->{
                     handleUpload();
                 });
-                TextView tvLocation = dialogView.findViewById(R.id.tvLocation);
-                getPlaceFromPoint(Point.fromLngLat(longitude,latitude));
-                ImageView Pothole_image = dialogView.findViewById(R.id.imgPreview);
+                TextView tvLocation = potholeDetailLayout.findViewById(R.id.tvLocation);
+                TextView tvSeverity = potholeDetailLayout.findViewById(R.id.tvSeverity);
+                TextView tvDate = potholeDetailLayout.findViewById(R.id.tvDate);
+
+                ImageView Pothole_image = potholeDetailLayout.findViewById(R.id.imgPreview);
                 handleRetrieveImage(Pothole_image);
-                if(place!=null){
-                    tvLocation.setText("Địa điểm: "+place);
-                }
-                else{
-                    tvLocation.setText("Địa điểm: "+ "{"+longitude+","+latitude+"}");
-                }
-                alertDialog.show();
                 return true;
             });
         }
@@ -720,8 +735,8 @@ public class FragmentMap extends Fragment
         MapboxGeocoding client = MapboxGeocoding.builder()
                 .accessToken(getString(R.string.mapbox_access_token))
                 .query(point)
-//                .geocodingTypes(GeocodingCriteria.MODE_PLACES)
-//                .mode(GeocodingCriteria.TYPE_ADDRESS)
+    //                .geocodingTypes(GeocodingCriteria.TYPE_ADDRESS)
+    //                .mode(GeocodingCriteria.TYPE_ADDRESS)
                 .build();
 
 
@@ -734,9 +749,9 @@ public class FragmentMap extends Fragment
 
                         // Get the first Feature from the successful geocoding response
                         CarmenFeature feature = results.get(0);
-                        place = feature.placeName().toString();
+                        place = feature.address();
 
-                        Toast.makeText(getContext(), feature.placeName(),
+                        Toast.makeText(getContext(), feature.placeName().toString(),
                                 Toast.LENGTH_SHORT).show();
 
                 }else{
@@ -747,8 +762,10 @@ public class FragmentMap extends Fragment
             }
             @Override
             public void onFailure(Call<GeocodingResponse> call, Throwable t) {
+                Log.e("GeocodingError", "Error during geocoding: " + t.getMessage());
 
-                Toast.makeText(getContext(), "Fail Search Place",
+                // Hiển thị thông báo với lỗi chi tiết
+                Toast.makeText(getContext(), "Fail Search Place: " + t.getMessage(),
                         Toast.LENGTH_SHORT).show();
             }
 

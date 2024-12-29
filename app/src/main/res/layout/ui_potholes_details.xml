@@ -60,7 +60,7 @@
                 android:id="@+id/tvLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Kinh độ: 10.8231, Vĩ độ: 106.6297"
+                android:text="Trống"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp" />
         </LinearLayout>
@@ -94,7 +94,7 @@
                 android:id="@+id/tvDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="19-12-2024"
+                android:text="Trống"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp" />
         </LinearLayout>
@@ -128,7 +128,7 @@
                 android:id="@+id/tvSeverity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cao"
+                android:text="Trống"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp" />
         </LinearLayout>
