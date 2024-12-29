@@ -23,6 +23,7 @@ import com.example.doan.feature.DetectEngine;
 import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;
 import com.example.doan.setting.FragmentSetting;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -43,6 +44,9 @@ public class DetectActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private LocationEngine locationEngine;
     private Calendar calendar;
+    private Mapbox mapbox;
+    private FloatingActionButton btn_add_manually;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -52,7 +56,7 @@ public class DetectActivity extends AppCompatActivity
         btn_exitDetect =  findViewById(R.id.exitDetect);
         btn_startDetect = findViewById(R.id.startDectect);
         btn_settingDetect = findViewById(R.id.settingDetect);
-
+        btn_add_manually = findViewById(R.id.add_ph_manually);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         locationEngine = LocationEngineProvider.getBestLocationEngine(DetectActivity.this);
@@ -60,6 +64,9 @@ public class DetectActivity extends AppCompatActivity
             Toast.makeText(this, "Accelerometer not available", Toast.LENGTH_LONG).show();
             return;
         }
+        btn_add_manually.setOnClickListener(view -> {
+            addFoundedPothole();
+        });
 
         btn_exitDetect.setOnClickListener(view -> {
             Intent intent = new Intent(DetectActivity.this, MainActivity.class);
@@ -90,13 +97,17 @@ public class DetectActivity extends AppCompatActivity
             transaction.commit();
         });
         AddFragmentMap();
+        mapbox.drawAllPothole();
     }
 
 
-    public void AddFragmentMap(){
+
+
+    private void AddFragmentMap(){
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.mainlayout,new Mapbox());
+        mapbox = new Mapbox();
+        fragmentTransaction.add(R.id.mainlayout, mapbox);
         fragmentTransaction.commit();
     }
 
@@ -108,6 +119,7 @@ public class DetectActivity extends AppCompatActivity
                     Log.d("__Pothole count", ""+potholeCount);
                     fragmentSensorData.updateFound(potholeCount);
                     addFoundedPothole();
+                    NotifyManager.showVibrate(DetectActivity.this);
                 }
                 @Override
                 public void onSafe() {
@@ -164,6 +176,7 @@ public class DetectActivity extends AppCompatActivity
                     Toast.makeText(DetectActivity.this, "Pothole found", Toast.LENGTH_SHORT).show();
                 });
                 handle_addPothole(pothole);
+                mapbox.addPotholeToMap(DetectActivity.this,pothole);
             }
 
             @Override
@@ -215,6 +228,7 @@ public class DetectActivity extends AppCompatActivity
             detectEngine.close();
             sensorManager.unregisterListener(detectEngine.getSensorEventListener());
             detectEngine = null;
+            mapbox = null;
         }
     }
 
@@ -229,6 +243,7 @@ public class DetectActivity extends AppCompatActivity
         );
         transaction.replace(R.id.topFragmentContainer, fragmentSensorData);
         transaction.commit();
+        btn_startDetect.setImageResource(R.drawable.ic_close);
     }
     private void removeSensorDataFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -241,6 +256,7 @@ public class DetectActivity extends AppCompatActivity
             );
             transaction.remove(fragment);
             transaction.commit();
+            btn_startDetect.setImageResource(R.drawable.ic_play);
         }
     }
 }
