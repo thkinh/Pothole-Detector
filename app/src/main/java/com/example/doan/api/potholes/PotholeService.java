@@ -8,6 +8,7 @@ import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
@@ -35,5 +36,11 @@ public interface PotholeService {
 
     @GET("pothole/image")
     Call<ResponseBody> getPotholeImage(@Query("id") Integer potholeId);
+
+    @DELETE("pothole/deleteDuplicate")
+    Call<String> deletePothole (@Query("id") Integer potholeId);
+
+    @DELETE("pothole/deleteDuplicateByLL")
+    Call<String> deletePotholeByLL (@Query("lat") Double latitude, @Query("long") Double longitude);
 
 }

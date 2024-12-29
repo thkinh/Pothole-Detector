@@ -1,15 +1,13 @@
 package com.example.doan.map;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
+import android.provider.MediaStore;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import static com.mapbox.core.constants.Constants.PRECISION_6;
 import static com.mapbox.maps.plugin.animation.CameraAnimationsUtils.getCamera;
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.addOnMapClickListener;
@@ -23,14 +21,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.os.Build;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -51,9 +46,8 @@ import androidx.fragment.app.Fragment;
 import com.example.doan.R;
 import com.example.doan.api.auth.AuthManager;
 import com.example.doan.api.potholes.PotholeManager;
-import com.example.doan.model.AppUser;
+import com.example.doan.feature.Storage;
 import com.example.doan.model.Pothole;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -74,7 +68,6 @@ import com.mapbox.api.directions.v5.models.VoiceInstructions;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
 import com.mapbox.bindgen.Expected;
-import com.mapbox.bindgen.ExpectedFactory;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
@@ -83,14 +76,12 @@ import com.mapbox.geojson.Point;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.api.directions.v5.models.RouteOptions;
-import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 
 import com.mapbox.maps.CameraOptions;
 import com.mapbox.maps.EdgeInsets;
 import com.mapbox.maps.MapView;
 import com.mapbox.maps.Style;
-import com.mapbox.maps.ViewAnnotationOptions;
 import com.mapbox.maps.extension.style.layers.LayerUtils;
 import com.mapbox.maps.extension.style.layers.generated.LineLayer;
 import com.mapbox.maps.extension.style.layers.properties.generated.TextAnchor;
@@ -100,8 +91,6 @@ import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource;
 import com.mapbox.maps.plugin.animation.MapAnimationOptions;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
 import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
-import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener;
-import com.mapbox.maps.plugin.annotation.generated.PointAnnotation;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
@@ -141,7 +130,6 @@ import com.mapbox.navigation.ui.maps.route.arrow.model.RouteArrowOptions;
 import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineApi;
 import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineView;
 import com.mapbox.navigation.ui.maps.route.line.model.MapboxRouteLineOptions;
-import com.mapbox.navigation.ui.maps.route.line.model.RouteLineClearValue;
 import com.mapbox.navigation.ui.maps.route.line.model.RouteLineError;
 import com.mapbox.navigation.ui.maps.route.line.model.RouteLineResources;
 import com.mapbox.navigation.ui.maps.route.line.model.RouteSetValue;
@@ -157,17 +145,14 @@ import com.mapbox.search.autocomplete.PlaceAutocompleteSuggestion;
 import com.mapbox.search.ui.adapter.autocomplete.PlaceAutocompleteUiAdapter;
 import com.mapbox.search.ui.view.CommonSearchViewConfiguration;
 import com.mapbox.search.ui.view.SearchResultsView;
-import com.mapbox.turf.TurfConstants;
 import com.mapbox.turf.TurfMeasurement;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 import kotlin.Unit;
@@ -623,53 +608,98 @@ public class FragmentMap extends Fragment
                 getPlaceFromPoint(Point.fromLngLat(potholePoint.getLocation().getLongitude(),potholePoint.getLocation().getLatitude()));
             }
 
-            pointPotholeAnnotationManager.addClickListener(new OnPointAnnotationClickListener() {
-                @Override
-                public boolean onAnnotationClick(@NonNull PointAnnotation pointAnnotation) {
-                    pointAnnotationManager.deleteAll();
+            pointPotholeAnnotationManager.addClickListener(pointAnnotation -> {
+                pointAnnotationManager.deleteAll();
 
-                    String id= potholePoint.getId().toString();
+                selected_pothole_id = potholePoint.getId();;
 
-                    double latitude = pointAnnotation.getPoint().latitude();
-                    double longitude = pointAnnotation.getPoint().longitude();
-                    potholeDetailLayout.setVisibility(View.VISIBLE);
-                    searchETLayout.setVisibility(View.GONE);
+                double latitude = pointAnnotation.getPoint().latitude();
+                double longitude = pointAnnotation.getPoint().longitude();
+                potholeDetailLayout.setVisibility(View.VISIBLE);
+                searchETLayout.setVisibility(View.GONE);
+                mylocationButton.setVisibility(View.INVISIBLE);
+                LayoutButton.setVisibility(View.GONE);
+                ImageButton btnBack = potholeDetailLayout.findViewById(R.id.btnBack);
+                btnBack.setOnClickListener(btn->{
+                    potholeDetailLayout.setVisibility(View.INVISIBLE);
+                    searchETLayout.setVisibility(View.VISIBLE);
                     mylocationButton.setVisibility(View.INVISIBLE);
-                    LayoutButton.setVisibility(View.GONE);
-                    ImageButton btnBack = potholeDetailLayout.findViewById(R.id.btnBack);
-                    btnBack.setOnClickListener(btn->{
-                        potholeDetailLayout.setVisibility(View.INVISIBLE);
-                        searchETLayout.setVisibility(View.VISIBLE);
-                        mylocationButton.setVisibility(View.INVISIBLE);
-                        LayoutButton.setVisibility(View.VISIBLE);
+                    LayoutButton.setVisibility(View.VISIBLE);
 
-                    });
-                    Button btnSubmit = potholeDetailLayout.findViewById(R.id.btnSubmit);
-                    btnSubmit.setOnClickListener(btn->{
-                    });
-                    Button btnAddImage = potholeDetailLayout.findViewById(R.id.btnAddImage);
-                    btnAddImage.setOnClickListener(btn->{
-
-                    });
-                    TextView tvLocation = potholeDetailLayout.findViewById(R.id.tvLocation);
-                    getPlaceFromPoint(Point.fromLngLat(longitude,latitude));
-
-                    Toast.makeText(getContext(), id, Toast.LENGTH_SHORT).show();
-                    if(place!=null){
-                        tvLocation.setText("Địa điểm: "+place);
-                    }
-                    else{
-                        tvLocation.setText("Địa điểm: "+ "{"+longitude+","+latitude+"}");
-
-                    }
-                    return true;
+                });
+                Button btnSubmit = potholeDetailLayout.findViewById(R.id.btnSubmit);
+                btnSubmit.setOnClickListener(btn->{
+                });
+                Button btnAddImage = potholeDetailLayout.findViewById(R.id.btnAddImage);
+                btnAddImage.setOnClickListener(btn->{
+                    handleUpload();
+                });
+                TextView tvLocation = potholeDetailLayout.findViewById(R.id.tvLocation);
+                getPlaceFromPoint(Point.fromLngLat(longitude,latitude));
+                ImageView Pothole_image = potholeDetailLayout.findViewById(R.id.imgPreview);
+                handleRetrieveImage(Pothole_image);
+                if(place!=null){
+                    tvLocation.setText("Địa điểm: "+place);
                 }
+                else{
+                    tvLocation.setText("Địa điểm: "+ "{"+longitude+","+latitude+"}");
+                }
+                return true;
             });
         }
 
 
     }
 
+
+    //CUA THINH
+    private ActivityResultLauncher<Intent> resultLauncher;
+    private Integer selected_pothole_id;
+    private void handleUpload(){
+        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+        resultLauncher.launch(intent);
+    }
+
+    private void handleRetrieveImage(ImageView potholeImage){
+        PotholeManager.getInstance().fetchPotholeImage(selected_pothole_id, new AuthManager.FetchImageCallBack() {
+            @Override
+            public void onSuccess(Bitmap bitmap) {
+                requireActivity().runOnUiThread(() ->{
+                    potholeImage.setImageBitmap(bitmap);
+                });
+            }
+            @Override
+            public void onFailure(String errorMessage) {
+                Log.e("__API_Image", errorMessage);
+            }
+        });
+    }
+
+    private void registerResult(){
+        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                try {
+                    Uri imageUri = result.getData().getData();
+                    File image = Storage.getFileFromUri(imageUri, requireActivity());;
+                    Log.d("__PATH", imageUri.getPath());
+                    PotholeManager.getInstance().uploadProtholeImage(selected_pothole_id, image, new AuthManager.UploadImageCallBack() {
+                        @Override
+                        public void onSuccess(String message) {
+                            Toast.makeText(requireActivity(), "Uploaded successfully", Toast.LENGTH_SHORT).show();
+                        }
+                        @Override
+                        public void onFailure(String errorMessage) {
+                            Log.e("__IMAGE", errorMessage);
+                        }
+                    });
+                }
+                catch (Exception e){
+                    Toast.makeText(requireActivity(), "No image selected", Toast.LENGTH_SHORT).show();
+                }
+            }
+        );
+    }
+    //CUA THINH
 
 
     String place ;
@@ -702,7 +732,6 @@ public class FragmentMap extends Fragment
                             Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<GeocodingResponse> call, Throwable t) {
 
@@ -794,6 +823,9 @@ public class FragmentMap extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        registerResult(); //CUA THINH
         if (PermissionsManager.areLocationPermissionsGranted(getContext())) {
 
         } else {

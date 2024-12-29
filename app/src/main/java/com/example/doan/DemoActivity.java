@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -38,6 +39,8 @@ public class DemoActivity extends AppCompatActivity {
     private Button button_add;
     private Button btn_getALL;
     private Button btn_addDistance;
+    private Button btn_delete;
+    private EditText editText_phID;
     private PotholeManager potholeManager;
     private AuthManager authManager;
     ActivityResultLauncher<Intent> resultLauncher;
@@ -51,16 +54,34 @@ public class DemoActivity extends AppCompatActivity {
         button_get = findViewById(R.id.btn_getPotholes);
         button_add = findViewById(R.id.add_ph);
         btn_getALL = findViewById(R.id.get_globalPotholes);
-        btn_addDistance =findViewById(R.id.add_distance);
+        btn_addDistance = findViewById(R.id.add_distance);
+        btn_delete = findViewById(R.id.demo_deletePH);
+        editText_phID = findViewById(R.id.demo_edt_potholeid);
+
 
         button_get.setOnClickListener(view -> handleGet());
         button_add.setOnClickListener(view -> handleUpload());
         btn_getALL.setOnClickListener(view -> handle_getALL());
         btn_addDistance.setOnClickListener(view -> handle_addDistance());
+        btn_delete.setOnClickListener(view -> handleDelte());
 
         potholeManager = PotholeManager.getInstance();
 
         registerResult();
+    }
+
+    private void handleDelte(){
+        Integer pothole_id = Integer.valueOf(editText_phID.getText().toString());
+        potholeManager.deleteDuplicatedPothole(pothole_id, new PotholeManager.DeletePotholeCallBack() {
+            @Override
+            public void onSuccess(String responseString) {
+                runOnUiThread(()->Toast.makeText(DemoActivity.this,"Deleted", Toast.LENGTH_SHORT).show());
+            }
+            @Override
+            public void onFailure(String errorMessage) {
+                runOnUiThread(()->Toast.makeText(DemoActivity.this,errorMessage, Toast.LENGTH_SHORT).show());
+            }
+        });
     }
 
     private void handleUpload(){

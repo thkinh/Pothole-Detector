@@ -56,6 +56,36 @@
         android:textSize="22sp"
         android:textStyle="bold" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/add_distance"
+        android:layout_centerHorizontal="true">
+        <Button
+            android:id="@+id/demo_deletePH"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#c02dd6"
+            android:gravity="center"
+            android:text="delete pothole"
+            android:textColor="@color/color_word"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/demo_edt_potholeid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/rounded_textbox"
+            android:gravity="center_vertical"
+            android:hint="Enter Pothole id"
+            android:inputType="number"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:padding="10dp"
+            android:textColorHint="@color/opacity_black" />
+    </LinearLayout>
 
 
 </RelativeLayout>
