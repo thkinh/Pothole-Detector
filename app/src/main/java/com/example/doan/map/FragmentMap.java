@@ -687,7 +687,7 @@ public class FragmentMap extends Fragment
                 });
                 Button btnAddImage = alertDialog.findViewById(R.id.btnAddImage);
                 btnAddImage.setOnClickListener(btn->{
-                    handleUpload();
+                    handleUpload(Integer.valueOf(id));
                 });
                 TextView tvLocation = alertDialog.findViewById(R.id.tvLocation);
                 TextView tvSeverity = alertDialog.findViewById(R.id.tvSeverity);
@@ -710,7 +710,8 @@ public class FragmentMap extends Fragment
     //CUA THINH
     private ActivityResultLauncher<Intent> resultLauncher;
     private Integer selected_pothole_id;
-    private void handleUpload(){
+    private void handleUpload(Integer pothole_id){
+        selected_pothole_id = pothole_id;
         Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
         resultLauncher.launch(intent);
     }
