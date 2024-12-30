@@ -27,7 +27,7 @@
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/avt_linhxeom">
+                    android:src="@drawable/avt_user">
                 </com.google.android.material.imageview.ShapeableImageView>
             </com.google.android.material.card.MaterialCardView>
 
