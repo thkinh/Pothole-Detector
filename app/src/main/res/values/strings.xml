@@ -61,6 +61,8 @@
     <string name="txt_preview_image">Preview Image</string>
     <string name="txt_detect">Phát hiện ổ gà!</string>
     <string name="txt_notification">Thông báo</string>
+    <string name="txt_user">Đóng góp bởi</string>
+
 
 
     <string name="btn_image">Thêm hình ảnh</string>

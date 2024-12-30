@@ -134,6 +134,8 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+
+
     <!-- Thêm hình ảnh -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardAddImage"

@@ -45,7 +45,7 @@
         <ScrollView
             android:id="@+id/detail_card"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="460dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/txt_location"
                             android:textStyle="bold"
-                            android:textSize="18sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/tvLocation"
@@ -104,7 +104,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/txt_date"
                             android:textStyle="bold"
-                            android:textSize="18sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/tvDate"
@@ -137,13 +137,46 @@
                             android:layout_height="wrap_content"
                             android:text="@string/txt_severity"
                             android:textStyle="bold"
-                            android:textSize="18sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/tvSeverity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Cao"
+                            android:textSize="12sp"
+                            android:layout_marginBottom="8dp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Người đóng góp -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <TextView
+                            android:id="@+id/tvUserLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/txt_user"
+                            android:textStyle="bold"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tvUser"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Trống"
                             android:textSize="12sp"
                             android:layout_marginBottom="8dp" />
                     </LinearLayout>
@@ -169,13 +202,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/txt_image"
-                            android:textSize="18sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <ImageView
                             android:id="@+id/imgPreview"
                             android:layout_width="match_parent"
-                            android:layout_height="200dp"
+                            android:layout_height="160dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginBottom="14dp"
                             android:background="#E0E0E0"
@@ -193,7 +226,7 @@
                             android:textColor="@color/color_word"
                             android:gravity="center"
                             android:padding="10dp"
-                            android:textSize="14sp" />
+                            android:textSize="10sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
@@ -209,7 +242,7 @@
             android:backgroundTint="@color/color_1"
             android:textColor="@color/color_word"
             android:padding="8dp"
-            android:textSize="20sp"/>
+            android:textSize="16sp"/>
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
