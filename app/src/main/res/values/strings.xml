@@ -92,10 +92,6 @@
     <string name="web_client_id">72747195748-oluln8fl186idv8nm9qod0831k8oi04j.apps.googleusercontent.com</string>
 
     <string name="default_web_client_id">72747195748-v759vtnhb8b8f30veta4ad6ehsuud9tu.apps.googleusercontent.com</string>
-    <string name="iscontributor">IsContributor</string>
-
-    <!-- String for the setting -->
-    <string name="profile">Thông tin chung</string>
 
     <!-- String for dashboarc   -->
     <string name="all_user">Tất cả người dùng</string>
@@ -119,4 +115,15 @@
     <string name="main_home">Trang chủ</string>
     <string name="main_map">Bản đồ</string>
     <string name="main_setting">Cài đặt</string>
+
+    <!-- String for the setting -->
+    <string name="txt_language">Ngôn ngữ</string>
+    <string name="txt_VIE">Tiếng Việt</string>
+    <string name="txt_ENG">Tiếng Anh</string>
+    <string name="txt_notification_setting">Thông báo</string>
+    <string name="txt_weekly_report">Báo cáo hàng tuần</string>
+    <string name="txt_isContributor">Chế độ đóng góp</string>
+    <string name="txt_detection_sensitivity">Độ nhạy phát hiện</string>
+    <string name="txt_about">Về chúng tôi</string>
+    <string name="profile">Thông tin chung</string>
 </resources>
