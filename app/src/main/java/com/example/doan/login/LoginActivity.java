@@ -68,8 +68,18 @@ public class LoginActivity extends AppCompatActivity {
         forgotPassword = findViewById(R.id.txt_forgotPassword);
         langSw = findViewById(R.id.sw_language);
 
-        langSw.setOnClickListener(v-> {
-            showLanguageDialog();
+        // Set switch state based on current language
+        SharedPreferences sharedPreferences = getSharedPreferences("LANGUAGE_SETTINGS", MODE_PRIVATE);
+        String language = sharedPreferences.getString("language", "en");
+        langSw.setChecked(language.equals("vi"));
+
+        langSw.setOnClickListener(v -> {
+            if (langSw.isChecked()) {
+                setLanguage("vi", 1);
+            } else {
+                setLanguage("en", 0);
+            }
+            recreate();
         });
 
         loginButton.setOnClickListener(view -> handleLogin());
@@ -87,12 +97,28 @@ public class LoginActivity extends AppCompatActivity {
         authManager = AuthManager.getInstance();
     }
 
-    private void showLanguageDialog() {
+    /*private void showLanguageDialog() {
         final String[] languageList ={"English", "Tiếng Việt"};
+
+        SharedPreferences sharedPreferences = getSharedPreferences("LANGUAGE_SETTINGS", MODE_PRIVATE);
+        int item = sharedPreferences.getInt("item", 0);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
         builder.setTitle("Choose Language");
-        builder.setSingleChoiceItems();
+        builder.setSingleChoiceItems(languageList, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0){
+                    setLanguage("en", 0);
+                    recreate();
+                }
+                else if (which == 1){
+                    setLanguage("vi", 1);
+                    recreate();
+                }
+                dialog.dismiss();
+            }
+        });
 
         builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
             @Override
@@ -103,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
-    }
+    }*/
 
     private void setLanguage(String language, int item) {
         Locale locale = new Locale(language);
