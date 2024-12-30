@@ -1,5 +1,6 @@
 package com.example.doan.map;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -647,32 +648,49 @@ public class FragmentMap extends Fragment
                 }
                 double latitude = pointAnnotation.getPoint().latitude();
                 double longitude = pointAnnotation.getPoint().longitude();
-                potholeDetailLayout.setVisibility(View.VISIBLE);
+                /*potholeDetailLayout.setVisibility(View.VISIBLE);
                 searchETLayout.setVisibility(View.GONE);
                 mylocationButton.setVisibility(View.INVISIBLE);
-                LayoutButton.setVisibility(View.GONE);
-                ImageButton btnBack = potholeDetailLayout.findViewById(R.id.btnBack);
+                LayoutButton.setVisibility(View.GONE);*/
+                // Inflate the dialog layout
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                View dialogView = inflater.inflate(R.layout.dialog_mapdetail, null);
+
+                // Set the background of the dialog view to custom_dialog.xml
+                dialogView.setBackgroundResource(R.drawable.custom_dialog);
+
+                // Create the AlertDialog
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+                dialogBuilder.setView(dialogView);
+                AlertDialog alertDialog = dialogBuilder.create();
+
+                // Show the dialog
+                alertDialog.show();
+
+                // Set up the dialog views
+                ImageButton btnBack = dialogView.findViewById(R.id.btnBack);
                 btnBack.setOnClickListener(btn->{
-                    potholeDetailLayout.setVisibility(View.INVISIBLE);
+                    /*potholeDetailLayout.setVisibility(View.INVISIBLE);
                     searchETLayout.setVisibility(View.VISIBLE);
                     mylocationButton.setVisibility(View.INVISIBLE);
-                    LayoutButton.setVisibility(View.VISIBLE);
-
+                    LayoutButton.setVisibility(View.VISIBLE);*/
+                    alertDialog.dismiss();
                 });
-                Button btnSubmit = potholeDetailLayout.findViewById(R.id.btnSubmit);
+                Button btnSubmit = alertDialog.findViewById(R.id.btnSubmit);
                 btnSubmit.setOnClickListener(btn->{
                 });
-                Button btnAddImage = potholeDetailLayout.findViewById(R.id.btnAddImage);
+                Button btnAddImage = alertDialog.findViewById(R.id.btnAddImage);
                 btnAddImage.setOnClickListener(btn->{
                     handleUpload();
                 });
-                TextView tvLocation = potholeDetailLayout.findViewById(R.id.tvLocation);
-                TextView tvSeverity = potholeDetailLayout.findViewById(R.id.tvSeverity);
-                TextView tvDate = potholeDetailLayout.findViewById(R.id.tvDate);
+                TextView tvLocation = alertDialog.findViewById(R.id.tvLocation);
+                TextView tvSeverity = alertDialog.findViewById(R.id.tvSeverity);
+                TextView tvDate = alertDialog.findViewById(R.id.tvDate);
                 tvDate.setText(timeFound+" "+dateFound);
 
-                ImageView Pothole_image = potholeDetailLayout.findViewById(R.id.imgPreview);
+                ImageView Pothole_image = alertDialog.findViewById(R.id.imgPreview);
                 handleRetrieveImage(Pothole_image);
+
                 return true;
             });
         }

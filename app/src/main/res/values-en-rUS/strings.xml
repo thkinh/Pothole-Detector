@@ -51,7 +51,7 @@
     <string name="txt_optNote">Please enter the <b>OTP</b> code that has been sent to you for verification</string>
 
     <!-- String potholes details -->
-    <string name="txt_title_details">Detailed Information about the Pothole</string>
+    <string name="txt_title_details">Details about Pothole</string>
     <string name="txt_location">Location:</string>
     <string name="txt_date">Detection Date:</string>
     <string name="txt_severity">Severity Level:</string>
