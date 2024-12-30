@@ -2,6 +2,8 @@ package com.example.doan.map;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,6 +44,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.doan.R;
@@ -158,6 +161,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
@@ -658,13 +662,13 @@ public class FragmentMap extends Fragment
                 LayoutInflater inflater = LayoutInflater.from(getContext());
                 View dialogView = inflater.inflate(R.layout.dialog_mapdetail, null);
 
-                // Set the background of the dialog view to custom_dialog.xml
-                dialogView.setBackgroundResource(R.drawable.custom_dialog);
-
                 // Create the AlertDialog
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
                 dialogBuilder.setView(dialogView);
                 AlertDialog alertDialog = dialogBuilder.create();
+
+                // Set the background of the AlertDialog window to transparent
+                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
                 // Show the dialog
                 alertDialog.show();
