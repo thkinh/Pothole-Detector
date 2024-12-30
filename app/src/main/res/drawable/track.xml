@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_checked="true"
-        android:drawable="@drawable/track_eng">
+        android:drawable="@drawable/track_vie">
     </item>
 
     <item android:state_checked="false"
-        android:drawable="@drawable/track_vie">
+        android:drawable="@drawable/track_eng">
     </item>
 </selector>
