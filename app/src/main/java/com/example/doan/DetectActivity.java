@@ -28,10 +28,20 @@ import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.location.LocationEngineResult;
+import com.mapbox.api.geocoding.v5.MapboxGeocoding;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
+import com.mapbox.geojson.Point;
+
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.Calendar;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DetectActivity extends AppCompatActivity
 {
@@ -162,23 +172,19 @@ public class DetectActivity extends AppCompatActivity
                     return;
                 }
                 Pothole.Location ph_location = new Pothole.Location();
-                ph_location.setLatitude(location.getLatitude());
-                ph_location.setLongitude(location.getLongitude());
-                ph_location.setCountry("NONE");
-                ph_location.setCity("NONE");
-                ph_location.setStreet("NONE");
-                pothole.setLocation(ph_location);
                 pothole.setDateFound(sqlDate);
                 pothole.setTimeFound(sqlTime.toString());
+                ph_location.setLatitude(location.getLatitude());
+                ph_location.setLongitude(location.getLongitude());
+                pothole.setLocation(ph_location);
+                getPlaceFromPoint(Point.fromLngLat(ph_location.getLongitude(), ph_location.getLatitude()), pothole);
                 runOnUiThread(()->{
                     Log.d("__DETECTION", "Pothole found! "+pothole.getLocation().getLongitude()+"/"
                             +pothole.getLocation().getLatitude());
                     Toast.makeText(DetectActivity.this, "Pothole found", Toast.LENGTH_SHORT).show();
                 });
-                handle_addPothole(pothole);
-                mapbox.addPotholeToMap(DetectActivity.this,pothole);
-            }
 
+            }
             @Override
             public void onFailure(@NonNull Exception exception) {
                 runOnUiThread(() -> {
@@ -189,6 +195,56 @@ public class DetectActivity extends AppCompatActivity
             }
         });
     }
+
+    String place = "";
+    private void getPlaceFromPoint(Point point, Pothole pothole){
+        MapboxGeocoding client = MapboxGeocoding.builder()
+                .accessToken(getString(R.string.mapbox_access_token))
+                .query(point)
+                .build();
+
+
+        client.enqueueCall(new Callback<GeocodingResponse>() {
+            @Override
+            public void onResponse(Call<GeocodingResponse> call,
+                                   Response<GeocodingResponse> response) {
+                if (response.body() != null) {
+                    List<CarmenFeature> results = response.body().features();
+                    Pothole.Location location = new Pothole.Location();
+                    // Get the first Feature from the successful geocoding response
+                    CarmenFeature feature = results.get(0);
+                    place = feature.placeName();
+                    Log.e("__ADDRESS",place == null? feature.toString() :"NO");
+                    if (place != null)
+                    {
+                        Log.e("__PLACE", place);
+                        String[] fields = place.split(",");
+                        location.setLongitude(point.longitude());
+                        location.setLatitude(point.latitude());
+                        location.setCountry(fields[4].trim());
+                        location.setCity(fields[3].trim());
+                        location.setStreet(fields[1].trim());
+                        pothole.setLocation(location);
+                        handle_addPothole(pothole);
+                        mapbox.addPotholeToMap(DetectActivity.this,pothole);
+                    }
+                }else{
+                    Toast.makeText(DetectActivity.this,"Error network",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<GeocodingResponse> call, Throwable t) {
+                Log.e("GeocodingError", "Error during geocoding: " + t.getMessage());
+
+                // Hiển thị thông báo với lỗi chi tiết
+                Toast.makeText(DetectActivity.this, "Fail Search Place: " + t.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
+
 
     private void handle_addPothole(Pothole pothole){
         PotholeManager.getInstance().addPothole(pothole, new PotholeManager.AddPotholeCallBack() {
