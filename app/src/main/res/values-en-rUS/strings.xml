@@ -111,6 +111,7 @@
     <string name="search_start_ET">My location</string>
     <string name="text_pothole">Pothole</string>
     <string name="search_edittext">Search address</string>
+    <string name="infor_pothole_delete">Delete potholes</string>
 
 
     <string name="main_home">Home</string>

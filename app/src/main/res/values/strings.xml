@@ -112,6 +112,9 @@
 
     <string name="search_start_ET">Vị Trí của tôi</string>
     <string name="text_pothole">Ổ gà</string>
+    <string name="infor_pothole_delete">Xóa ổ gà</string>
+
+
     <string name="search_edittext">Tìm kiếm địa chỉ</string>
     <string name="main_home">Trang chủ</string>
     <string name="main_map">Bản đồ</string>
