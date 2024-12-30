@@ -618,6 +618,7 @@ public class FragmentMap extends Fragment
             jsonData.addProperty("country",potholePoint.getLocation().getCountry());
             jsonData.addProperty("city",potholePoint.getLocation().getCity());
             jsonData.addProperty("street",potholePoint.getLocation().getStreet());
+            jsonData.addProperty("userId",potholePoint.getUserId());
             PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                     .withTextAnchor(TextAnchor.CENTER)
                     .withIconImage(resizedBitmap)
@@ -636,9 +637,10 @@ public class FragmentMap extends Fragment
 
                 // Lấy id từ JsonObject
                 String id = data.has("id") ? data.get("id").getAsString() : null;
+                String userId = data.has("userId") ? data.get("userId").getAsString() : null;
                 String dateFound = data.has("dateFound") ? data.get("dateFound").getAsString() : null;
                 String timeFound = data.has("timeFound") ? data.get("timeFound").getAsString() : null;
-//                String id = data.has("severity") ? data.get("severity").getAsString() : null;
+                String severity = data.has("severity") ? data.get("severity").getAsString() : null;
 //                String id = data.has("country") ? data.get("country").getAsString() : null;
 //                String id = data.has("city") ? data.get("city").getAsString() : null;
 //                String id = data.has("street") ? data.get("street").getAsString() : null;
@@ -689,9 +691,11 @@ public class FragmentMap extends Fragment
                 });
                 TextView tvLocation = alertDialog.findViewById(R.id.tvLocation);
                 TextView tvSeverity = alertDialog.findViewById(R.id.tvSeverity);
+                tvSeverity.setText(severity);
                 TextView tvDate = alertDialog.findViewById(R.id.tvDate);
                 tvDate.setText(timeFound+" "+dateFound);
-
+                TextView tvUser = alertDialog.findViewById(R.id.tvUser);
+                tvUser.setText(userId);
                 ImageView Pothole_image = alertDialog.findViewById(R.id.imgPreview);
                 handleRetrieveImage(Pothole_image);
 
