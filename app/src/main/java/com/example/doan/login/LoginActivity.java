@@ -57,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLanguage();
         setContentView(R.layout.at_loginscreen);
         EdgeToEdge.enable(this);
         // Ánh xạ các view từ layout
@@ -91,16 +92,7 @@ public class LoginActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
         builder.setTitle("Choose Language");
-        builder.setSingleChoiceItems(languageList, -1, (dialog, which) -> {
-            if (which == 0){
-                setLanguage(LoginActivity.this, "en");
-                recreate();
-            } else if (which == 1){
-                setLanguage(LoginActivity.this, "vi");
-                recreate();
-            }
-            dialog.dismiss();
-        });
+        builder.setSingleChoiceItems();
 
         builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
             @Override
@@ -124,7 +116,14 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = getSharedPreferences("LANGUAGE_SETTINGS", MODE_PRIVATE).edit();
         editor.putString("language", language);
         editor.putInt("item", item);
+        editor.apply();
+    }// set language end here
 
+    private void loadLanguage(){
+        SharedPreferences sharedPreferences = getSharedPreferences("LANGUAGE_SETTINGS", MODE_PRIVATE);
+        String language = sharedPreferences.getString("language", "en");
+        int item = sharedPreferences.getInt("item", 0);
+        setLanguage(language, 0);
     }
 
     // Hàm xử lý đăng nhập
