@@ -107,4 +107,13 @@
     <!-- String for map   -->
     <string name="btn_route">ROUTE</string>
     <string name="btn_start_route">START</string>
+
+    <string name="search_start_ET">My location</string>
+    <string name="text_pothole">Pothole</string>
+    <string name="search_edittext">Search address</string>
+
+
+    <string name="main_home">Home</string>
+    <string name="main_map">Map</string>
+    <string name="main_setting">Setting</string>
 </resources>

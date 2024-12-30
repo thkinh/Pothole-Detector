@@ -902,7 +902,7 @@ public class FragmentMap extends Fragment
                     }
                     searchResultsView.setVisibility(View.GONE);
                 });
-
+                directionButton.setVisibility(View.GONE);
             });
 
             return false;
@@ -1001,7 +1001,6 @@ TextView countPothole;
                     layoutStartDestination.setVisibility(View.VISIBLE);
                     searchETLayout.setVisibility(View.GONE);
                     directionButton.setVisibility(View.GONE);
-                    searchStartET.setText("Vị Trí của bạn");
                 });
 
                 searchET.setOnClickListener(search->{
