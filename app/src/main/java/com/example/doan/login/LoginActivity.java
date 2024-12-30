@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -51,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView askSignupText;
     private TextView forgotPassword;
     private Switch langSw;
+    private boolean isPasswordVisible = false;
 
     private AuthManager authManager;
 
@@ -67,6 +71,29 @@ public class LoginActivity extends AppCompatActivity {
         askSignupText = findViewById(R.id.txt_askSignUp_scrLogin);
         forgotPassword = findViewById(R.id.txt_forgotPassword);
         langSw = findViewById(R.id.sw_language);
+
+        // Set password visibility
+        passwordEditText.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_END = 2;
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (passwordEditText.getRight() - passwordEditText.getCompoundDrawables()[DRAWABLE_END].getBounds().width())) {
+                        if (isPasswordVisible) {
+                            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                            passwordEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_show_password, 0);
+                        } else {
+                            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                            passwordEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_hide_password, 0);
+                        }
+                        isPasswordVisible = !isPasswordVisible;
+                        passwordEditText.setSelection(passwordEditText.length());
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
 
         // Set switch state based on current language
         SharedPreferences sharedPreferences = getSharedPreferences("LANGUAGE_SETTINGS", MODE_PRIVATE);
