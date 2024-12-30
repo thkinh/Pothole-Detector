@@ -154,6 +154,7 @@ import com.mapbox.turf.TurfMeasurement;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -605,7 +606,7 @@ public class FragmentMap extends Fragment
 
             JsonObject jsonData = new JsonObject();
             jsonData.addProperty("id",potholePoint.getId());
-            jsonData.addProperty("dateFound",potholePoint.getTimeFound());
+            jsonData.addProperty("dateFound",potholePoint.getDateFound().toString());
             jsonData.addProperty("timeFound",potholePoint.getTimeFound());
             jsonData.addProperty("severity",potholePoint.getSeverity());
             jsonData.addProperty("longitude",potholePoint.getLocation().getLongitude());
@@ -631,9 +632,8 @@ public class FragmentMap extends Fragment
 
                 // Lấy id từ JsonObject
                 String id = data.has("id") ? data.get("id").getAsString() : null;
-//                String id = data.has("id") ? data.get("id").getAsString() : null;
-//                String id = data.has("dateFound") ? data.get("dateFound").getAsString() : null;
-//                String id = data.has("timeFound") ? data.get("timeFound").getAsString() : null;
+                String dateFound = data.has("dateFound") ? data.get("dateFound").getAsString() : null;
+                String timeFound = data.has("timeFound") ? data.get("timeFound").getAsString() : null;
 //                String id = data.has("severity") ? data.get("severity").getAsString() : null;
 //                String id = data.has("country") ? data.get("country").getAsString() : null;
 //                String id = data.has("city") ? data.get("city").getAsString() : null;
@@ -686,6 +686,7 @@ public class FragmentMap extends Fragment
                 TextView tvLocation = alertDialog.findViewById(R.id.tvLocation);
                 TextView tvSeverity = alertDialog.findViewById(R.id.tvSeverity);
                 TextView tvDate = alertDialog.findViewById(R.id.tvDate);
+                tvDate.setText(timeFound+" "+dateFound);
 
                 ImageView Pothole_image = alertDialog.findViewById(R.id.imgPreview);
                 handleRetrieveImage(Pothole_image);
