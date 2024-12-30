@@ -25,9 +25,9 @@
 
 
     <!-- Khai báo String cho Authentication UI <HTAT> -->
-    <string name="welcome_message">Welcome!\nYou are not currently logged in.\nPlease!!! Press get started to Login.</string>
+    <string name="welcome_message">Chào mừng!\nBạn hiện đang không đăng nhập.\nVui lòng đăng nhập để bắt đầu.</string>
 
-    <string name="btn_getStarted">Get started</string>
+    <string name="btn_getStarted">Bắt đầu</string>
     <string name="btn_login">Đăng nhập</string>
     <string name="btn_signup">Đăng kí</string>
     <string name="btn_finish">Hoàn tất</string>
@@ -40,8 +40,8 @@
     <string name="txt_username">Tên người dùng</string>
     <string name="txt_opt">OTP CODE</string>
     <string name="txt_email">Email</string>
-    <string name="txt_password">Mật Khẩu</string>
-    <string name="txt_rePassword">Nhập lại mật khẩu</string>
+    <string name="txt_password">Mật Khâu</string>
+    <string name="txt_rePassword">Đặt lại mất khẩu</string>
     <string name="txt_forgotPassword"><u>Quên Mật khẩu?</u></string>
     <string name="txt_askSignUp">Không có tài khoản? <u>Đăng kí</u></string>
     <string name="txt_askLogin">Đã có tài khoản? <u>Đăng nhập</u></string>
@@ -74,8 +74,8 @@
     <string name="editText_newPassword">Nhập mật khẩu mới</string>
     <string name="editText_cfPassword">Nhập lại mật khẩu mới</string>
     <string name="editText_username">Nhập tên người dùng</string>
-    <string name="editText_email">Nhập email tại đây</string>
-    <string name="editText_password">Nhập mật khẩu tại đây</string>
+    <string name="editText_email">Nhập email tạo đây</string>
+    <string name="editText_password">Nhập lại mật khẩu</string>
     <string name="editText_opt">Nhập OTP code tại đây</string>
 
     <string name="or">Hoặc</string>
