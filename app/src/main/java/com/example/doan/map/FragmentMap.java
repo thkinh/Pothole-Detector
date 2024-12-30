@@ -52,6 +52,7 @@ import com.example.doan.R;
 import com.example.doan.api.auth.AuthManager;
 import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.feature.Storage;
+import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;
 import com.example.doan.model.UserDetails;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -631,11 +632,10 @@ public class FragmentMap extends Fragment
             jsonData.addProperty("city",potholePoint.getLocation().getCity());
             jsonData.addProperty("street",potholePoint.getLocation().getStreet());
             jsonData.addProperty("userId",potholePoint.getUserId());
-            AuthManager.getInstance().getUserDetails(potholePoint.getId(), new AuthManager.GetDetailsCallBack() {
+            AuthManager.getInstance().getUser(potholePoint.getUserId(), new AuthManager.GetUserCallBack() {
                 @Override
-                public void onSuccess(UserDetails details) {
-
-                    jsonData.addProperty("userContribute",details.getFullName());
+                public void onSuccess(AppUser user) {
+                    jsonData.addProperty("userContribute",user.getUsername());
                 }
 
                 @Override
