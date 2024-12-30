@@ -13,8 +13,16 @@
         android:id="@+id/setting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/darkpacificblue"
-        >
+        android:background="@color/darkpacificblue">
+
+        <ImageButton
+            android:id="@+id/destroySetting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/darkpacificblue"
+            android:src="@drawable/ic_arrow_back"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

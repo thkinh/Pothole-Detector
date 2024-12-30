@@ -1,5 +1,6 @@
 package com.example.doan.setting;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,11 +17,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.doan.DetectActivity;
 import com.example.doan.R;
 import com.example.doan.feature.Setting;
 import com.example.doan.feature.UserPreferences;
@@ -34,10 +38,11 @@ public class FragmentSetting extends Fragment {
 
     private RelativeLayout layou_vi, layout_en;
     private Switch switchContribute;
-    //private Button btn_stProfile;
+    private LinearLayout controller;
     private Button btn_stLogout;
     private MaterialCardView profile;
     private TextView tv_chooseSense;
+    private ImageButton btn_back;
 
     public FragmentSetting() {
         // Required empty public constructor
@@ -56,9 +61,13 @@ public class FragmentSetting extends Fragment {
     }
 
     @Override
+    public void onDestroy(){
+        super.onDestroy();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_setting, container, false);
         // Find the RelativeLayout by ID
         layou_vi = rootView.findViewById(R.id.st_lang_vi);
@@ -87,6 +96,12 @@ public class FragmentSetting extends Fragment {
         profile.setOnClickListener(view -> {
             Intent intent = new Intent(this.getContext(), ProfileActivity.class );
             startActivity(intent);
+        });
+
+        btn_back = rootView.findViewById(R.id.destroySetting);
+        btn_back.setOnClickListener(view -> {
+            assert getActivity() != null;
+            getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
         });
 
         layout_en.setOnClickListener(view -> {

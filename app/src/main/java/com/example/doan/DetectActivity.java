@@ -7,7 +7,9 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -56,7 +58,7 @@ public class DetectActivity extends AppCompatActivity
     private Calendar calendar;
     private Mapbox mapbox;
     private FloatingActionButton btn_add_manually;
-
+    private LinearLayout detectController;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -89,14 +91,14 @@ public class DetectActivity extends AppCompatActivity
                 runOnUiThread(this::loadSensorDataFragment);
                 isDetecting = true;
             }
-            else if (isDetecting)
-            {
+            else if (isDetecting) {
                 Log.d("__STOP MODEL", "Stopped Detecting");
                 runOnUiThread(this::removeSensorDataFragment);
                 sensorManager.unregisterListener(detectEngine.getSensorEventListener());
                 isDetecting = false;
             }
         });
+        detectController = findViewById(R.id.ControlDetect);
 
         btn_settingDetect.setOnClickListener(view -> {
             FragmentSetting fragment = new FragmentSetting();
@@ -105,6 +107,7 @@ public class DetectActivity extends AppCompatActivity
             transaction.replace(R.id.topFragmentContainer, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
+
         });
         AddFragmentMap();
         mapbox.drawAllPothole();
