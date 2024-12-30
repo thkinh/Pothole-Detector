@@ -232,10 +232,16 @@
             </LinearLayout>
         </ScrollView>
 
-        <!-- Button xác nhận -->
-        <Button
-            android:id="@+id/btnSubmit"
+        <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/btnSubmit"
+                android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="@string/btn_saving"
@@ -243,6 +249,23 @@
             android:textColor="@color/color_word"
             android:padding="8dp"
             android:textSize="16sp"/>
+
+            <Button
+                android:id="@+id/btnDuplicatedReport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="10dp"
+                android:text="@string/infor_pothole_delete"
+                android:backgroundTint="#D91656"
+                android:textColor="@color/color_word"
+                android:padding="8dp"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+    <!-- Button xác nhận -->
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

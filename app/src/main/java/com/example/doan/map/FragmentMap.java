@@ -97,6 +97,7 @@ import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource;
 import com.mapbox.maps.plugin.animation.MapAnimationOptions;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
 import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotation;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
@@ -139,6 +140,12 @@ import com.mapbox.navigation.ui.maps.route.line.model.MapboxRouteLineOptions;
 import com.mapbox.navigation.ui.maps.route.line.model.RouteLineError;
 import com.mapbox.navigation.ui.maps.route.line.model.RouteLineResources;
 import com.mapbox.navigation.ui.maps.route.line.model.RouteSetValue;
+import com.mapbox.navigation.ui.tripprogress.api.MapboxTripProgressApi;
+import com.mapbox.navigation.ui.tripprogress.model.DistanceRemainingFormatter;
+import com.mapbox.navigation.ui.tripprogress.model.EstimatedTimeToArrivalFormatter;
+import com.mapbox.navigation.ui.tripprogress.model.TimeRemainingFormatter;
+import com.mapbox.navigation.ui.tripprogress.model.TripProgressUpdateFormatter;
+import com.mapbox.navigation.ui.tripprogress.view.MapboxTripProgressView;
 import com.mapbox.navigation.ui.voice.api.MapboxSpeechApi;
 import com.mapbox.navigation.ui.voice.api.MapboxVoiceInstructionsPlayer;
 import com.mapbox.navigation.ui.voice.model.SpeechAnnouncement;
@@ -281,12 +288,15 @@ public class FragmentMap extends Fragment
             getGestures(mapView).setFocalPoint(mapView.getMapboxMap().pixelForCoordinate(point));
         }
     };
+    private boolean showbuttonMapWhenMove= true;
     private final OnMoveListener onMoveListener = new OnMoveListener() {
         @Override
         public void onMoveBegin(@NonNull MoveGestureDetector moveGestureDetector) {
             getLocationComponent(mapView).removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener);
             getGestures(mapView).removeOnMoveListener(onMoveListener);
-            mylocationButton.show();
+            if(showbuttonMapWhenMove){
+                mylocationButton.show();
+            }
         }
 
         @Override
@@ -685,6 +695,12 @@ public class FragmentMap extends Fragment
                 Button btnSubmit = alertDialog.findViewById(R.id.btnSubmit);
                 btnSubmit.setOnClickListener(btn->{
                 });
+                Button btnDuplicatedReport = alertDialog.findViewById(R.id.btnDuplicatedReport);
+                btnDuplicatedReport.setOnClickListener(btn->{
+                    handleDeletePothole(pointAnnotation);
+                    alertDialog.dismiss();
+                });
+
                 Button btnAddImage = alertDialog.findViewById(R.id.btnAddImage);
                 btnAddImage.setOnClickListener(btn->{
                     handleUpload(Integer.valueOf(id));
@@ -712,8 +728,22 @@ public class FragmentMap extends Fragment
     private Integer selected_pothole_id;
     private void handleUpload(Integer pothole_id){
         selected_pothole_id = pothole_id;
-        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+        @SuppressLint("InlinedApi") Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
         resultLauncher.launch(intent);
+    }
+
+    private void handleDeletePothole(PointAnnotation pointAnnotation){
+        PotholeManager.getInstance().deleteDuplicatedPothole(selected_pothole_id, new PotholeManager.DeletePotholeCallBack() {
+            @Override
+            public void onSuccess(String responseString) {
+                pointPotholeAnnotationManager.delete(pointAnnotation);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void handleRetrieveImage(ImageView potholeImage){
@@ -741,7 +771,9 @@ public class FragmentMap extends Fragment
                     PotholeManager.getInstance().uploadProtholeImage(selected_pothole_id, image, new AuthManager.UploadImageCallBack() {
                         @Override
                         public void onSuccess(String message) {
-                            Toast.makeText(requireActivity(), "Uploaded successfully", Toast.LENGTH_SHORT).show();
+                            requireActivity().runOnUiThread(() ->{
+                                Toast.makeText(requireActivity(), "Uploaded successfully", Toast.LENGTH_SHORT).show();
+                            });
                         }
                         @Override
                         public void onFailure(String errorMessage) {
@@ -870,7 +902,7 @@ public class FragmentMap extends Fragment
                     }
                     searchResultsView.setVisibility(View.GONE);
                 });
-
+                directionButton.setVisibility(View.GONE);
             });
 
             return false;
@@ -891,11 +923,13 @@ public class FragmentMap extends Fragment
             permissionsManager.requestLocationPermissions(getActivity());
         }
         showbuttonNavigationWhenMove=false;
+        showbuttonMapWhenMove=true;
     }
 TextView countPothole;
     CardView notificationWarning;
     TextView warningText;
     LinearLayout layoutCountPothole;
+    MapboxTripProgressView tripProgressView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -923,12 +957,13 @@ TextView countPothole;
         layoutStartDestination=view.findViewById(R.id.searchStartETandDestination);
         warningText=view.findViewById(R.id.distancePothole);
         warningText.setText("");
-        potholeDetailLayout=view.findViewById(R.id.potholeDetailLayout);
+        //potholeDetailLayout=view.findViewById(R.id.potholeDetailLayout);
         notificationWarning=view.findViewById(R.id.NotificationWarning);
         countPothole=view.findViewById(R.id.countPothole);
         countPothole.setText("");
         layoutCountPothole=view.findViewById(R.id.layoutCountPothole);
         LayoutButton=view.findViewById(R.id.LayoutButton);
+        tripProgressView=view.findViewById(R.id.tripProgressView);
         return view;
     }
 
@@ -966,7 +1001,6 @@ TextView countPothole;
                     layoutStartDestination.setVisibility(View.VISIBLE);
                     searchETLayout.setVisibility(View.GONE);
                     directionButton.setVisibility(View.GONE);
-                    searchStartET.setText("Vị Trí của bạn");
                 });
 
                 searchET.setOnClickListener(search->{
@@ -1353,15 +1387,17 @@ TextView countPothole;
             speechApi.generate(voiceInstructions, speechCallback);
         }
     };
-
+    private MapboxTripProgressApi tripProgressApi;
+    private TripProgressUpdateFormatter tripProgressUpdate;
     private boolean isVoiceInstructionsMuted = false;
-
     private MapboxManeuverApi maneuverApi;
     private MapboxRouteArrowView routeArrowView;
     private MapboxRouteArrowApi routeArrowApi = new MapboxRouteArrowApi();
     private RouteProgressObserver routeProgressObserver = new RouteProgressObserver() {
         @Override
         public void onRouteProgressChanged(@NonNull RouteProgress routeProgress) {
+
+            tripProgressView.render(tripProgressApi.getTripProgress(routeProgress));
             Style style = mapView.getMapboxMap().getStyle();
             if (style != null) {
                 routeArrowView.renderManeuverUpdate(style, routeArrowApi.addUpcomingManeuverArrow(routeProgress));
@@ -1387,6 +1423,7 @@ TextView countPothole;
 
         }
     };
+
     View LayoutButton;
     public void setNavigationOnMap(Point destination){
         layoutCountPothole.setVisibility(View.GONE);
@@ -1394,6 +1431,7 @@ TextView countPothole;
         mylocationButton.setVisibility(View.GONE);
         LayoutButton.setVisibility(View.GONE);
         showbuttonNavigationWhenMove=true;
+        showbuttonMapWhenMove=false;
         searchResultsViewDestination.setVisibility(View.GONE);
         searchResultsView.setVisibility(View.GONE);
         notificationWarning.setVisibility(View.GONE);
@@ -1406,10 +1444,15 @@ TextView countPothole;
             }
         });
         mylocationNavigationButton.setVisibility(View.VISIBLE);
-
-
+        DistanceFormatterOptions distanceFormatterOptions = new DistanceFormatterOptions.Builder(getActivity()).build();
+        tripProgressUpdate = new TripProgressUpdateFormatter.Builder(getContext())
+                .distanceRemainingFormatter(new DistanceRemainingFormatter(distanceFormatterOptions)) // Định dạng quãng đường còn lại
+                .timeRemainingFormatter(new TimeRemainingFormatter(getContext(),Locale.US))                            // Định dạng thời gian còn lại
+                .estimatedTimeToArrivalFormatter(new EstimatedTimeToArrivalFormatter(getActivity(),0))          // Định dạng thời gian đến dự kiến
+                .build();
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(getActivity().getApplication()).build()));
         routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(getContext()).build());
+        tripProgressApi = new MapboxTripProgressApi(tripProgressUpdate);
 
         MapboxRouteLineOptions options = new MapboxRouteLineOptions.Builder(getContext()).withRouteLineResources(new RouteLineResources.Builder().build())
                 .withRouteLineBelowLayerId(LocationComponentConstants.LOCATION_INDICATOR_LAYER).build();
@@ -1525,6 +1568,8 @@ TextView countPothole;
         mylocationButton.setVisibility(View.VISIBLE);
         mylocationNavigationButton.setVisibility(View.GONE);
         showbuttonNavigationWhenMove=false;
+        showbuttonMapWhenMove=true;
+        originSearch=null;
     }
 
     @SuppressLint("MissingPermission")

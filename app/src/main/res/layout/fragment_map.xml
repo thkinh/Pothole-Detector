@@ -98,7 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:text="Vị Trí của bạn"
+                android:text="@string/search_start_ET"
                 android:id="@+id/searchStartET"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -166,7 +166,7 @@
             android:layout_marginStart="10sp"
             android:layout_marginEnd="10sp"
             android:elevation="4dp"
-            android:hint="Search"
+            android:hint="@string/search_edittext"
             android:id="@+id/searchLayout"
             app:boxCornerRadiusBottomEnd="20sp"
             app:boxCornerRadiusBottomStart="20sp"
@@ -210,25 +210,6 @@
         app:layout_constraintTop_toBottomOf="@id/maneuverView"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/NotificationWarning"/>
-
-
-
-
-
-
-    <LinearLayout
-        android:id="@+id/potholeDetailLayout"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="match_parent">
-
-        <include
-            layout="@layout/ui_potholes_details"
-            android:id="@+id/potholeDetail"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </LinearLayout>
 
 
 
