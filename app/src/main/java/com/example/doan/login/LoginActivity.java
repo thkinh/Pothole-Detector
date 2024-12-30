@@ -47,13 +47,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private AuthManager authManager;
 
-    //For Google Sign In
-    private Button googleButton;
-    private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
-    GoogleSignInOptions gso1;
-    GoogleSignInClient gsc1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,26 +76,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        //Ánh xạ các view từ layout for Google Sign In
-        googleButton = findViewById(R.id.btn_continueWGoogle_scrLogin);
-        // Initialize firebase auth
-        mAuth = FirebaseAuth.getInstance();
-        // Initialize firebase user
-        mUser = mAuth.getCurrentUser();
-
-        // When user already sign in redirect to profile activity
-        if (mUser != null) {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        }
-
-        // Initialize sign in options the client-id is copied form google-services.json file
-        gso1 = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getResources().getString(R.string.default_web_client_id)).requestEmail().build();
-        // Initialize sign in client
-        gsc1 = GoogleSignIn.getClient(this, gso1);
-
-        googleButton.setOnClickListener(view -> {
-            googlesignIn();
-        });
 
         loginButton.setOnClickListener(view -> handleLogin());
 
@@ -162,17 +135,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void navigateToDashboard() {
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish(); // Đóng SignupActivity để không thể quay lại màn hình này
-    }
-
-    // Initialize sign in intent and then Start activity for result
-    private void googlesignIn() {
-        Intent signInIntent = gsc1.getSignInIntent();
-        startActivityForResult(signInIntent, 1000);
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
