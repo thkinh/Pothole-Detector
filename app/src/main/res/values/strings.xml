@@ -25,9 +25,9 @@
 
 
     <!-- Khai báo String cho Authentication UI <HTAT> -->
-    <string name="welcome_message">Welcome!\nYou are not currently logged in.\nPlease!!! Login to get started.</string>
+    <string name="welcome_message">Chào mừng!\nBạn hiện đang không đăng nhập.\nVui lòng đăng nhập để bắt đầu.</string>
 
-    <string name="btn_getStarted">Get started</string>
+    <string name="btn_getStarted">Bắt đầu</string>
     <string name="btn_login">Đăng nhập</string>
     <string name="btn_signup">Đăng kí</string>
     <string name="btn_finish">Hoàn tất</string>
@@ -109,4 +109,14 @@
     <!-- String for map   -->
     <string name="btn_route">Tuyến đường</string>
     <string name="btn_start_route">Bắt đầu</string>
+
+    <string name="search_start_ET">Vị Trí của tôi</string>
+    <string name="text_pothole">Ổ gà</string>
+    <string name="infor_pothole_delete">Xóa ổ gà</string>
+
+
+    <string name="search_edittext">Tìm kiếm địa chỉ</string>
+    <string name="main_home">Trang chủ</string>
+    <string name="main_map">Bản đồ</string>
+    <string name="main_setting">Cài đặt</string>
 </resources>

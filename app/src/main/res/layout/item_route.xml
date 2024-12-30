@@ -21,13 +21,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_centerVertical="true"
-                app:cardCornerRadius="100dp">
+                app:cardCornerRadius="100dp"
+                android:backgroundTint="@color/transparent"
+                app:strokeColor="@color/transparent">
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/img_pothole"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/img_pothole">
+                    android:src="@drawable/ic_pothole_pin">
                 </com.google.android.material.imageview.ShapeableImageView>
             </com.google.android.material.card.MaterialCardView>
 
