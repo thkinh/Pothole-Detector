@@ -428,7 +428,6 @@ public class FragmentMap extends Fragment
 
                     setNavigationOnMap(placeAutocompleteSuggestion.getCoordinate());
                 });
-                Toast.makeText(getContext(), String.format("Show layout search 2 point", placeAutocompleteSuggestion.getCoordinate()), Toast.LENGTH_SHORT).show();
 
 
 
@@ -527,8 +526,6 @@ public class FragmentMap extends Fragment
                 }else {
                     searchDestinationET.setText(placeAutocompleteSuggestion.getName());
                 }
-//                searchResultsView.setVisibility(View.INVISIBLE);
-                Toast.makeText(getContext(), String.format("", placeAutocompleteSuggestion.getCoordinate()), Toast.LENGTH_SHORT).show();
 
                 MapAnimationOptions animationOptions = new MapAnimationOptions.Builder().duration(1500L).build();
 
@@ -542,17 +539,30 @@ public class FragmentMap extends Fragment
 
                 if(FirstSearchOrigin==false){
                     pointAnnotationManager.deleteAll();
+
+                    // Tạo annotation mới tại vị trí click
+                    PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
+                            .withTextAnchor(TextAnchor.CENTER)
+                            .withIconImage(resizedBitmap)
+                            .withPoint(placeAutocompleteSuggestion.getCoordinate());
+                    pointAnnotationManager.create(pointAnnotationOptions);
                 }
 
-                // Tạo annotation mới tại vị trí click
-                PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
-                        .withTextAnchor(TextAnchor.CENTER)
-                        .withIconImage(resizedBitmap)
-                        .withPoint(placeAutocompleteSuggestion.getCoordinate());
-                pointAnnotationManager.create(pointAnnotationOptions);
+                if(FirstSearchOrigin==true){
+
+                    pointAnnotationStartManager.deleteAll();
+
+                    // Tạo annotation mới tại vị trí click
+                    PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
+                            .withTextAnchor(TextAnchor.CENTER)
+                            .withIconImage(resizedBitmap)
+                            .withPoint(placeAutocompleteSuggestion.getCoordinate());
+                    pointAnnotationStartManager.create(pointAnnotationOptions);
+                }
 
                 navigationButton.setOnClickListener(view->{
                     searchETLayout.setVisibility(View.GONE);
+                    pointAnnotationStartManager.deleteAll();
                     setNavigationOnMap(placeAutocompleteSuggestion.getCoordinate());
                 });
 
@@ -671,12 +681,6 @@ public class FragmentMap extends Fragment
                 String userContribute = data.has("userContribute") ? data.get("userContribute").getAsString() : null;
                 selected_pothole_id = Integer.parseInt(id);
 
-                // Kiểm tra nếu id hợp lệ
-                if (id != null) {
-                    Toast.makeText(getContext(), "Pothole ID: " + id, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "ID không tồn tại!", Toast.LENGTH_SHORT).show();
-                }
                 double latitude = pointAnnotation.getPoint().latitude();
                 double longitude = pointAnnotation.getPoint().longitude();
                 /*potholeDetailLayout.setVisibility(View.VISIBLE);
@@ -832,9 +836,6 @@ public class FragmentMap extends Fragment
                         CarmenFeature feature = results.get(0);
                         place = feature.address();
 
-                        Toast.makeText(getContext(), feature.placeName().toString(),
-                                Toast.LENGTH_SHORT).show();
-
                 }else{
 
                     Toast.makeText(getContext(),"Error network",
@@ -988,7 +989,7 @@ TextView countPothole;
         return view;
     }
 
-
+    PointAnnotationManager pointAnnotationStartManager;
     //để hiển thị vị trí hiện tại và các thành phần của vị trí Mapbox thông qua location component
     //thông qua thư viện location của mapbox
     //nhưng ở đây sử dụng thư viện LocationComponentPlugin để kích hoạt vị trí người dùng
@@ -1000,6 +1001,7 @@ TextView countPothole;
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, true);
         AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
         PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
+        pointAnnotationStartManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
 
         placeAutocomplete = PlaceAutocomplete.create(getString(R.string.mapbox_access_token));
         searchResultsView.initialize(new SearchResultsView.Configuration(new CommonSearchViewConfiguration()));
@@ -1187,7 +1189,7 @@ TextView countPothole;
                 Feature routeFeature = Feature.fromGeometry(lineString);
                 // Make a toast which displays the route's distance
 
-                Toast.makeText(getContext(), String.format("Route distance: %.2f meters", currentRoute.distance()), Toast.LENGTH_SHORT).show();
+
                 mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS,style -> {
 
                     GeoJsonSource.Builder lineRoute = new GeoJsonSource.Builder(ROUTE_SOURCE_ID).feature(routeFeature);
