@@ -1,5 +1,6 @@
 package com.example.doan.setting;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.doan.R;
@@ -35,6 +37,7 @@ public class FragmentSetting extends Fragment {
     //private Button btn_stProfile;
     private Button btn_stLogout;
     private MaterialCardView profile;
+    private TextView tv_chooseSense;
 
     public FragmentSetting() {
         // Required empty public constructor
@@ -114,6 +117,51 @@ public class FragmentSetting extends Fragment {
                 Setting.getInstance().saveToPreferences(requireContext());
             }
         });
+
+        tv_chooseSense = rootView.findViewById(R.id.choose_sensitivity);
+        if (Setting.getInstance().getSensitiveConstant() == 0.9055){
+            tv_chooseSense.setText("Low");
+        }
+        else if (Setting.getInstance().getSensitiveConstant() == 0.9030){
+            tv_chooseSense.setText("Medium");
+        }
+        else if (Setting.getInstance().getSensitiveConstant() == 0.9000){
+            tv_chooseSense.setText("High");
+        }
+        tv_chooseSense.setOnClickListener(view -> {
+            // Create an array of options
+            String[] options = {"Low", "Medium", "High"};
+            // Build the AlertDialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            builder.setTitle("Choose Sensitivity");
+            builder.setItems(options, (dialog, which) -> {
+                // Update TextView text based on selection
+                tv_chooseSense.setText(options[which]);
+                // Perform actions based on selected value
+                switch (options[which]) {
+                    case "Low":
+                        // Perform action for "Low"
+                        Setting.getInstance().setSensitivity(Setting.Sensitivity.LOW);
+                        Setting.getInstance().setSensitiveConstant(0.9055);
+                        break;
+                    case "Medium":
+                        // Perform action for "Medium"
+                        Setting.getInstance().setSensitivity(Setting.Sensitivity.MEDIUM);
+                        Setting.getInstance().setSensitiveConstant(0.9030);
+                        break;
+                    case "High":
+                        // Perform action for "High"
+                        Setting.getInstance().setSensitivity(Setting.Sensitivity.HIGH);
+                        Setting.getInstance().setSensitiveConstant(0.9000);
+                        break;
+                }
+            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+            // Show the dialog
+            builder.create().show();
+        });
+
         return rootView;
     }
 

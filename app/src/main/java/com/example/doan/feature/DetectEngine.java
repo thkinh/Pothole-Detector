@@ -77,7 +77,7 @@ public class DetectEngine {
 
                             Model.Outputs outputs = model.process(inputFeature0);
                             float prediction = outputs.getOutputFeature0AsTensorBuffer().getFloatArray()[0];
-                            if (prediction > 0.9055) {
+                            if (prediction > Setting.getInstance().getSensitiveConstant()) {
                                 potholes++;
                                 callback.onPotholeDetected(potholes);
                             } else {

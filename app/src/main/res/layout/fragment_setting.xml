@@ -282,9 +282,13 @@
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="20dp"
                         android:gravity="center"
+                        android:id="@+id/choose_sensitivity"
+                        android:background="@color/white"
                         android:text="HIGH"
                         android:textSize="20sp"
-                        android:textStyle="italic" />
+                        android:textStyle="italic"
+                        android:clickable="true"
+                        android:focusable="true" />
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
 
