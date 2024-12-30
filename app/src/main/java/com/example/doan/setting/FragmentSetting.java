@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -41,7 +42,7 @@ public class FragmentSetting extends Fragment {
     private Button btn_stLogout;
     private MaterialCardView profile;
     private TextView tv_chooseSense;
-
+    private TextView txtVietnamese, txtEnglish;
     public FragmentSetting() {
         // Required empty public constructor
     }
@@ -68,19 +69,34 @@ public class FragmentSetting extends Fragment {
         // Find the RelativeLayout by ID
         layou_vi = rootView.findViewById(R.id.st_lang_vi);
         layout_en = rootView.findViewById(R.id.st_lang_en);
+        txtVietnamese = rootView.findViewById(R.id.txt_vietnamese);
+        txtEnglish = rootView.findViewById(R.id.txt_english);
 
         //Set switch state based on the current language
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("LANGUAGE_SETTINGS", Context.MODE_PRIVATE);
         String language = sharedPreferences.getString("language", "en");
 
+        // Set text style based on the current language
+        if (language.equals("vi")) {
+            txtVietnamese.setTypeface(null, Typeface.BOLD);
+            txtEnglish.setTypeface(null, Typeface.NORMAL);
+        } else {
+            txtVietnamese.setTypeface(null, Typeface.NORMAL);
+            txtEnglish.setTypeface(null, Typeface.BOLD);
+        }
+
         layou_vi.setOnClickListener(v -> {
             setLanguage("vi", 1);
-            refreshFragment();
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.mainlayout, new FragmentSetting())
+                    .commit();
         });
 
         layout_en.setOnClickListener(view -> {
             setLanguage("en", 0);
-            refreshFragment();
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.mainlayout, new FragmentSetting())
+                    .commit();
         });
 
         profile = rootView.findViewById(R.id.profile);
