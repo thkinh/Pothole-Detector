@@ -232,17 +232,35 @@
             </LinearLayout>
         </ScrollView>
 
-        <!-- Button xác nhận -->
-        <Button
-            android:id="@+id/btnSubmit"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/btn_saving"
-            android:backgroundTint="@color/color_1"
-            android:textColor="@color/color_word"
-            android:padding="8dp"
-            android:textSize="16sp"/>
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btnSubmit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/btn_saving"
+                android:backgroundTint="@color/color_1"
+                android:textColor="@color/color_word"
+                android:padding="8dp"
+                android:textSize="16sp"/>
+            <Button
+                android:id="@+id/btnDuplicatedReport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="10dp"
+                android:text="Xóa ổ gà trùng lặp"
+                android:backgroundTint="#D91656"
+                android:textColor="@color/color_word"
+                android:padding="8dp"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+        <!-- Button xác nhận -->
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
