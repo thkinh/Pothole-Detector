@@ -20,7 +20,9 @@
     <string name="title"><b>Pothole Detecting</b></string>
     <string name="title_activity_main_dashboard">MainDashboard</string>
     <string name="search">Enter Address, City or Zip Code </string>
+    <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
     <string name="permission_required_toast">Location permission is required for this demo.</string>
+    <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
 
     <!-- Declared Strings for Authentication UI -->
     <string name="welcome_message">Welcome!\nYou are not currently logged in.\nPlease!!! Login to get started.</string>
@@ -59,6 +61,7 @@
     <string name="txt_preview_image">Preview Image</string>
     <string name="txt_detect">Pothole detected!</string>
     <string name="txt_notification">Notification</string>
+    <string name="txt_user">Contributed by</string>
 
     <string name="btn_image">Add Image</string>
     <string name="btn_saving">Save Information</string>
@@ -72,4 +75,36 @@
     <string name="editText_email">Enter email here</string>
     <string name="editText_password">Enter password here</string>
     <string name="editText_opt">Enter OTP code here</string>
+
+    <string name="or">OR</string>
+    <string name="language_ENG">ENG</string>
+    <string name="language_VIE">VIE</string>
+    <!-- Kết thức phần khai báo String cho Authentication UI <HTAT> -->
+
+    <string name="test"> test</string>
+
+    <string name="setting">SETTING</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="web_client_id">72747195748-oluln8fl186idv8nm9qod0831k8oi04j.apps.googleusercontent.com</string>
+
+    <string name="default_web_client_id">72747195748-v759vtnhb8b8f30veta4ad6ehsuud9tu.apps.googleusercontent.com</string>
+    <string name="iscontributor">IsContributor</string>
+
+    <!-- String for the setting -->
+    <string name="profile">Profile</string>
+
+    <!-- String for dashboard   -->
+    <string name="all_user">All Users</string>
+    <string name="all_route">All Routes</string>
+    <string name="txt_7_lastdays">In the last 7 days</string>
+    <string name="txt_serverity">Serverity</string>
+    <string name="txt_traveled">Traveled</string>
+    <string name="txt_contributed">Contributed</string>
+    <string name="txt_potholes">Potholes</string>
+
+    <!-- String for map   -->
+    <string name="btn_route">ROUTE</string>
+    <string name="btn_start_route">START</string>
 </resources>

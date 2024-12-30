@@ -97,6 +97,7 @@ import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource;
 import com.mapbox.maps.plugin.animation.MapAnimationOptions;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
 import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotation;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
@@ -694,9 +695,15 @@ public class FragmentMap extends Fragment
                 Button btnSubmit = alertDialog.findViewById(R.id.btnSubmit);
                 btnSubmit.setOnClickListener(btn->{
                 });
+                Button btnDuplicatedReport = alertDialog.findViewById(R.id.btnDuplicatedReport);
+                btnDuplicatedReport.setOnClickListener(btn->{
+                    handleDeletePothole(pointAnnotation);
+                    alertDialog.dismiss();
+                });
+
                 Button btnAddImage = alertDialog.findViewById(R.id.btnAddImage);
                 btnAddImage.setOnClickListener(btn->{
-                    handleUpload();
+                    handleUpload(Integer.valueOf(id));
                 });
                 TextView tvLocation = alertDialog.findViewById(R.id.tvLocation);
                 TextView tvSeverity = alertDialog.findViewById(R.id.tvSeverity);
@@ -719,9 +726,24 @@ public class FragmentMap extends Fragment
     //CUA THINH
     private ActivityResultLauncher<Intent> resultLauncher;
     private Integer selected_pothole_id;
-    private void handleUpload(){
-        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+    private void handleUpload(Integer pothole_id){
+        selected_pothole_id = pothole_id;
+        @SuppressLint("InlinedApi") Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
         resultLauncher.launch(intent);
+    }
+
+    private void handleDeletePothole(PointAnnotation pointAnnotation){
+        PotholeManager.getInstance().deleteDuplicatedPothole(selected_pothole_id, new PotholeManager.DeletePotholeCallBack() {
+            @Override
+            public void onSuccess(String responseString) {
+                pointPotholeAnnotationManager.delete(pointAnnotation);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void handleRetrieveImage(ImageView potholeImage){
@@ -749,7 +771,9 @@ public class FragmentMap extends Fragment
                     PotholeManager.getInstance().uploadProtholeImage(selected_pothole_id, image, new AuthManager.UploadImageCallBack() {
                         @Override
                         public void onSuccess(String message) {
-                            Toast.makeText(requireActivity(), "Uploaded successfully", Toast.LENGTH_SHORT).show();
+                            requireActivity().runOnUiThread(() ->{
+                                Toast.makeText(requireActivity(), "Uploaded successfully", Toast.LENGTH_SHORT).show();
+                            });
                         }
                         @Override
                         public void onFailure(String errorMessage) {
@@ -933,7 +957,7 @@ TextView countPothole;
         layoutStartDestination=view.findViewById(R.id.searchStartETandDestination);
         warningText=view.findViewById(R.id.distancePothole);
         warningText.setText("");
-        potholeDetailLayout=view.findViewById(R.id.potholeDetailLayout);
+        //potholeDetailLayout=view.findViewById(R.id.potholeDetailLayout);
         notificationWarning=view.findViewById(R.id.NotificationWarning);
         countPothole=view.findViewById(R.id.countPothole);
         countPothole.setText("");
