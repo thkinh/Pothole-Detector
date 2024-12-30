@@ -18,8 +18,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title"
-            android:textSize="20sp"
-            android:layout_alignParentStart="true">
+            android:textStyle="bold"
+            android:layout_marginStart="78dp"
+            android:textSize="24sp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="12dp">
         </TextView>
 
         <ImageButton
@@ -117,7 +120,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Traveled:"
+                                android:text="@string/txt_traveled"
                                 android:textSize="12sp">
                             </TextView>
 
@@ -149,7 +152,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Contributed:"
+                                android:text="@string/txt_contributed"
                                 android:textSize="12sp">
                             </TextView>
 
@@ -165,7 +168,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="potholes"
+                                android:text="@string/txt_potholes"
                                 android:textSize="12sp">
                             </TextView>
                         </LinearLayout>
@@ -257,7 +260,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             app:cornerRadius="5dp"
-                            android:text="All Users"
+                            android:text="@string/all_user"
                             android:backgroundTint="@color/pacificblue">
                         </com.google.android.material.button.MaterialButton>
 
@@ -267,7 +270,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             app:cornerRadius="5dp"
-                            android:text="All Routes"
+                            android:text="@string/all_route"
                             android:backgroundTint="@color/pacificblue">
                         </com.google.android.material.button.MaterialButton>
                     </LinearLayout>
@@ -307,7 +310,7 @@
                             android:id="@+id/txt_recently"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Trong 7 ngày gần nhất"
+                            android:text="@string/txt_7_lastdays"
                             android:textStyle="bold"
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
@@ -341,7 +344,7 @@
                             android:id="@+id/txt_dangerlevel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Mức độ nguy hiểm"
+                            android:text="@string/txt_serverity"
                             android:textStyle="bold"
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
