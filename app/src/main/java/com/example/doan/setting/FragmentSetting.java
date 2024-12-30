@@ -1,8 +1,11 @@
 package com.example.doan.setting;
 
+import static androidx.core.app.ActivityCompat.recreate;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -60,15 +63,24 @@ public class FragmentSetting extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_setting, container, false);
+        loadLanguage();
+
         // Find the RelativeLayout by ID
         layou_vi = rootView.findViewById(R.id.st_lang_vi);
         layout_en = rootView.findViewById(R.id.st_lang_en);
+
+        //Set switch state based on the current language
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("LANGUAGE_SETTINGS", Context.MODE_PRIVATE);
+        String language = sharedPreferences.getString("language", "en");
+
         layou_vi.setOnClickListener(v -> {
-            Setting.getInstance().setAppLanguage(Setting.AppLanguage.vi);
-            Setting.getInstance().applyLanguage(requireContext());
-            Setting.getInstance().saveToPreferences(requireContext()); // Save selection
-            Toast.makeText(requireContext(), "Vietnamese", Toast.LENGTH_SHORT).show();
-            refreshFragment(); // Refresh to apply changes
+            setLanguage("vi", 1);
+            refreshFragment();
+        });
+
+        layout_en.setOnClickListener(view -> {
+            setLanguage("en", 0);
+            refreshFragment();
         });
 
         profile = rootView.findViewById(R.id.profile);
@@ -87,14 +99,6 @@ public class FragmentSetting extends Fragment {
         profile.setOnClickListener(view -> {
             Intent intent = new Intent(this.getContext(), ProfileActivity.class );
             startActivity(intent);
-        });
-
-        layout_en.setOnClickListener(view -> {
-            Setting.getInstance().setAppLanguage(Setting.AppLanguage.en_US);
-            Setting.getInstance().applyLanguage(requireContext());
-            Setting.getInstance().saveToPreferences(requireContext()); // Save selection
-            Toast.makeText(requireContext(), "English-US", Toast.LENGTH_SHORT).show();
-            refreshFragment(); // Refresh to apply changes
         });
 
         switchContribute = rootView.findViewById(R.id.switch_contribute);
@@ -174,5 +178,26 @@ public class FragmentSetting extends Fragment {
                     .attach(currentFragment)
                     .commit();
         }
+    }
+
+    private void setLanguage(String language, int item) {
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Configuration configuration = new Configuration();
+        configuration.locale = locale;
+        requireContext().getResources().updateConfiguration(configuration, requireContext().getResources().getDisplayMetrics());
+
+        //save language
+        SharedPreferences.Editor editor = requireContext().getSharedPreferences("LANGUAGE_SETTINGS", Context.MODE_PRIVATE).edit();
+        editor.putString("language", language);
+        editor.putInt("item", item);
+        editor.apply();
+    }// set language end here
+
+    private void loadLanguage(){
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("LANGUAGE_SETTINGS", Context.MODE_PRIVATE);
+        String language = sharedPreferences.getString("language", "en");
+        int item = sharedPreferences.getInt("item", 0);
+        setLanguage(language, 0);
     }
 }

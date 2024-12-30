@@ -2,7 +2,10 @@ package com.example.doan.login;
 
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
@@ -14,6 +17,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -37,6 +41,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.Locale;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText emailEditText;
@@ -44,12 +50,14 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private TextView askSignupText;
     private TextView forgotPassword;
+    private Switch langSw;
 
     private AuthManager authManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLanguage();
         setContentView(R.layout.at_loginscreen);
         EdgeToEdge.enable(this);
         // Ánh xạ các view từ layout
@@ -58,24 +66,21 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.btn_login);
         askSignupText = findViewById(R.id.txt_askSignUp_scrLogin);
         forgotPassword = findViewById(R.id.txt_forgotPassword);
-        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch lang_switch = findViewById(R.id.sw_language);
-        if (Setting.getInstance().getAppLanguage() == Setting.AppLanguage.vi){
-            lang_switch.setChecked(false);
-        }
-        if (Setting.getInstance().getAppLanguage() == Setting.AppLanguage.en_US){
-            lang_switch.setChecked(true);
-        }
-        lang_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked){
-                Setting.getInstance().setAppLanguage(Setting.AppLanguage.en_US);
-                Setting.getInstance().applyLanguage(this);
-            }
-            if (!isChecked){
-                Setting.getInstance().setAppLanguage(Setting.AppLanguage.vi);
-                Setting.getInstance().applyLanguage(this);
-            }
-        });
+        langSw = findViewById(R.id.sw_language);
 
+        // Set switch state based on current language
+        SharedPreferences sharedPreferences = getSharedPreferences("LANGUAGE_SETTINGS", MODE_PRIVATE);
+        String language = sharedPreferences.getString("language", "en");
+        langSw.setChecked(language.equals("vi"));
+
+        langSw.setOnClickListener(v -> {
+            if (langSw.isChecked()) {
+                setLanguage("vi", 1);
+            } else {
+                setLanguage("en", 0);
+            }
+            recreate();
+        });
 
         loginButton.setOnClickListener(view -> handleLogin());
 
@@ -90,6 +95,61 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         authManager = AuthManager.getInstance();
+    }
+
+    /*private void showLanguageDialog() {
+        final String[] languageList ={"English", "Tiếng Việt"};
+
+        SharedPreferences sharedPreferences = getSharedPreferences("LANGUAGE_SETTINGS", MODE_PRIVATE);
+        int item = sharedPreferences.getInt("item", 0);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+        builder.setTitle("Choose Language");
+        builder.setSingleChoiceItems(languageList, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0){
+                    setLanguage("en", 0);
+                    recreate();
+                }
+                else if (which == 1){
+                    setLanguage("vi", 1);
+                    recreate();
+                }
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }*/
+
+    private void setLanguage(String language, int item) {
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Configuration configuration = new Configuration();
+        configuration.locale = locale;
+        getBaseContext().getResources().updateConfiguration(configuration, getBaseContext().getResources().getDisplayMetrics());
+
+        //save language
+        SharedPreferences.Editor editor = getSharedPreferences("LANGUAGE_SETTINGS", MODE_PRIVATE).edit();
+        editor.putString("language", language);
+        editor.putInt("item", item);
+        editor.apply();
+    }// set language end here
+
+    private void loadLanguage(){
+        SharedPreferences sharedPreferences = getSharedPreferences("LANGUAGE_SETTINGS", MODE_PRIVATE);
+        String language = sharedPreferences.getString("language", "en");
+        int item = sharedPreferences.getInt("item", 0);
+        setLanguage(language, 0);
     }
 
     // Hàm xử lý đăng nhập

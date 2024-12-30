@@ -24,7 +24,7 @@
         android:layout_marginStart="8dp"
         android:text="@string/txt_detect"
         android:textColor="@color/black"
-        android:textSize="26sp"
+        android:textSize="16sp"
         android:layout_centerVertical="true" />
 
     <!-- Thông tin vị trí -->
