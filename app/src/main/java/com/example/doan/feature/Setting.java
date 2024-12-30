@@ -30,6 +30,7 @@ public class Setting {
     private boolean isContributor;
     private AppLanguage appLanguage;
     private Sensitivity sensitivity;
+    private Double sensitiveConstant;
     private UserDetails userDetails;
 
     private static Setting instance;
@@ -39,7 +40,16 @@ public class Setting {
         isContributor = false;
         appLanguage = AppLanguage.vi;
         sensitivity = Sensitivity.LOW;
+        sensitiveConstant = 0.9055; //LOW
     };
+
+    public void setSensitiveConstant(Double sensitiveConstant) {
+        this.sensitiveConstant = sensitiveConstant;
+    }
+
+    public Double getSensitiveConstant() {
+        return sensitiveConstant;
+    }
 
     public static synchronized Setting getInstance(){
         if (instance == null){

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
+import android.os.UserManager;
 import android.provider.MediaStore;
 import android.view.View;
 
@@ -51,7 +52,9 @@ import com.example.doan.R;
 import com.example.doan.api.auth.AuthManager;
 import com.example.doan.api.potholes.PotholeManager;
 import com.example.doan.feature.Storage;
+import com.example.doan.model.AppUser;
 import com.example.doan.model.Pothole;
+import com.example.doan.model.UserDetails;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -629,6 +632,17 @@ public class FragmentMap extends Fragment
             jsonData.addProperty("city",potholePoint.getLocation().getCity());
             jsonData.addProperty("street",potholePoint.getLocation().getStreet());
             jsonData.addProperty("userId",potholePoint.getUserId());
+            AuthManager.getInstance().getUser(potholePoint.getUserId(), new AuthManager.GetUserCallBack() {
+                @Override
+                public void onSuccess(AppUser user) {
+                    jsonData.addProperty("userContribute",user.getUsername());
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+
+                }
+            });
             PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                     .withTextAnchor(TextAnchor.CENTER)
                     .withIconImage(resizedBitmap)
@@ -651,9 +665,10 @@ public class FragmentMap extends Fragment
                 String dateFound = data.has("dateFound") ? data.get("dateFound").getAsString() : null;
                 String timeFound = data.has("timeFound") ? data.get("timeFound").getAsString() : null;
                 String severity = data.has("severity") ? data.get("severity").getAsString() : null;
-//                String id = data.has("country") ? data.get("country").getAsString() : null;
-//                String id = data.has("city") ? data.get("city").getAsString() : null;
-//                String id = data.has("street") ? data.get("street").getAsString() : null;
+                String country = data.has("country") ? data.get("country").getAsString() : null;
+                String city = data.has("city") ? data.get("city").getAsString() : null;
+                String street = data.has("street") ? data.get("street").getAsString() : null;
+                String userContribute = data.has("userContribute") ? data.get("userContribute").getAsString() : null;
                 selected_pothole_id = Integer.parseInt(id);
 
                 // Kiểm tra nếu id hợp lệ
@@ -705,13 +720,19 @@ public class FragmentMap extends Fragment
                 btnAddImage.setOnClickListener(btn->{
                     handleUpload(Integer.valueOf(id));
                 });
+
                 TextView tvLocation = alertDialog.findViewById(R.id.tvLocation);
+                tvLocation.setText(street+" "+country+" "+city);
+
                 TextView tvSeverity = alertDialog.findViewById(R.id.tvSeverity);
                 tvSeverity.setText(severity);
+
                 TextView tvDate = alertDialog.findViewById(R.id.tvDate);
                 tvDate.setText(timeFound+" "+dateFound);
+
                 TextView tvUser = alertDialog.findViewById(R.id.tvUser);
-                tvUser.setText(userId);
+                tvUser.setText(userContribute);
+
                 ImageView Pothole_image = alertDialog.findViewById(R.id.imgPreview);
                 handleRetrieveImage(Pothole_image);
 

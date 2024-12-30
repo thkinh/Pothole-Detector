@@ -63,7 +63,7 @@ public class ProfileActivity extends AppCompatActivity {
                 runOnUiThread(()->{
                     tv_fullName.setText(details.getFullName());
                     tv_job.setText(details.getJobTitle());
-                    tv_email.setText(details.getEmail());
+                    tv_email.setText(authManager.getAccount().getEmail());
                     tv_phone.setText(details.getPhoneNumber());
                     if (details.getDateOfBirth() != null){
                     tv_birth.setText(details.getDateOfBirth().toString());}
