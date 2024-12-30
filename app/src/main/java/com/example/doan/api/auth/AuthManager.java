@@ -176,6 +176,27 @@ public class AuthManager {
         });
     }
 
+    public void getUser (Integer id, GetUserCallBack callBack){
+        Call<AppUser> appUserCall = authService.simpleGETbyID(id);
+        appUserCall.enqueue(new Callback<AppUser>() {
+            @Override
+            public void onResponse(Call<AppUser> call, Response<AppUser> response) {
+                if (response.isSuccessful()){
+                    AppUser user = response.body();
+                    callBack.onSuccess(user);
+                }
+                else {
+                    callBack.onFailure("Update password failed: "+response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AppUser> call, Throwable t) {
+                callBack.onFailure("API call failed: " + t.getMessage());
+            }
+        });
+    }
+
     public void confirmPassword(String email, String password, ConfirmPasswordCallBack callBack){
         Call<AppUser> appUserCall = authService.confirmPass(email, password);
         appUserCall.enqueue(new Callback<AppUser>() {
@@ -378,6 +399,11 @@ public class AuthManager {
         void onSuccess(AppUser user);
         void onFailure(String errorMessage);
     }*/
+
+    public interface GetUserCallBack{
+        void onSuccess(AppUser user);
+        void onFailure(String errorMessage);
+    }
 
     public interface FetchImageCallBack {
         void onSuccess(Bitmap bitmap);
