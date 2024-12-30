@@ -90,10 +90,6 @@
     <string name="web_client_id">72747195748-oluln8fl186idv8nm9qod0831k8oi04j.apps.googleusercontent.com</string>
 
     <string name="default_web_client_id">72747195748-v759vtnhb8b8f30veta4ad6ehsuud9tu.apps.googleusercontent.com</string>
-    <string name="iscontributor">IsContributor</string>
-
-    <!-- String for the setting -->
-    <string name="profile">Profile</string>
 
     <!-- String for dashboard   -->
     <string name="all_user">All Users</string>
@@ -114,7 +110,19 @@
     <string name="infor_pothole_delete">Delete potholes</string>
 
 
+    <!-- String for the tab navigation -->
     <string name="main_home">Home</string>
     <string name="main_map">Map</string>
     <string name="main_setting">Setting</string>
+
+    <!-- String for the setting -->
+    <string name="txt_language">Language</string>
+    <string name="txt_VIE">Vietnamese</string>
+    <string name="txt_ENG">English</string>
+    <string name="txt_notification_setting">Notification</string>
+    <string name="txt_weekly_report">Weekly Report</string>
+    <string name="txt_isContributor">isContributor</string>
+    <string name="txt_detection_sensitivity">Detection Sensitivity</string>
+    <string name="txt_about">About Us</string>
+    <string name="profile">Profile</string>
 </resources>

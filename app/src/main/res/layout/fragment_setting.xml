@@ -109,7 +109,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginStart="10dp"
                             android:layout_toEndOf="@id/language_img"
-                            android:text="Language"
+                            android:text="@string/txt_language"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -125,7 +125,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
-                            android:text="Vietnamese"
+                            android:text="@string/txt_VIE"
                             android:textSize="20dp" />
 
                         <ImageView
@@ -146,7 +146,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
-                            android:text="English"
+                            android:text="@string/txt_ENG"
                             android:textSize="20dp"
                             android:textStyle="bold" />
 
@@ -192,7 +192,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginStart="10dp"
                             android:layout_toEndOf="@id/notification_img"
-                            android:text="Notification"
+                            android:text="@string/txt_notification_setting"
                             android:textSize="24dp"
                             android:textStyle="bold" />
 
@@ -206,7 +206,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
-                            android:text="Weekly report"
+                            android:text="@string/txt_weekly_report"
                             android:textSize="16sp" />
 
 
@@ -231,7 +231,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
-                            android:text="@string/iscontributor"
+                            android:text="@string/txt_isContributor"
                             android:textSize="16sp" />
                         <Switch
                             android:id="@+id/switch_contribute"
@@ -271,7 +271,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@id/sensitivity_img"
-                        android:text="Detection Sensitivity"
+                        android:text="@string/txt_detection_sensitivity"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -315,7 +315,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@id/about_img"
-                        android:text="About us"
+                        android:text="@string/txt_about"
                         android:textSize="16sp"
                         android:textStyle="bold"></TextView>
                 </RelativeLayout>
