@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
@@ -22,7 +23,7 @@ import com.example.doan.model.AppUser;
 
 import java.util.Locale;
 
-public class SplashScreen extends AppCompatActivity {
+public class SplashScreenn extends AppCompatActivity {
 
     private Button getStartedButton;  // Đối tượng Button
     private Switch langSw;
@@ -32,10 +33,11 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         loadLanguage();
         EdgeToEdge.enable(this);
+        SplashScreen.installSplashScreen(SplashScreenn.this);
         setContentView(R.layout.at_splashscreen);
         getStartedButton = findViewById(R.id.btn_getStarted);
         getStartedButton.setOnClickListener(view -> {
-            Intent intent = new Intent(SplashScreen.this, LoginActivity.class);
+            Intent intent = new Intent(SplashScreenn.this, LoginActivity.class);
             startActivity(intent);
             finish();
         });
