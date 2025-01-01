@@ -1,10 +1,13 @@
 package com.example.doan.login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +19,7 @@ import com.example.doan.api.auth.AuthManager;
 import com.example.doan.model.AppUser;
 
 import java.util.Date;
+import java.util.Locale;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -27,9 +31,12 @@ public class SignupActivity extends AppCompatActivity {
     private Button signupButton;
     private TextView askLoginText;
     private AuthManager authManager;
+    private Switch langSw;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLanguage();
         setContentView(R.layout.at_signupscreen);
         EdgeToEdge.enable(this);
         // Ánh xạ các view từ layout
@@ -39,12 +46,47 @@ public class SignupActivity extends AppCompatActivity {
         confirmPasswordEditText = findViewById(R.id.editText_rePassword_scrSignup);
         signupButton = findViewById(R.id.btn_signup100);
         askLoginText = findViewById(R.id.txt_askLogin_scrSignup);
+        langSw = findViewById(R.id.sw_language);
 
+        // Set switch state based on current language
+        SharedPreferences sharedPreferences = getSharedPreferences("LANGUAGE_SETTINGS", MODE_PRIVATE);
+        String language = sharedPreferences.getString("language", "en");
+        langSw.setChecked(language.equals("vi"));
+
+        langSw.setOnClickListener(v -> {
+            if (langSw.isChecked()) {
+                setLanguage("vi", 1);
+            } else {
+                setLanguage("en", 0);
+            }
+            recreate();
+        });
 
         signupButton.setOnClickListener(v -> handleSignup());
         askLoginText.setOnClickListener(v -> navigateToLogin());
 
         authManager = AuthManager.getInstance();
+    }
+
+    private void setLanguage(String language, int item) {
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Configuration configuration = new Configuration();
+        configuration.locale = locale;
+        getBaseContext().getResources().updateConfiguration(configuration, getBaseContext().getResources().getDisplayMetrics());
+
+        //save language
+        SharedPreferences.Editor editor = getSharedPreferences("LANGUAGE_SETTINGS", MODE_PRIVATE).edit();
+        editor.putString("language", language);
+        editor.putInt("item", item);
+        editor.apply();
+    }// set language end here
+
+    private void loadLanguage(){
+        SharedPreferences sharedPreferences = getSharedPreferences("LANGUAGE_SETTINGS", MODE_PRIVATE);
+        String language = sharedPreferences.getString("language", "en");
+        int item = sharedPreferences.getInt("item", 0);
+        setLanguage(language, 0);
     }
 
     // Hàm xử lý đăng ký

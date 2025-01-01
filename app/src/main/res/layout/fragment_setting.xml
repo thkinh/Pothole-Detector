@@ -130,6 +130,7 @@
                         android:layout_height="match_parent">
 
                         <TextView
+                            android:id="@+id/txt_vietnamese"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
@@ -151,12 +152,12 @@
                         android:layout_height="match_parent">
 
                         <TextView
+                            android:id="@+id/txt_english"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="20dp"
                             android:text="@string/txt_ENG"
-                            android:textSize="20dp"
-                            android:textStyle="bold" />
+                            android:textSize="20dp"/>
 
                         <ImageView
                             android:layout_width="50dp"
@@ -201,7 +202,7 @@
                             android:layout_marginStart="10dp"
                             android:layout_toEndOf="@id/notification_img"
                             android:text="@string/txt_notification_setting"
-                            android:textSize="24dp"
+                            android:textSize="20sp"
                             android:textStyle="bold" />
 
                     </RelativeLayout>

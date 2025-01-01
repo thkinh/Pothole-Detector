@@ -1,11 +1,14 @@
 package com.example.doan.setting;
 
-import android.annotation.SuppressLint;
+import static androidx.core.app.ActivityCompat.recreate;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -17,14 +20,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.doan.DetectActivity;
 import com.example.doan.R;
 import com.example.doan.feature.Setting;
 import com.example.doan.feature.UserPreferences;
@@ -38,12 +38,11 @@ public class FragmentSetting extends Fragment {
 
     private RelativeLayout layou_vi, layout_en;
     private Switch switchContribute;
-    private LinearLayout controller;
+    //private Button btn_stProfile;
     private Button btn_stLogout;
     private MaterialCardView profile;
     private TextView tv_chooseSense;
-    private ImageButton btn_back;
-
+    private TextView txtVietnamese, txtEnglish;
     public FragmentSetting() {
         // Required empty public constructor
     }
@@ -61,23 +60,43 @@ public class FragmentSetting extends Fragment {
     }
 
     @Override
-    public void onDestroy(){
-        super.onDestroy();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_setting, container, false);
+        loadLanguage();
+
         // Find the RelativeLayout by ID
         layou_vi = rootView.findViewById(R.id.st_lang_vi);
         layout_en = rootView.findViewById(R.id.st_lang_en);
+        txtVietnamese = rootView.findViewById(R.id.txt_vietnamese);
+        txtEnglish = rootView.findViewById(R.id.txt_english);
+
+        //Set switch state based on the current language
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("LANGUAGE_SETTINGS", Context.MODE_PRIVATE);
+        String language = sharedPreferences.getString("language", "en");
+
+        // Set text style based on the current language
+        if (language.equals("vi")) {
+            txtVietnamese.setTypeface(null, Typeface.BOLD);
+            txtEnglish.setTypeface(null, Typeface.NORMAL);
+        } else {
+            txtVietnamese.setTypeface(null, Typeface.NORMAL);
+            txtEnglish.setTypeface(null, Typeface.BOLD);
+        }
+
         layou_vi.setOnClickListener(v -> {
-            Setting.getInstance().setAppLanguage(Setting.AppLanguage.vi);
-            Setting.getInstance().applyLanguage(requireContext());
-            Setting.getInstance().saveToPreferences(requireContext()); // Save selection
-            Toast.makeText(requireContext(), "Vietnamese", Toast.LENGTH_SHORT).show();
-            refreshFragment(); // Refresh to apply changes
+            setLanguage("vi", 1);
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.mainlayout, new FragmentSetting())
+                    .commit();
+        });
+
+        layout_en.setOnClickListener(view -> {
+            setLanguage("en", 0);
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.mainlayout, new FragmentSetting())
+                    .commit();
         });
 
         profile = rootView.findViewById(R.id.profile);
@@ -96,20 +115,6 @@ public class FragmentSetting extends Fragment {
         profile.setOnClickListener(view -> {
             Intent intent = new Intent(this.getContext(), ProfileActivity.class );
             startActivity(intent);
-        });
-
-        btn_back = rootView.findViewById(R.id.destroySetting);
-        btn_back.setOnClickListener(view -> {
-            assert getActivity() != null;
-            getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-        });
-
-        layout_en.setOnClickListener(view -> {
-            Setting.getInstance().setAppLanguage(Setting.AppLanguage.en_US);
-            Setting.getInstance().applyLanguage(requireContext());
-            Setting.getInstance().saveToPreferences(requireContext()); // Save selection
-            Toast.makeText(requireContext(), "English-US", Toast.LENGTH_SHORT).show();
-            refreshFragment(); // Refresh to apply changes
         });
 
         switchContribute = rootView.findViewById(R.id.switch_contribute);
@@ -189,5 +194,26 @@ public class FragmentSetting extends Fragment {
                     .attach(currentFragment)
                     .commit();
         }
+    }
+
+    private void setLanguage(String language, int item) {
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Configuration configuration = new Configuration();
+        configuration.locale = locale;
+        requireContext().getResources().updateConfiguration(configuration, requireContext().getResources().getDisplayMetrics());
+
+        //save language
+        SharedPreferences.Editor editor = requireContext().getSharedPreferences("LANGUAGE_SETTINGS", Context.MODE_PRIVATE).edit();
+        editor.putString("language", language);
+        editor.putInt("item", item);
+        editor.apply();
+    }// set language end here
+
+    private void loadLanguage(){
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("LANGUAGE_SETTINGS", Context.MODE_PRIVATE);
+        String language = sharedPreferences.getString("language", "en");
+        int item = sharedPreferences.getInt("item", 0);
+        setLanguage(language, 0);
     }
 }
