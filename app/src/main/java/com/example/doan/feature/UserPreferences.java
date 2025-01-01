@@ -2,6 +2,7 @@ package com.example.doan.feature;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.example.doan.model.AppUser;
 import com.google.gson.Gson;
@@ -28,11 +29,18 @@ public class UserPreferences {
 
     // Retrieve AppUser object
     public AppUser getUser() {
-        String userJson = sharedPreferences.getString(KEY_APP_USER, null);
-        if (userJson != null) {
-            return gson.fromJson(userJson, AppUser.class); // Convert JSON string back to object
+        try{
+            String userJson = sharedPreferences.getString(KEY_APP_USER, null);
+            if (userJson != null) {
+                return gson.fromJson(userJson, AppUser.class); // Convert JSON string back to object
+            }
         }
-        return null; // No user saved
+        catch (Exception e){
+            clearUserData();
+            assert e.getMessage() != null;
+            Log.e("__User Preferences:", e.getMessage());
+        }
+        return null;
     }
 
     // Clear user data (e.g., during logout)

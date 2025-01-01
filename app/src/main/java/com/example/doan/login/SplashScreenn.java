@@ -38,8 +38,6 @@ public class SplashScreenn extends AppCompatActivity {
         UserPreferences userPreferences = new UserPreferences(this);
         AppUser appUser = userPreferences.getUser();
 
-        // Use a delay for the splash effect (optional)
-
         if (appUser != null) {
             // Restore in-memory reference
             AuthManager authManager = AuthManager.getInstance();
