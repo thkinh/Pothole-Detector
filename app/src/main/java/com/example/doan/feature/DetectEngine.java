@@ -4,7 +4,6 @@ import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.util.Log;
 
 import com.example.doan.ml.Model;
 
@@ -77,7 +76,7 @@ public class DetectEngine {
 
                             Model.Outputs outputs = model.process(inputFeature0);
                             float prediction = outputs.getOutputFeature0AsTensorBuffer().getFloatArray()[0];
-                            if (prediction > Setting.getInstance().getSensitiveConstant()) {
+                            if (prediction > Setting.getInstance().getSensitiveConstance()) {
                                 potholes++;
                                 callback.onPotholeDetected(potholes);
                             } else {

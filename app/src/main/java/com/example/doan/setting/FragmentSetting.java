@@ -1,21 +1,15 @@
 package com.example.doan.setting;
 
-import static androidx.core.app.ActivityCompat.recreate;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -139,13 +133,13 @@ public class FragmentSetting extends Fragment {
         });
 
         tv_chooseSense = rootView.findViewById(R.id.choose_sensitivity);
-        if (Setting.getInstance().getSensitiveConstant() == 0.9055){
+        if (Setting.getInstance().getSensitiveConstance() == 0.9055){
             tv_chooseSense.setText("Low");
         }
-        else if (Setting.getInstance().getSensitiveConstant() == 0.9030){
+        else if (Setting.getInstance().getSensitiveConstance() == 0.9030){
             tv_chooseSense.setText("Medium");
         }
-        else if (Setting.getInstance().getSensitiveConstant() == 0.9000){
+        else if (Setting.getInstance().getSensitiveConstance() == 0.9000){
             tv_chooseSense.setText("High");
         }
         tv_chooseSense.setOnClickListener(view -> {
@@ -162,17 +156,17 @@ public class FragmentSetting extends Fragment {
                     case "Low":
                         // Perform action for "Low"
                         Setting.getInstance().setSensitivity(Setting.Sensitivity.LOW);
-                        Setting.getInstance().setSensitiveConstant(0.9055);
+                        Setting.getInstance().setSensitiveConstance(0.9055);
                         break;
                     case "Medium":
                         // Perform action for "Medium"
                         Setting.getInstance().setSensitivity(Setting.Sensitivity.MEDIUM);
-                        Setting.getInstance().setSensitiveConstant(0.9030);
+                        Setting.getInstance().setSensitiveConstance(0.9030);
                         break;
                     case "High":
                         // Perform action for "High"
                         Setting.getInstance().setSensitivity(Setting.Sensitivity.HIGH);
-                        Setting.getInstance().setSensitiveConstant(0.9000);
+                        Setting.getInstance().setSensitiveConstance(0.9000);
                         break;
                 }
             });
