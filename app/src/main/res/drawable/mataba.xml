@@ -8,8 +8,11 @@
     <group
         android:pivotX="260"
         android:pivotY="240"
-        android:scaleX="0.325"
-        android:scaleY="0.325">
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        >
+
+
         <path android:fillColor="#FF7945" android:pathData="M315.71,124.35l-119.17,-0.14c-37.62,20.92 -63.08,61.08 -63.08,107.18v139.07c0,29.42 21.49,54.04 49.54,58.99l143.38,0.4c29.33,-3.83 52.17,-29.07 52.17,-59.39V231.39C378.55,185.39 353.2,145.3 315.71,124.35z"/>
 
         <path android:fillColor="#1F1A78" android:pathData="M422.12,89.78H89.88c-4.51,0 -8.17,-3.66 -8.17,-8.17s3.66,-8.17 8.17,-8.17h332.24c4.51,0 8.17,3.66 8.17,8.17S426.63,89.78 422.12,89.78z"/>

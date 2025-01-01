@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -49,7 +50,7 @@ public class DetectActivity extends AppCompatActivity
 {
     private DetectEngine detectEngine;
     ImageButton btn_exitDetect, btn_startDetect, btn_settingDetect;
-    boolean isDetecting ;
+    boolean isDetecting, isSetting ;
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private FragmentSensorData fragmentSensorData;
@@ -65,6 +66,7 @@ public class DetectActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.at_detect);
         isDetecting = false;
+        isSetting = false;
         btn_exitDetect =  findViewById(R.id.exitDetect);
         btn_startDetect = findViewById(R.id.startDectect);
         btn_settingDetect = findViewById(R.id.settingDetect);
@@ -81,11 +83,29 @@ public class DetectActivity extends AppCompatActivity
         });
 
         btn_exitDetect.setOnClickListener(view -> {
-            Intent intent = new Intent(DetectActivity.this, MainActivity.class);
-            startActivity(intent);
+            if (isDetecting) {
+                Toast.makeText(DetectActivity.this, "You are in Detecting mode!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            finish();
         });
 
         btn_startDetect.setOnClickListener(view -> {
+            if (isSetting){
+                fragmentManager = getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.mainlayout, mapbox);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                runOnUiThread(()->{
+                    btn_add_manually.setVisibility(View.VISIBLE);
+                    btn_add_manually.setEnabled(true);
+                });
+
+                isSetting = false;
+                return;
+            }
+
             if (!isDetecting) {
                 StartDetect();  // Add this to initialize DetectEngine
                 runOnUiThread(this::loadSensorDataFragment);
@@ -101,13 +121,27 @@ public class DetectActivity extends AppCompatActivity
         detectController = findViewById(R.id.ControlDetect);
 
         btn_settingDetect.setOnClickListener(view -> {
+            if (isDetecting){
+                runOnUiThread(()-> {
+                    Toast.makeText(DetectActivity.this, "You are in detecting mode!", Toast.LENGTH_SHORT).show();
+                });
+                return;
+            }
             FragmentSetting fragment = new FragmentSetting();
-            FragmentManager fragmentManager = getSupportFragmentManager();
+            Bundle args = new Bundle();
+            args.putBoolean("isDetectActivity", true); // Pass the argument to indicate DetectActivity usage
+            fragment.setArguments(args);
+
+            fragmentManager = getSupportFragmentManager();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.topFragmentContainer, fragment);
+            transaction.replace(R.id.mainlayout, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
-
+            runOnUiThread(()->{
+                btn_add_manually.setEnabled(true);
+                btn_add_manually.setVisibility(View.GONE);
+            });
+            isSetting = true;
         });
         AddFragmentMap();
         mapbox.drawAllPothole();

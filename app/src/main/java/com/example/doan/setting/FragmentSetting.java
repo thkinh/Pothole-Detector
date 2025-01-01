@@ -6,19 +6,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.doan.DetectActivity;
 import com.example.doan.R;
 import com.example.doan.feature.Setting;
 import com.example.doan.feature.UserPreferences;
@@ -32,7 +37,7 @@ public class FragmentSetting extends Fragment {
 
     private RelativeLayout layou_vi, layout_en;
     private Switch switchContribute;
-    //private Button btn_stProfile;
+    private ImageButton btn_destroy_setting;
     private Button btn_stLogout;
     private MaterialCardView profile;
     private TextView tv_chooseSense;
@@ -40,6 +45,7 @@ public class FragmentSetting extends Fragment {
     public FragmentSetting() {
         // Required empty public constructor
     }
+
 
     public static FragmentSetting newInstance(String param1, String param2) {
         FragmentSetting fragment = new FragmentSetting();
@@ -51,6 +57,7 @@ public class FragmentSetting extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -59,6 +66,8 @@ public class FragmentSetting extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_setting, container, false);
         loadLanguage();
+        Bundle args = getArguments();
+        boolean isDetectActivity = args != null && args.getBoolean("isDetectActivity", false);
 
         // Find the RelativeLayout by ID
         layou_vi = rootView.findViewById(R.id.st_lang_vi);
@@ -93,6 +102,13 @@ public class FragmentSetting extends Fragment {
                     .commit();
         });
 
+        if (isDetectActivity){
+            layout_en.setEnabled(false);
+            layou_vi.setEnabled(false);
+            layou_vi.setBackground(new ColorDrawable(ContextCompat.getColor(requireContext(), R.color.opacity_black)));
+            layout_en.setBackground(new ColorDrawable(ContextCompat.getColor(requireContext(), R.color.opacity_black)));
+        }
+
         profile = rootView.findViewById(R.id.profile);
         //btn_stProfile = rootView.findViewById(R.id.btn_stprofile);
         btn_stLogout = rootView.findViewById(R.id.btn_stlogout);
@@ -105,6 +121,12 @@ public class FragmentSetting extends Fragment {
             requireActivity().finish();
         });
 
+         btn_destroy_setting = rootView.findViewById(R.id.destroySetting);
+         btn_destroy_setting.setOnClickListener(view -> {
+             assert getActivity() != null;
+             getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+         });
+
 
         profile.setOnClickListener(view -> {
             Intent intent = new Intent(this.getContext(), ProfileActivity.class );
@@ -115,8 +137,15 @@ public class FragmentSetting extends Fragment {
         // Initialize the switch state from the Setting instance
         switchContribute.setChecked(Setting.getInstance().getIsContributor());
 
+        if (isDetectActivity) {
+            RelativeLayout lo_contribute = rootView.findViewById(R.id.lo_contribute);
+            lo_contribute.setEnabled(false);
+            lo_contribute.setBackground(new ColorDrawable(ContextCompat.getColor(requireContext(), R.color.opacity_black)));
+            switchContribute.setEnabled(false);
+        }
         // Set OnCheckedChangeListener to handle click
         switchContribute.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
             if (isChecked) {
                 // The switch is turned ON
                 Toast.makeText(getContext(), "Contributor mode enabled", Toast.LENGTH_SHORT).show();
