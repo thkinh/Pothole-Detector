@@ -19,6 +19,7 @@ import com.example.doan.R;
 import com.example.doan.api.auth.AuthManager;
 import com.example.doan.feature.UserPreferences;
 import com.example.doan.model.AppUser;
+import com.example.doan.model.UserDetails;
 
 import java.util.Locale;
 
@@ -65,6 +66,7 @@ public class SplashScreen extends AppCompatActivity {
         //Auto login
         UserPreferences userPreferences = new UserPreferences(this);
         AppUser appUser = userPreferences.getUser();
+
 
         if (appUser != null) {
             // Restore in-memory reference
