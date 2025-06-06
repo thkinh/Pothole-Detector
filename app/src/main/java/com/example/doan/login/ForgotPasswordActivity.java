@@ -36,6 +36,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         String newPass = editText_newPassword.getText().toString().trim();
         if (validateInput(newPass)){
             String email = authManager.getAccount().getEmail();
+            if (email == null || email.isEmpty()) {
+                Toast.makeText(ForgotPasswordActivity.this,
+                        "Email not available. Please try again.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             btn_finish.setEnabled(false);
             authManager.confirmPassword(email, newPass, new AuthManager.ConfirmPasswordCallBack() {
                 @Override

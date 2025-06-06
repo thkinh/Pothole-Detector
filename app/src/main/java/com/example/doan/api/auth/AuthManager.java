@@ -197,23 +197,43 @@ public class AuthManager {
         });
     }
 
-    public void confirmPassword(String email, String password, ConfirmPasswordCallBack callBack){
-        Call<AppUser> appUserCall = authService.confirmPass(email, password);
+    public void confirmPassword(String email, String password, ConfirmPasswordCallBack callBack) {
+        // Add logging to help with debugging
+        Log.d("PasswordUpdate", "Attempting to update password for: " + email);
+
+        // Format email with quotes if needed by your API
+        String formattedEmail = email.startsWith("\"") ? email : "\"" + email + "\"";
+
+        Call<AppUser> appUserCall = authService.confirmPass(formattedEmail, password);
         appUserCall.enqueue(new Callback<AppUser>() {
             @Override
             public void onResponse(Call<AppUser> call, Response<AppUser> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     AppUser user = response.body();
+                    Log.d("PasswordUpdate", "Password updated successfully");
                     callBack.onSuccess(user);
-                }
-                else {
-                    callBack.onFailure("Update password failed: "+response.code());
+                } else {
+                    // Better error handling for non-successful responses
+                    String errorMsg = "Update password failed: " + response.code();
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorBody = response.errorBody().string();
+                            Log.e("PasswordUpdate", "Error response body: " + errorBody);
+                            errorMsg += " - " + errorBody;
+                        }
+                    } catch (IOException e) {
+                        Log.e("PasswordUpdate", "Failed to read error body", e);
+                    }
+                    Log.e("PasswordUpdate", errorMsg);
+                    callBack.onFailure(errorMsg);
                 }
             }
 
             @Override
             public void onFailure(Call<AppUser> call, Throwable t) {
-                callBack.onFailure("API call failed: " + t.getMessage());
+                String errorMsg = "API call failed: " + t.getMessage();
+                Log.e("PasswordUpdate", "Network error", t);
+                callBack.onFailure(errorMsg);
             }
         });
     }
