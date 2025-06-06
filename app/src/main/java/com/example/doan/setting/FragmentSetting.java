@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -25,6 +26,8 @@ import android.widget.Toast;
 
 import com.example.doan.DetectActivity;
 import com.example.doan.R;
+import com.example.doan.dashboard.FragmentDashboard;
+import com.example.doan.dashboard.FragmentStatistic;
 import com.example.doan.feature.Setting;
 import com.example.doan.feature.UserPreferences;
 import com.example.doan.login.LoginActivity;
@@ -42,6 +45,7 @@ public class FragmentSetting extends Fragment {
     private MaterialCardView profile;
     private TextView tv_chooseSense;
     private TextView txtVietnamese, txtEnglish;
+
     public FragmentSetting() {
         // Required empty public constructor
     }
@@ -122,9 +126,17 @@ public class FragmentSetting extends Fragment {
         });
 
          btn_destroy_setting = rootView.findViewById(R.id.destroySetting);
-         btn_destroy_setting.setOnClickListener(view -> {
+         btn_destroy_setting.setOnClickListener(/*view -> {
              assert getActivity() != null;
              getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+         }*/new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+                 ft.replace(R.id.mainlayout, new FragmentDashboard());
+                 ft.addToBackStack(null);
+                 ft.commit();
+             }
          });
 
 

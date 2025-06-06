@@ -41,7 +41,7 @@ public class FragmentUser extends Fragment {
 
     public void requestJsonData() {
         requestQueue = Volley.newRequestQueue(getContext());
-        String url = "http://171.249.144.189:8080/api/user/get/ALL";
+        String url = "http://34.42.117.215:8080/api/user/get/ALL";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
