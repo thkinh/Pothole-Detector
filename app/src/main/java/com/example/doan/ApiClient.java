@@ -9,7 +9,7 @@ public class ApiClient {
     public static void getPotholes(String user, ApiCallback callback) {
         new Thread(() -> {
             try {
-                URL url = new URL("http://171.249.144.189:8080/api/pothole/get?user=" + user);
+                URL url = new URL("http://34.42.117.215:8080/api/pothole/get?user=" + user);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
 
